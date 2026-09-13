@@ -1,6 +1,6 @@
 # Portafolio · Reily Jesus Castro Vicuña
 
-Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código destinado al repositorio **privado** `Tortaconflow/portafolio-sistemas-digitales`; web pública en Hostinger con dominio propio.
+Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código en `Tortaconflow/portafolio-sistemas-digitales`, **público temporalmente por indicación del propietario**; web pública destinada a Hostinger con dominio propio. La preferencia inicial de privacidad queda pendiente de retomar cuando el propietario lo indique.
 
 ## Uso local
 
@@ -94,7 +94,7 @@ Para el despliegue Git clásico, después de compilar puedes crear una carpeta t
 
 ## Portafolio técnico público
 
-El repositorio completo debe permanecer privado. Para mostrar un proyecto seleccionado, crea un repositorio público separado con código propio autorizado, documentación y datos de demostración. Revisa también el historial antes de publicar. La web pública necesariamente entrega HTML, CSS y JavaScript compilados al navegador; un repositorio privado protege el acceso al código fuente y al historial en GitHub, no hace secreto el JavaScript servido al visitante.
+El propietario autorizó mantener este repositorio público temporalmente. Si posteriormente se vuelve privado, se pueden mostrar proyectos seleccionados mediante repositorios públicos separados con código propio autorizado, documentación y datos de demostración. Revisa también el historial antes de publicar. La web pública necesariamente entrega HTML, CSS y JavaScript compilados al navegador; un repositorio privado protege el acceso al código fuente y al historial en GitHub, no hace secreto el JavaScript servido al visitante.
 
 ## Verificación
 

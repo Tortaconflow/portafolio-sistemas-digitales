@@ -2,7 +2,7 @@
 
 Confirmado por el propietario: **Reily Jesus Castro Vicuña**, **reilyvica@gmail.com**, repositorio **Tortaconflow/portafolio-sistemas-digitales**.
 
-- [ ] Verificar que el repositorio esté privado antes de subir el código. En la consulta inicial estaba público y vacío.
+- [x] El propietario autorizó dejar el repositorio público temporalmente y subir el código.
 - [ ] URL real de Messenger: `[MESSENGER_URL]`.
 - [ ] Dominio HTTPS definitivo: `[PORTFOLIO_DOMAIN]`.
 - [ ] Acceso y tipo de despliegue disponible en Hostinger: compilación de Vite o Git clásico con archivos estáticos.
