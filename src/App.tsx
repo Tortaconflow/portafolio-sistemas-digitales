@@ -362,7 +362,7 @@ export function App() {
           <a
             className="brand"
             href="#inicio"
-            aria-label={`${c.owner.name} · ${c.ui.backTop}`}
+            aria-label={`${c.owner.name} · ${c.owner.role} · ${c.ui.backTop}`}
           >
             <span className="brand-mark" aria-hidden="true">
               [<i />]
@@ -437,34 +437,58 @@ export function App() {
                 <span aria-hidden="true">↳</span> {c.hero.note}
               </p>
             </div>
-            <aside className="system-card">
-              <div className="system-top">
-                <span className="eyebrow">{c.hero.diagramLabel}</span>
-                <span className="tiny-cross" aria-hidden="true">
-                  +
-                </span>
-              </div>
-              <h2>{c.hero.diagramTitle}</h2>
-              <div className="system-flow">
-                {c.hero.diagramSteps.map((s) => (
-                  <div className="flow-step" key={s.n}>
-                    <span className="flow-number">{s.n}</span>
-                    <div>
-                      <h3>{s.title}</h3>
-                      <p>{s.text}</p>
-                    </div>
-                    <span className="flow-arrow" aria-hidden="true">
-                      ↗
+            {c.projects.slice(0, 3).every((p) => p.image) ? (
+              <aside className="hero-gallery" aria-label={c.hero.indexLabel}>
+                {c.projects.slice(0, 3).map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setProject(p)}
+                    aria-label={`${c.ui.case}: ${p.title}`}
+                  >
+                    <img
+                      src={p.image}
+                      alt={p.imageAlt}
+                      width="1200"
+                      height="750"
+                      decoding="async"
+                    />
+                    <span>
+                      {p.title}
+                      <Arrow />
                     </span>
-                  </div>
+                  </button>
                 ))}
-              </div>
-              <div className="system-bottom">
-                <span className="live-dot" />
-                {c.owner.role}
-                <span aria-hidden="true">↗</span>
-              </div>
-            </aside>
+              </aside>
+            ) : (
+              <aside className="system-card">
+                <div className="system-top">
+                  <span className="eyebrow">{c.hero.diagramLabel}</span>
+                  <span className="tiny-cross" aria-hidden="true">
+                    +
+                  </span>
+                </div>
+                <h2>{c.hero.diagramTitle}</h2>
+                <div className="system-flow">
+                  {c.hero.diagramSteps.map((s) => (
+                    <div className="flow-step" key={s.n}>
+                      <span className="flow-number">{s.n}</span>
+                      <div>
+                        <h3>{s.title}</h3>
+                        <p>{s.text}</p>
+                      </div>
+                      <span className="flow-arrow" aria-hidden="true">
+                        ↗
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="system-bottom">
+                  <span className="live-dot" />
+                  {c.owner.role}
+                  <span aria-hidden="true">↗</span>
+                </div>
+              </aside>
+            )}
           </div>
           <div className="hero-index">
             <div>

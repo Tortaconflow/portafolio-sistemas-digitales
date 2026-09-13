@@ -34,7 +34,7 @@ El GitHub del pie de página queda vacío: no expongas el repositorio privado co
 
 Todavía no se proporcionaron imágenes reales de los casos. Se muestran fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
 
-Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`. Se recomienda 1200 × 750 px y menos de 200 KB cuando sea posible, preservando la legibilidad. Configura `image: '/projects/nombre.webp'` e `imageAlt` descriptivo. La galería usa carga diferida y dimensiones reservadas. Para añadir la composición de tres capturas al hero, utiliza esas mismas imágenes reales; no las sustituyas con material genérico.
+Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`. Se recomienda 1200 × 750 px y menos de 200 KB cuando sea posible, preservando la legibilidad. Configura `image: '/projects/nombre.webp'` e `imageAlt` descriptivo. La galería usa carga diferida y dimensiones reservadas. Cuando los tres primeros casos tengan imágenes configuradas, el hero mostrará automáticamente su composición de capturas reales en lugar del diagrama.
 
 ## Contacto y privacidad
 

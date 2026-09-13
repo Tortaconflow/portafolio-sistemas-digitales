@@ -1,3 +1,27 @@
+.hero-gallery {
+  display: grid;
+  gap: 14px;
+}
+.hero-gallery button {
+  width: 100%;
+  padding: 0;
+  border: 1px solid #d9dfd6;
+  border-radius: 6px;
+  background: white;
+  overflow: hidden;
+  text-align: left;
+}
+.hero-gallery img {
+  width: 100%;
+  height: 135px;
+  object-fit: contain;
+}
+.hero-gallery button > span {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 17px;
+  font-size: 12px;
+}
 :root {
   font-family: "Manrope Variable", sans-serif;
   color: #101318;
