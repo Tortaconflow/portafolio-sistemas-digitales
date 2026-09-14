@@ -33,7 +33,7 @@ export const content = {
     github: "https://github.com/Tortaconflow",
   },
   seo: {
-    title: "Reily Jesus Castro Vicuña · Sistemas digitales con IA en Oaxaca",
+    title: "Sistemas digitales con IA en Oaxaca",
     description:
       "Sitios web, automatización y sistemas de captación para negocios de Oaxaca y México. Conoce los proyectos y comienza con un diagnóstico de 15 minutos.",
     image: "/og-cover.png",
