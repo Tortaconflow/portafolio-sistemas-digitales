@@ -30,6 +30,8 @@ function ButtonLink({
       className={`button ${secondary ? "button-light" : ""}`}
       href={href}
       onClick={onClick}
+      target={isWebUrl(href) ? "_blank" : undefined}
+      rel={isWebUrl(href) ? "noreferrer" : undefined}
     >
       {children}
       <Arrow />

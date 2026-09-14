@@ -151,7 +151,7 @@ export const content = {
       image: "/projects/paraiso-laguna/portada-direccion-de-arte.webp",
       imageAlt:
         "Selección de dirección de arte para Paraíso Laguna con cabalgata, ballenas y kayak",
-      url: "",
+      url: "https://paraisolaguna.com/",
       tone: "laguna",
       evidenceApproved: true,
       gallery: [
