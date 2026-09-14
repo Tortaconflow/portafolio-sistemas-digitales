@@ -86,6 +86,146 @@ function ProjectImage({
     </div>
   );
 }
+function ProjectGallery({ items }: { items: NonNullable<Project["gallery"]> }) {
+  const [category, setCategory] = useState(c.ui.all);
+  const [selected, setSelected] = useState<number | null>(null);
+  const viewer = useRef<HTMLDialogElement>(null);
+  const categories = [c.ui.all, ...new Set(items.map((item) => item.category))];
+  const visible = items
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => category === c.ui.all || item.category === category);
+  const current = selected === null ? null : items[selected];
+  function move(direction: number) {
+    const position = visible.findIndex(({ index }) => index === selected);
+    setSelected(
+      visible[(position + direction + visible.length) % visible.length].index,
+    );
+  }
+  useEffect(() => {
+    if (selected !== null && !viewer.current?.open) viewer.current?.showModal();
+    if (selected === null && viewer.current?.open) viewer.current.close();
+  }, [selected]);
+  return (
+    <section className="case-gallery" aria-labelledby="case-gallery-title">
+      <div className="case-gallery-heading">
+        <div>
+          <h3 id="case-gallery-title">{c.ui.gallery}</h3>
+          <p>{c.ui.galleryNote}</p>
+        </div>
+        <span className="mono" role="status">
+          {visible.length} / {items.length}
+        </span>
+      </div>
+      <div
+        className="gallery-filters"
+        role="group"
+        aria-label={c.ui.filterGallery}
+      >
+        {categories.map((name) => (
+          <button
+            key={name}
+            type="button"
+            aria-pressed={category === name}
+            onClick={() => setCategory(name)}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <div className="case-gallery-grid">
+        {visible.map(({ item, index }) => (
+          <figure key={item.src}>
+            <button
+              className="gallery-thumbnail"
+              type="button"
+              onClick={() => setSelected(index)}
+              aria-label={`${c.ui.openImage}: ${item.alt}`}
+            >
+              <img
+                src={item.src}
+                alt={item.alt}
+                width="900"
+                height="1260"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="gallery-expand" aria-hidden="true">
+                ↗
+              </span>
+            </button>
+            <figcaption>
+              <span className="mono">{String(index + 1).padStart(2, "0")}</span>
+              {item.category}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <dialog
+        ref={viewer}
+        className="art-viewer"
+        aria-label={c.ui.imageViewer}
+        onCancel={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setSelected(null);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (e.target === e.currentTarget) setSelected(null);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+            e.preventDefault();
+            e.stopPropagation();
+            move(e.key === "ArrowRight" ? 1 : -1);
+          }
+        }}
+      >
+        {current && (
+          <>
+            <div className="viewer-toolbar">
+              <span className="mono" role="status">
+                {visible.findIndex(({ index }) => index === selected) + 1} /{" "}
+                {visible.length} · {current.category}
+              </span>
+              <button type="button" onClick={() => setSelected(null)} autoFocus>
+                {c.ui.closeImage} <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <img
+              className="viewer-image"
+              key={current.src}
+              src={current.src}
+              alt={current.alt}
+              width="900"
+              height="1260"
+            />
+            <p className="viewer-caption">{current.alt}</p>
+            <div className="viewer-controls">
+              <button
+                type="button"
+                onClick={() => move(-1)}
+                aria-label={c.ui.previousImage}
+              >
+                ←
+              </button>
+              <a href={current.src} target="_blank" rel="noreferrer">
+                {c.ui.originalImage} ↗
+              </a>
+              <button
+                type="button"
+                onClick={() => move(1)}
+                aria-label={c.ui.nextImage}
+              >
+                →
+              </button>
+            </div>
+          </>
+        )}
+      </dialog>
+    </section>
+  );
+}
 function CaseDialog({
   project,
   onClose,
@@ -133,47 +273,6 @@ function CaseDialog({
           )}
           <ProjectImage project={project} compact />
           {!project.image && <p className="small muted">{c.ui.imageNote}</p>}
-          {project.gallery?.length ? (
-            <section
-              className="case-gallery"
-              aria-labelledby="case-gallery-title"
-            >
-              <div className="case-gallery-heading">
-                <div>
-                  <h3 id="case-gallery-title">{c.ui.gallery}</h3>
-                  <p>{c.ui.galleryNote}</p>
-                </div>
-                <span className="mono">{project.gallery.length} / MASTERS</span>
-              </div>
-              <div className="case-gallery-grid">
-                {project.gallery.map((item, index) => (
-                  <figure key={item.src}>
-                    <a
-                      href={item.src}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`${c.ui.openImage}: ${item.alt}`}
-                    >
-                      <img
-                        src={item.src}
-                        alt={item.alt}
-                        width="900"
-                        height="1260"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </a>
-                    <figcaption>
-                      <span className="mono">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      {item.category}
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-            </section>
-          ) : null}
           <h3>{c.ui.problem}</h3>
           <p>{project.problem}</p>
           <h3>{c.ui.system}</h3>
@@ -184,6 +283,9 @@ function CaseDialog({
               <li key={x}>{x}</li>
             ))}
           </ul>
+          {project.gallery?.length ? (
+            <ProjectGallery key={project.id} items={project.gallery} />
+          ) : null}
         </>
       )}
     </dialog>
@@ -211,6 +313,10 @@ function Contact({ interest }: { interest: string }) {
     setFeedback("");
     window.setTimeout(() => resultRef.current?.focus(), 0);
   }
+  useEffect(() => {
+    setMessage("");
+    setFeedback("");
+  }, [interest]);
   async function copy() {
     try {
       await navigator.clipboard.writeText(message);
@@ -250,7 +356,14 @@ function Contact({ interest }: { interest: string }) {
             )}
           </div>
         </div>
-        <form className="contact-form" onSubmit={submit}>
+        <form
+          className="contact-form"
+          onSubmit={submit}
+          onChange={() => {
+            setMessage("");
+            setFeedback("");
+          }}
+        >
           <div className="form-grid">
             <label>
               {c.contact.fields.name}
@@ -823,7 +936,11 @@ export function App() {
             .filter((k) => isWebUrl(c.links[k]))
             .map((k) => (
               <a key={k} href={c.links[k]} target="_blank" rel="noreferrer">
-                {k === "github" ? "GitHub" : k === "linkedin" ? "LinkedIn" : k[0].toUpperCase() + k.slice(1)}
+                {k === "github"
+                  ? "GitHub"
+                  : k === "linkedin"
+                    ? "LinkedIn"
+                    : k[0].toUpperCase() + k.slice(1)}
                 <Arrow />
               </a>
             ))}

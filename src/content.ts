@@ -65,6 +65,13 @@ export const content = {
     galleryNote:
       "16 piezas maestras para redes sociales, organizadas por aventura, escapada, fauna y laguna.",
     openImage: "Abrir imagen completa",
+    filterGallery: "Filtrar piezas por categoría",
+    imageViewer: "Visor de dirección de arte",
+    closeImage: "Cerrar imagen",
+    previousImage: "Imagen anterior",
+    nextImage: "Imagen siguiente",
+    originalImage: "Ver original",
+
     backTop: "Volver al inicio",
     draft: "Vista previa · datos del propietario pendientes",
     pending: "Información pendiente para publicar",

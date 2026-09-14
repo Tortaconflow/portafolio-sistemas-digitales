@@ -17,3 +17,9 @@ La galería cargó 16/16 imágenes en móvil y escritorio, sin desbordamiento, e
 Lighthouse móvil local después de optimizar las tres miniaturas de portada: rendimiento **96/100**, accesibilidad **100/100**, buenas prácticas **100/100**, SEO **69/100**. Miniaturas de portada: 92 KB en total, frente a 385 KB de sus imágenes de galería. Los originales se conservan. La auditoría es de laboratorio y no garantiza el comportamiento del alojamiento real.
 
 Limitaciones: las pruebas automáticas no sustituyen una revisión con tecnologías de asistencia. Faltan las imágenes de tres proyectos y confirmación editorial. La indexación sigue bloqueada deliberadamente; el dominio temporal de Hostinger configurado previamente se conserva. Este informe valida el build local, no un despliegue remoto de Hostinger.
+
+## Mejora de exploración y contacto
+
+Visor integrado con filtros por categoría, imagen original, botones anterior/siguiente y navegación circular por teclado. Escape cierra solo la imagen y devuelve el foco a su miniatura; un segundo Escape cierra el caso. La descripción y el alcance preceden a la galería.
+
+Pruebas adicionales en 390 y 1440 px: filtros 16 → 2 → 16, recorrido circular, enlace original, cierre por botón y Escape, retorno de foco y ausencia de desbordamiento. Axe WCAG A/AA sin infracciones detectadas en el visor. Regresión completa en 390, 768 y 1440 px correcta. Editar datos o seleccionar otro plan invalida el mensaje preparado para evitar enviarlo desactualizado. Se comprobó también la preparación del nuevo mensaje. No se enviaron mensajes a terceros.

@@ -1009,3 +1009,162 @@ textarea {
     margin-top: 16px;
   }
 }
+/* Gallery controls keep exploration in context and expose full-resolution work. */
+.gallery-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 24px;
+}
+.gallery-filters button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #c0cde1;
+  border-radius: 30px;
+  background: #fff8;
+  color: #34445f;
+  font-size: 12px;
+}
+.gallery-filters button[aria-pressed="true"] {
+  background: #263953;
+  color: white;
+  border-color: #263953;
+}
+.gallery-filters button:hover {
+  box-shadow: 0 4px 12px #49648522;
+}
+.gallery-thumbnail {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid white;
+  border-radius: 12px;
+  background: #e1e8f3;
+}
+.gallery-thumbnail img {
+  transition: transform 0.2s;
+}
+.gallery-thumbnail:hover img {
+  transform: scale(1.02);
+}
+.gallery-expand {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: #f6f9ffe8;
+  color: #263953;
+  font-size: 20px;
+  box-shadow: 0 3px 10px #18233922;
+}
+.art-viewer {
+  padding: 16px 24px;
+  width: min(1000px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  border: 1px solid #53617a;
+  border-radius: 20px;
+  background: #152237;
+  color: #f0f5ff;
+  box-shadow: 0 30px 100px #0b152b66;
+  overflow: auto;
+}
+.art-viewer::backdrop {
+  background: #0b152bed;
+  backdrop-filter: blur(9px);
+}
+.viewer-toolbar,
+.viewer-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.viewer-toolbar {
+  position: sticky;
+  top: -16px;
+  background: #152237f5;
+  z-index: 1;
+  padding: 8px 0 12px;
+}
+.viewer-toolbar button,
+.viewer-controls button {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border: 1px solid #68758c;
+  border-radius: 10px;
+  background: #253851;
+  color: white;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.viewer-toolbar button span {
+  font-size: 20px;
+}
+.viewer-controls button {
+  font-size: 22px;
+}
+.art-viewer .viewer-image {
+  width: 100%;
+  height: min(65dvh, 780px);
+  object-fit: contain;
+  aspect-ratio: auto;
+  background: #111e30;
+}
+.art-viewer .viewer-caption {
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+  color: #d1dced;
+  margin: 14px auto;
+  max-width: 640px;
+}
+.viewer-controls {
+  max-width: 520px;
+  margin: auto;
+}
+.viewer-controls a {
+  font-size: 12px;
+  padding: 14px;
+}
+.art-viewer :focus-visible {
+  outline-color: #b7d7ff;
+}
+.case-gallery {
+  scroll-margin-top: 80px;
+}
+@media (max-width: 600px) {
+  .art-viewer {
+    padding: 12px;
+    border-radius: 16px;
+  }
+  .viewer-toolbar {
+    top: -12px;
+  }
+  .viewer-toolbar .mono {
+    font-size: 10px;
+  }
+  .gallery-filters {
+    gap: 6px;
+  }
+  .gallery-filters button {
+    padding: 9px 12px;
+    font-size: 11px;
+  }
+  .art-viewer .viewer-image {
+    height: 58dvh;
+  }
+  .viewer-controls a {
+    font-size: 11px;
+  }
+}
