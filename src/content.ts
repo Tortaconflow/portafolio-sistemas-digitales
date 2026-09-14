@@ -135,7 +135,7 @@ export const content = {
   cases: {
     label: "02 / PROYECTOS SELECCIONADOS",
     title: "Del problema al sistema.",
-    body: "Cuatro contextos distintos. Una misma forma de trabajar: entender, ordenar y construir.",
+    body: "Tres contextos distintos. Una misma forma de trabajar: entender, ordenar y construir.",
     footnote:
       "Alcances descritos por el propietario. Sin métricas comerciales ni testimonios atribuidos.",
   },
@@ -319,29 +319,6 @@ export const content = {
       imageAlt: "Plataforma interactiva El Consejo de las Cien Miradas",
       url: "https://github.com/Tortaconflow/el-consejo-de-las-cien-miradas",
       tone: "edu",
-      evidenceApproved: true,
-    },
-    {
-      id: "curriculo-vivo",
-      title: "Currículo Vivo",
-      sector: "Educación",
-      tagline: "Trayectoria formativa autobiográfica interactiva.",
-      status: "Trabajo construido y activo",
-      problem:
-        "Diseñar un formato interactivo para comunicar una trayectoria pedagógica y profesional que trascienda el currículum estático en PDF.",
-      solution:
-        "Aplicación web en Next.js con línea de tiempo interactiva, archivo fotográfico clasificado y testimonios pedagógicos.",
-      components: [
-        "Línea de tiempo cronológica navegable",
-        "Archivo multimedia optimizado por etapas formativas",
-        "Desarrollo full-stack con Next.js y Tailwind CSS",
-        "Diseño editorial sensible a contextos educativos",
-        "Estructura accesible y adaptable a pantallas táctiles",
-      ],
-      image: "/projects/curriculo-vivo-portada.jpg",
-      imageAlt: "Captura de la plataforma educativa interactiva Currículo Vivo",
-      url: "https://slategray-hyena-131166.hostingersite.com",
-      tone: "brisa",
       evidenceApproved: true,
     },
   ] as Project[],
