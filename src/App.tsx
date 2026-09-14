@@ -191,11 +191,12 @@ function CaseDialog({
 }
 function Contact({ interest }: { interest: string }) {
   const [message, setMessage] = useState("");
-  const [channel, setChannel] = useState("Correo");
+  const [channel, setChannel] = useState("WhatsApp");
   const [feedback, setFeedback] = useState("");
   const resultRef = useRef<HTMLDivElement>(null);
   const emailReady = isEmail(c.links.email),
-    messengerReady = isWebUrl(c.links.messenger);
+    messengerReady = isWebUrl(c.links.messenger),
+    whatsappReady = isWebUrl(c.links.whatsapp);
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -346,6 +347,17 @@ function Contact({ interest }: { interest: string }) {
                 >
                   {c.contact.copy}
                 </button>
+                {channel === "WhatsApp" && whatsappReady && (
+                  <a
+                    className="button"
+                    href={`${c.links.whatsapp}?text=${encodeURIComponent(message)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {c.contact.whatsappSend}
+                    <Arrow />
+                  </a>
+                )}
                 {channel === "Correo" && emailReady && (
                   <a
                     className="button"
@@ -807,11 +819,11 @@ export function App() {
           <p>{c.footer.tagline}</p>
         </div>
         <div className="footer-links">
-          {(["facebook", "instagram", "github"] as const)
+          {(["facebook", "linkedin", "instagram", "github"] as const)
             .filter((k) => isWebUrl(c.links[k]))
             .map((k) => (
-              <a key={k} href={c.links[k]}>
-                {k === "github" ? "GitHub" : k[0].toUpperCase() + k.slice(1)}
+              <a key={k} href={c.links[k]} target="_blank" rel="noreferrer">
+                {k === "github" ? "GitHub" : k === "linkedin" ? "LinkedIn" : k[0].toUpperCase() + k.slice(1)}
                 <Arrow />
               </a>
             ))}
