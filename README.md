@@ -32,7 +32,7 @@ El GitHub del pie de página queda vacío: no expongas el repositorio privado co
 
 ## Capturas auténticas
 
-Todavía no se proporcionaron imágenes reales de los casos. Se muestran fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
+Paraíso Laguna incluye 16 piezas maestras reales autorizadas por el propietario al incorporarlas al portafolio. Los demás casos mantienen fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
 
 Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`. Se recomienda 1200 × 750 px y menos de 200 KB cuando sea posible, preservando la legibilidad. Configura `image: '/projects/nombre.webp'` e `imageAlt` descriptivo. La galería usa carga diferida y dimensiones reservadas. Cuando los tres primeros casos tengan imágenes configuradas, el hero mostrará automáticamente su composición de capturas reales en lugar del diagrama.
 

@@ -1261,6 +1261,67 @@ footer p {
 .case-dialog .small {
   font-size: 11px;
 }
+.case-gallery {
+  margin: 30px 0 38px;
+  padding: 25px 0 30px;
+  border-block: 1px solid var(--line);
+}
+.case-gallery-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.case-gallery-heading h3 {
+  margin: 0 0 7px;
+}
+.case-gallery-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.case-gallery-heading > .mono {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.case-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.case-gallery figure {
+  margin: 0;
+  min-width: 0;
+}
+.case-gallery figure a {
+  display: block;
+  overflow: hidden;
+  border: 1px solid #d7dfd6;
+  border-radius: 4px;
+  background: #e7e8e2;
+}
+.case-gallery figure img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+.case-gallery figure a:hover img {
+  transform: scale(1.018);
+}
+.case-gallery figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 @media (min-width: 1450px) {
   .hero-grid {
     gap: 110px;
@@ -2021,6 +2082,16 @@ footer p {
   }
   .case-dialog > p {
     font-size: 13px;
+  }
+  .case-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .case-gallery-heading {
+    align-items: flex-start;
+  }
+  .case-gallery-heading > .mono {
+    font-size: 9px;
   }
   .dialog-top .text-button {
     font-size: 11px;

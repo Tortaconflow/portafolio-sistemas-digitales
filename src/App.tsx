@@ -128,6 +128,47 @@ function CaseDialog({
           </p>
           <ProjectImage project={project} compact />
           {!project.image && <p className="small muted">{c.ui.imageNote}</p>}
+          {project.gallery?.length ? (
+            <section
+              className="case-gallery"
+              aria-labelledby="case-gallery-title"
+            >
+              <div className="case-gallery-heading">
+                <div>
+                  <h3 id="case-gallery-title">{c.ui.gallery}</h3>
+                  <p>{c.ui.galleryNote}</p>
+                </div>
+                <span className="mono">{project.gallery.length} / MASTERS</span>
+              </div>
+              <div className="case-gallery-grid">
+                {project.gallery.map((item, index) => (
+                  <figure key={item.src}>
+                    <a
+                      href={item.src}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`${c.ui.openImage}: ${item.alt}`}
+                    >
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        width="900"
+                        height="1260"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </a>
+                    <figcaption>
+                      <span className="mono">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {item.category}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+          ) : null}
           <h3>{c.ui.problem}</h3>
           <p>{project.problem}</p>
           <h3>{c.ui.system}</h3>

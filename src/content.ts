@@ -13,6 +13,7 @@ export type Project = {
   url: string;
   tone: string;
   evidenceApproved: boolean;
+  gallery?: { src: string; alt: string; category: string }[];
 };
 export const content = {
   owner: {
@@ -59,6 +60,10 @@ export const content = {
     imagePending: "Capturas reales por incorporar",
     imageNote:
       "La ficha describe el trabajo. Las imágenes se añadirán cuando estén disponibles y autorizadas.",
+    gallery: "Dirección de arte seleccionada",
+    galleryNote:
+      "16 piezas maestras para redes sociales, organizadas por aventura, escapada, fauna y laguna.",
+    openImage: "Abrir imagen completa",
     backTop: "Volver al inicio",
     draft: "Vista previa · datos del propietario pendientes",
     pending: "Información pendiente para publicar",
@@ -131,7 +136,7 @@ export const content = {
       title: "Paraíso Laguna",
       sector: "Turismo",
       tagline: "Un ecosistema visual para contar un destino.",
-      status: "Trabajo construido · estado por confirmar",
+      status: "Trabajo construido · 16 piezas seleccionadas",
       problem:
         "Organizar el material de un proyecto ecoturístico de la costa de Oaxaca y conectar su comunicación con la captación.",
       solution:
@@ -143,11 +148,94 @@ export const content = {
         "Sistemas de copy, distribución, reseñas y captación",
         "Sitio y estrategia digital turística",
       ],
-      image: "",
-      imageAlt: "",
+      image: "/projects/paraiso-laguna/portada-direccion-de-arte.webp",
+      imageAlt:
+        "Selección de dirección de arte para Paraíso Laguna con cabalgata, ballenas y kayak",
       url: "",
       tone: "laguna",
-      evidenceApproved: false,
+      evidenceApproved: true,
+      gallery: [
+        {
+          src: "/projects/paraiso-laguna/aventura-cabalgata-costa-4x5.webp",
+          alt: "Pieza Cabalgata frente al mar con una mujer a caballo en la costa",
+          category: "Aventura",
+        },
+        {
+          src: "/projects/paraiso-laguna/aventura-cabalgata-mockup-4x5.webp",
+          alt: "Pieza editorial Cabalgata con una mujer montando a caballo",
+          category: "Aventura",
+        },
+        {
+          src: "/projects/paraiso-laguna/aventura-sin-internet-2x3.webp",
+          alt: "Pieza Sin internet con una persona a caballo frente al mar",
+          category: "Aventura",
+        },
+        {
+          src: "/projects/paraiso-laguna/aventura-tirolesa-4x5.webp",
+          alt: "Pieza Tirolesa con una viajera sobre la vegetación",
+          category: "Aventura",
+        },
+        {
+          src: "/projects/paraiso-laguna/escapada-aguas-termales-4x5.webp",
+          alt: "Pieza Aguas termales con una pareja dentro del agua",
+          category: "Escapada",
+        },
+        {
+          src: "/projects/paraiso-laguna/escapada-copalita-collage-2x3.webp",
+          alt: "Collage de las Cascadas Mágicas de Copalita",
+          category: "Escapada",
+        },
+        {
+          src: "/projects/paraiso-laguna/escapada-copalita-explora-4x5.webp",
+          alt: "Pieza Explora las Cascadas Mágicas de Copalita",
+          category: "Escapada",
+        },
+        {
+          src: "/projects/paraiso-laguna/fauna-ballenas-2x3.webp",
+          alt: "Pieza Ballenas con vista aérea de dos ballenas en el océano",
+          category: "Fauna",
+        },
+        {
+          src: "/projects/paraiso-laguna/fauna-tortugas-escobilla-2x3.webp",
+          alt: "Pieza Tortugas con crías avanzando hacia el mar",
+          category: "Fauna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-aves-espatula-4x5.webp",
+          alt: "Pieza Aves con una espátula rosada entre la vegetación",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-bioluminiscencia-nocturna-2x3.webp",
+          alt: "Pieza nocturna de bioluminiscencia con una nadadora",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-bioluminiscencia-pareja-2x3.webp",
+          alt: "Pieza Bioluminiscencia con una pareja dentro del agua iluminada",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-cocodrilos-manglar-2x3.webp",
+          alt: "Pieza Cocodrilos con imágenes del manglar y su fauna",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-kayak-atardecer-4x5.webp",
+          alt: "Pieza Kayak con dos personas remando al atardecer",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-kayak-manglares-2x3.webp",
+          alt: "Pieza Kayak con una viajera recorriendo los manglares",
+          category: "Laguna",
+        },
+        {
+          src: "/projects/paraiso-laguna/laguna-manialtepec-atardecer-4x5.webp",
+          alt: "Pieza Manialtepec con un grupo navegando durante la puesta de sol",
+          category: "Laguna",
+        },
+      ],
     },
     {
       id: "brisa",
