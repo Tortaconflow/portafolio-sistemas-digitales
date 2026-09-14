@@ -1,21 +1,19 @@
-# Verificación de la primera versión
+# Verificación del rediseño · 13 de septiembre de 2026
 
-Revisión local del build de producción el 12 de septiembre de 2026. Navegador Chromium de Google Chrome, sin extensiones y con movimiento reducido para las capturas automatizadas.
+Dirección «cristal editorial»: perla, azul hielo y lavanda; monograma RC, tipografía amplia y superficies translúcidas. La portada utiliza trabajo real de Paraíso Laguna. El caso destacado y sus 16 piezas conservan acceso a la web externa y a las imágenes completas. No se añadieron retratos, testimonios ni métricas comerciales inventadas.
 
-| Vista      | Desbordamiento horizontal | Errores JS | Axe WCAG A/AA               | Menú / casos / precios / formulario |
-| ---------- | ------------------------- | ---------- | --------------------------- | ----------------------------------- |
-| 390 × 844  | Ninguno                   | Ninguno    | Sin infracciones detectadas | Correctos                           |
-| 768 × 1024 | Ninguno                   | Ninguno    | Sin infracciones detectadas | Correctos                           |
-| 1440 × 900 | Ninguno                   | Ninguno    | Sin infracciones detectadas | Correctos                           |
+Build de producción: `npm run build` correcto (TypeScript y Vite).
 
-Se revisaron visualmente las capturas de inicio de móvil, tableta y escritorio. Se generaron además capturas de página completa.
+| Vista | Desbordamiento | Errores JS | Axe WCAG A/AA | Interacciones |
+| --- | --- | --- | --- | --- |
+| 390 × 844 | Ninguno | Ninguno | Sin infracciones detectadas | Correctas |
+| 768 × 1024 | Ninguno | Ninguno | Sin infracciones detectadas | Correctas |
+| 1440 × 900 | Ninguno | Ninguno | Sin infracciones detectadas | Correctas |
 
-Comprobaciones funcionales: apertura de caso, cierre con Escape y retorno del foco al botón; cambio de precios con clic y flechas del teclado; selección del plan transmitida al mensaje; campos del formulario y codificación de acentos y `&` en el enlace de correo; menú móvil y cierre al navegar. No se envió correo ni se contactó a terceros.
+Comprobados apertura de caso, cierre con Escape y retorno del foco; precios por clic y teclado; plan seleccionado en el mensaje; formulario y codificación de acentos y ampersand en mailto; menú móvil y cierre al navegar. No se enviaron mensajes.
 
-Paraíso Laguna: las 16 piezas optimizadas cargaron correctamente en 390 × 844 y 1440 × 900. La galería no presentó desbordamiento horizontal, errores de JavaScript ni infracciones automáticas WCAG A/AA. Cada pieza conserva acceso a la imagen completa y texto alternativo descriptivo.
+La galería cargó 16/16 imágenes en móvil y escritorio, sin desbordamiento, errores JS ni infracciones automáticas. Comprobación adicional de ancho a 320 px: sin desbordamiento. Revisión visual de portada y proyectos. Se respeta la preferencia de movimiento reducido.
 
-Lighthouse móvil local: rendimiento **99/100**, accesibilidad **100/100**, buenas prácticas **100/100**. FCP y LCP: **1.7 s**, bloqueo total: **10 ms**, CLS: **0.033**. Son mediciones de laboratorio, no garantías sobre el alojamiento o dispositivos reales.
+Lighthouse móvil local después de optimizar las tres miniaturas de portada: rendimiento **96/100**, accesibilidad **100/100**, buenas prácticas **100/100**, SEO **69/100**. Miniaturas de portada: 92 KB en total, frente a 385 KB de sus imágenes de galería. Los originales se conservan. La auditoría es de laboratorio y no garantiza el comportamiento del alojamiento real.
 
-SEO: **66/100** en esta vista previa porque la indexación está bloqueada deliberadamente hasta completar el contenido. Los metadatos están presentes en el HTML inicial; canonical, URL e imagen social absolutos y sitemap esperan el dominio real. `npm run check:release` detecta los datos faltantes y devuelve código 1 deliberadamente; el build técnico sí pasa.
-
-Limitaciones: faltan capturas auténticas de BRISA, Señor Gallo VIP y Laboratorio de Diseño Educativo con IA, además de confirmación editorial, Messenger, dominio y verificación del despliegue en Hostinger. La composición de capturas del hero se activa cuando se configuran las tres primeras imágenes reales. No hay métricas comerciales, testimonios ni teléfonos inventados. Las pruebas automatizadas no reemplazan una revisión con tecnologías de asistencia y un envío manual desde un dispositivo real.
+Limitaciones: las pruebas automáticas no sustituyen una revisión con tecnologías de asistencia. Faltan las imágenes de tres proyectos y confirmación editorial. La indexación sigue bloqueada deliberadamente; el dominio temporal de Hostinger configurado previamente se conserva. Este informe valida el build local, no un despliegue remoto de Hostinger.

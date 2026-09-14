@@ -13,7 +13,7 @@ export type Project = {
   url: string;
   tone: string;
   evidenceApproved: boolean;
-  gallery?: { src: string; alt: string; category: string }[];
+  gallery?: { src: string; preview?: string; alt: string; category: string }[];
 };
 export const content = {
   owner: {
@@ -83,13 +83,21 @@ export const content = {
     customCta: "Platiquemos del alcance",
   },
   hero: {
+    signature: "REILY CASTRO / PORTAFOLIO",
+    headline: "Diseño que",
+    headlineAccent: "conecta.",
+    discipline: "Dirección visual. UX/UI. Sistemas digitales.",
+    visualLabel: "Selección de trabajo real para Paraíso Laguna",
+    featured: "EN FOCO / DIRECCIÓN DE ARTE",
+    visualNote: "Oaxaca, México · Diseño con intención",
+
     eyebrow: "SISTEMAS DIGITALES · OAXACA + REMOTO",
     lead: "Tu negocio ya tiene valor.",
     before: "Construyo el sistema para que ",
     find: "lo encuentren,",
     middle: " contacten y ",
     buy: "compren.",
-    body: "Diseño sitios web, automatizaciones y sistemas de captación que conectan contenido, búsqueda, contacto y seguimiento. Utilizo inteligencia artificial cuando realmente mejora el resultado.",
+    body: "Transformo lo que hace único a tu negocio en una experiencia digital clara, memorable y fácil de usar. Desde su identidad visual hasta la web y el siguiente contacto.",
     primary: "Cuéntame sobre tu negocio",
     secondary: "Ver casos construidos",
     note: "Empezamos con una conversación de 15 minutos.",
@@ -157,6 +165,8 @@ export const content = {
       gallery: [
         {
           src: "/projects/paraiso-laguna/aventura-cabalgata-costa-4x5.webp",
+          preview:
+            "/projects/paraiso-laguna/aventura-cabalgata-costa-4x5-preview.webp",
           alt: "Pieza Cabalgata frente al mar con una mujer a caballo en la costa",
           category: "Aventura",
         },
@@ -202,6 +212,8 @@ export const content = {
         },
         {
           src: "/projects/paraiso-laguna/laguna-aves-espatula-4x5.webp",
+          preview:
+            "/projects/paraiso-laguna/laguna-aves-espatula-4x5-preview.webp",
           alt: "Pieza Aves con una espátula rosada entre la vegetación",
           category: "Laguna",
         },
@@ -222,6 +234,8 @@ export const content = {
         },
         {
           src: "/projects/paraiso-laguna/laguna-kayak-atardecer-4x5.webp",
+          preview:
+            "/projects/paraiso-laguna/laguna-kayak-atardecer-4x5-preview.webp",
           alt: "Pieza Kayak con dos personas remando al atardecer",
           category: "Laguna",
         },
