@@ -16,6 +16,6 @@ Paraíso Laguna: las 16 piezas optimizadas cargaron correctamente en 390 × 844 
 
 Lighthouse móvil local: rendimiento **99/100**, accesibilidad **100/100**, buenas prácticas **100/100**. FCP y LCP: **1.7 s**, bloqueo total: **10 ms**, CLS: **0.033**. Son mediciones de laboratorio, no garantías sobre el alojamiento o dispositivos reales.
 
-SEO: **63/100** en esta vista previa porque la indexación está bloqueada deliberadamente hasta completar el contenido. Los metadatos están presentes en el HTML inicial; canonical, URL e imagen social absolutos y sitemap esperan el dominio real. `npm run check:release` detecta los datos faltantes y devuelve código 1 deliberadamente; el build técnico sí pasa.
+SEO: **66/100** en esta vista previa porque la indexación está bloqueada deliberadamente hasta completar el contenido. Los metadatos están presentes en el HTML inicial; canonical, URL e imagen social absolutos y sitemap esperan el dominio real. `npm run check:release` detecta los datos faltantes y devuelve código 1 deliberadamente; el build técnico sí pasa.
 
 Limitaciones: faltan capturas auténticas de BRISA, Señor Gallo VIP y Laboratorio de Diseño Educativo con IA, además de confirmación editorial, Messenger, dominio y verificación del despliegue en Hostinger. La composición de capturas del hero se activa cuando se configuran las tres primeras imágenes reales. No hay métricas comerciales, testimonios ni teléfonos inventados. Las pruebas automatizadas no reemplazan una revisión con tecnologías de asistencia y un envío manual desde un dispositivo real.
