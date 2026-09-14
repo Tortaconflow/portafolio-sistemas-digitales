@@ -26,7 +26,7 @@ export const content = {
     email: "reilyvica@gmail.com",
     messenger: "[MESSENGER_URL]",
     whatsapp: "[WHATSAPP_URL]",
-    domain: "[PORTFOLIO_DOMAIN]",
+    domain: "https://sandybrown-turkey-667440.hostingersite.com",
     facebook: "",
     instagram: "",
     github: "",
