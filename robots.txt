@@ -1,2 +1,3 @@
 User-agent: *
-Disallow: /
+Allow: /
+Sitemap: https://sandybrown-turkey-667440.hostingersite.com/sitemap.xml
