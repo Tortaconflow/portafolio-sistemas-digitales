@@ -85,6 +85,14 @@ export const content = {
     ],
     sector: "Sector",
     all: "Todos",
+    filterProjects: "Explorar proyectos por sector",
+    projectCount: "proyectos disponibles",
+    serviceDetails: "Explorar alcance",
+    serviceIncludes: "Podemos trabajar en",
+    serviceCta: "Consultar este servicio",
+    quickContact: "Hablemos por WhatsApp",
+    quickNote: "¿Tienes un proyecto?",
+
     custom: "¿Tu proyecto necesita otra estructura?",
     customBody:
       "Catálogos, herramientas con IA, plataformas educativas y sistemas internos se cotizan a medida.",
@@ -142,7 +150,7 @@ export const content = {
   cases: {
     label: "02 / PROYECTOS SELECCIONADOS",
     title: "Del problema al sistema.",
-    body: "Tres contextos distintos. Una misma forma de trabajar: entender, ordenar y construir.",
+    body: "Proyectos reales en turismo, comercio, desarrollo inmobiliario e inteligencia artificial.",
     footnote:
       "Alcances descritos por el propietario. Sin métricas comerciales ni testimonios atribuidos.",
   },
@@ -338,24 +346,44 @@ export const content = {
         title: "Presencia que convierte",
         text: "Para que una visita entienda qué ofreces y sepa cómo contactarte. Sitios, landing pages y catálogos claros, rápidos y adaptados a móvil.",
         tags: "WEB / CATÁLOGOS / UX",
+        deliverables: [
+          "Arquitectura de contenidos y recorrido del visitante",
+          "Diseño adaptable a móvil y desarrollo web",
+          "Catálogo, formulario o contacto según el objetivo",
+        ],
       },
       {
         icon: "◎",
         title: "Sistemas de captación",
         text: "Para que el interés no se pierda. Conecto contenido, anuncios, formularios, WhatsApp, reseñas, Google Business y seguimiento.",
         tags: "CONTACTO / SEGUIMIENTO",
+        deliverables: [
+          "Revisión del recorrido desde el contenido al contacto",
+          "Formularios y mensajes con contexto",
+          "Organización del seguimiento y puntos de conversión",
+        ],
       },
       {
         icon: "⌘",
         title: "Automatización e IA aplicada",
         text: "Para reducir tareas repetidas y ordenar información. Automatizaciones, asistentes y herramientas internas con un propósito definido.",
         tags: "PROCESOS / HERRAMIENTAS",
+        deliverables: [
+          "Identificación de tareas repetitivas y fuentes de datos",
+          "Prototipo de automatización o asistente",
+          "Pruebas, documentación y entrega de uso",
+        ],
       },
       {
         icon: "↗",
         title: "Educación y capacitación con IA",
         text: "Para que docentes y equipos sepan aplicar la IA en su trabajo. Cursos, recursos, plataformas y acompañamiento contextualizado.",
         tags: "APRENDIZAJE / EQUIPOS",
+        deliverables: [
+          "Diagnóstico de necesidades del equipo",
+          "Sesiones y ejercicios aplicados a su contexto",
+          "Material de consulta y pautas de uso responsable",
+        ],
       },
     ],
   },

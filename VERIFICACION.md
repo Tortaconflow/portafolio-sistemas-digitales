@@ -23,3 +23,7 @@ Limitaciones: las pruebas automáticas no sustituyen una revisión con tecnolog�
 Visor integrado con filtros por categoría, imagen original, botones anterior/siguiente y navegación circular por teclado. Escape cierra solo la imagen y devuelve el foco a su miniatura; un segundo Escape cierra el caso. La descripción y el alcance preceden a la galería.
 
 Pruebas adicionales en 390 y 1440 px: filtros 16 → 2 → 16, recorrido circular, enlace original, cierre por botón y Escape, retorno de foco y ausencia de desbordamiento. Axe WCAG A/AA sin infracciones detectadas en el visor. Regresión completa en 390, 768 y 1440 px correcta. Editar datos o seleccionar otro plan invalida el mensaje preparado para evitar enviarlo desactualizado. Se comprobó también la preparación del nuevo mensaje. No se enviaron mensajes a terceros.
+
+## Adaptación de referencia · 15 de septiembre de 2026
+
+Build de producción correcto. Pruebas a 390, 768 y 1440 px: filtros de sectores y restauración de todos los proyectos, alcance desplegable, selección del servicio transmitida al mensaje, WhatsApp contextual oculto en contacto y casos. Sin desbordamiento horizontal ni infracciones Axe WCAG A/AA detectadas. Revisión visual de servicios en móvil. No se enviaron mensajes. La fuente y decisiones están documentadas en ANALISIS-REFERENCIA.md.

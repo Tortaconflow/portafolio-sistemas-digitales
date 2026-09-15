@@ -510,6 +510,32 @@ export function App() {
     [project, setProject] = useState<Project | null>(null),
     [planIndex, setPlanIndex] = useState(0),
     [interest, setInterest] = useState("");
+  const [sector, setSector] = useState(c.ui.all);
+  const [quickContact, setQuickContact] = useState(false);
+  const projectSectors = [
+    c.ui.all,
+    ...new Set(c.projects.map((p) => p.sector)),
+  ];
+  const visibleProjects = c.projects.filter(
+    (p) => sector === c.ui.all || p.sector === sector,
+  );
+  useEffect(() => {
+    let heroVisible = true,
+      contactVisible = false;
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target.id === "inicio") heroVisible = entry.isIntersecting;
+        if (entry.target.id === "contacto")
+          contactVisible = entry.isIntersecting;
+      }
+      setQuickContact(!heroVisible && !contactVisible);
+    });
+    ["inicio", "contacto"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const plan = c.pricing.plans[planIndex];
   const pending = releaseIssues();
@@ -695,14 +721,39 @@ export function App() {
               title={c.cases.title}
               body={c.cases.body}
             />
-            <div className="project-grid">
-              {c.projects.map((p, i) => (
+            <div className="project-explorer">
+              <div
+                className="gallery-filters"
+                role="group"
+                aria-label={c.ui.filterProjects}
+              >
+                {projectSectors.map((name) => (
+                  <button
+                    type="button"
+                    key={name}
+                    aria-pressed={sector === name}
+                    onClick={() => setSector(name)}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+              <p role="status" className="mono">
+                {visibleProjects.length} {c.ui.projectCount}
+              </p>
+            </div>
+            <div
+              className={`project-grid ${sector !== c.ui.all ? "project-grid-filtered" : ""}`}
+            >
+              {visibleProjects.map((p) => (
                 <article className="project-card" key={p.id}>
                   <ProjectImage project={p} />
                   <div className="project-info">
                     <div className="project-meta">
                       <span className="eyebrow">{p.sector}</span>
-                      <span className="mono">0{i + 1}</span>
+                      <span className="mono">
+                        {String(c.projects.indexOf(p) + 1).padStart(2, "0")}
+                      </span>
                     </div>
                     <h3>{p.title}</h3>
                     <p>{p.tagline}</p>
@@ -739,6 +790,27 @@ export function App() {
                 <h3>{s.title}</h3>
                 <p>{s.text}</p>
                 <span className="eyebrow">{s.tags}</span>
+                <details className="service-scope">
+                  <summary>
+                    {c.ui.serviceDetails}
+                    <span aria-hidden="true">+</span>
+                  </summary>
+                  <p>{c.ui.serviceIncludes}</p>
+                  <ul>
+                    {s.deliverables.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </details>
+                <a
+                  className="service-cta"
+                  href="#contacto"
+                  onClick={() => setInterest(s.title)}
+                  aria-label={`${c.ui.serviceCta}: ${s.title}`}
+                >
+                  {c.ui.serviceCta}
+                  <Arrow />
+                </a>
               </article>
             ))}
           </div>
@@ -959,6 +1031,15 @@ export function App() {
           </a>
         </div>
       </footer>
+      {quickContact && !project && !menu && isWebUrl(c.links.whatsapp) && (
+        <aside className="quick-contact">
+          <span>{c.ui.quickNote}</span>
+          <a href={c.links.whatsapp} target="_blank" rel="noreferrer">
+            {c.ui.quickContact}
+            <Arrow />
+          </a>
+        </aside>
+      )}
       <CaseDialog project={project} onClose={() => setProject(null)} />
     </>
   );
