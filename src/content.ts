@@ -180,11 +180,7 @@ export const content = {
     siteCaption:
       "Capturas reales del sitio de Paraíso Laguna, consultado el 23 de septiembre de 2026.",
     flowLabel: "EL SISTEMA PARAÍSO LAGUNA",
-    flowEntry: [
-      "Google / Maps",
-      "Instagram / Facebook",
-      "TripAdvisor · por confirmar",
-    ],
+    flowEntry: ["Google / Maps", "Instagram / Facebook", "TripAdvisor"],
     flowCore: ["Sitio web", "WhatsApp", "Objetivo: reserva", "Seguimiento"],
     flowCaption:
       "Un ecosistema, no una colección de canales. El esquema describe la arquitectura; no atribuye tráfico ni reservas.",
@@ -213,8 +209,8 @@ export const content = {
       {
         name: "TripAdvisor",
         role: "Descubrimiento en plataformas turísticas",
-        status: "Identidad de ficha por confirmar",
-        url: "",
+        status: "Ficha confirmada por el propietario",
+        url: "https://www.tripadvisor.com/overview?locationId=34223557",
       },
     ],
     contentTitle: "Una marca, varios puntos de contacto.",
