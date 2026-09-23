@@ -311,7 +311,7 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
             <p>{feature.intro}</p>
           </div>
         </div>
-        <div className="featured-hero-image">
+        <div className="featured-hero-image surface-glass surface-glass--strong">
           <img
             src="/projects/paraiso-laguna/sitio-real-desktop.webp"
             alt="Captura real de la página de inicio de Paraíso Laguna en escritorio"
@@ -320,6 +320,18 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
             loading="lazy"
             decoding="async"
           />
+          <div
+            className="case-image-overlay"
+            aria-label="Ámbitos del caso de estudio"
+          >
+            <span className="mono">CASE / PARAÍSO LAGUNA</span>
+            <strong>Un sistema para explorar y contactar.</strong>
+            <div className="case-image-tags" aria-hidden="true">
+              <span>WEB</span>
+              <span>CONTENIDO</span>
+              <span>CANALES</span>
+            </div>
+          </div>
           <div className="featured-image-caption">
             <span>{feature.siteCaption}</span>
             <a href={c.projects[0].url} target="_blank" rel="noreferrer">
@@ -331,12 +343,14 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
           <p className="eyebrow">{feature.flowLabel}</p>
           <div className="system-entry">
             {feature.flowEntry.map((entry) => (
-              <span key={entry}>{entry}</span>
+              <span className="system-node" key={entry}>
+                {entry}
+              </span>
             ))}
           </div>
           <div className="system-core">
             {feature.flowCore.map((step, index) => (
-              <div key={step}>
+              <div className="system-node" key={step}>
                 <span className="mono">0{index + 1}</span>
                 <strong>{step}</strong>
               </div>
@@ -352,7 +366,10 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
           </div>
           <div className="case-channel-grid">
             {feature.channels.map((channel) => (
-              <div className="case-channel" key={channel.name}>
+              <div
+                className="case-channel surface-glass surface-glass--medium"
+                key={channel.name}
+              >
                 <div>
                   <strong>{channel.name}</strong>
                   <span className="mono">{channel.status}</span>
@@ -414,7 +431,7 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
               ))}
             </dl>
           </div>
-          <div className="case-mobile-frame">
+          <div className="case-mobile-frame surface-glass surface-glass--medium">
             <img
               src="/projects/paraiso-laguna/sitio-real-mobile.webp"
               alt="Captura real del sitio de Paraíso Laguna en un teléfono, con experiencias y acceso a WhatsApp"
@@ -436,7 +453,7 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
             aria-label="Esquema conceptual del flujo de atención"
           >
             {feature.automationSteps.map((step, index) => (
-              <div key={step}>
+              <div className="surface-glass surface-glass--subtle" key={step}>
                 <span className="mono">0{index + 1}</span>
                 <strong>{step}</strong>
               </div>
@@ -446,11 +463,11 @@ function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
         <div className="case-comparison">
           <h3>{feature.comparisonTitle}</h3>
           <div>
-            <article>
+            <article className="surface-glass surface-glass--medium">
               <p className="eyebrow">PUNTO DE PARTIDA</p>
               <p>{feature.comparisonBefore}</p>
             </article>
-            <article>
+            <article className="surface-glass surface-glass--medium">
               <p className="eyebrow">SISTEMA PRESENTADO</p>
               <p>{feature.comparisonAfter}</p>
             </article>
@@ -527,7 +544,7 @@ function Contact({ interest }: { interest: string }) {
           </div>
         </div>
         <form
-          className="contact-form"
+          className="contact-form surface-glass surface-glass--strong"
           onSubmit={submit}
           onChange={() => {
             setMessage("");
@@ -727,6 +744,8 @@ export function App() {
     [interest, setInterest] = useState("");
   const [sector, setSector] = useState(c.ui.all);
   const [quickContact, setQuickContact] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const secondaryProjects = c.projects.slice(1);
   const projectSectors = [
     c.ui.all,
@@ -752,6 +771,30 @@ export function App() {
     });
     return () => observer.disconnect();
   }, []);
+  useEffect(() => {
+    const updateScroll = () => {
+      setScrolled(window.scrollY > 24);
+      if (window.scrollY < 120) setActiveSection("");
+    };
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    return () => window.removeEventListener("scroll", updateScroll);
+  }, []);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-25% 0px -55% 0px" },
+    );
+    c.nav.forEach(({ id }) => {
+      const section = document.getElementById(id);
+      if (section) observer.observe(section);
+    });
+    return () => observer.disconnect();
+  }, []);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const plan = c.pricing.plans[planIndex];
   const pending = releaseIssues();
@@ -767,7 +810,9 @@ export function App() {
       <a className="skip-link" href="#main">
         {c.ui.skip}
       </a>
-      <header className="site-header">
+      <header
+        className={`site-header surface-glass surface-glass--subtle ${scrolled ? "is-scrolled" : ""}`}
+      >
         <div className="container nav-row">
           <a
             className="brand"
@@ -797,7 +842,15 @@ export function App() {
             aria-label="Principal"
           >
             {c.nav.map((n) => (
-              <a key={n.id} href={`#${n.id}`} onClick={() => setMenu(false)}>
+              <a
+                key={n.id}
+                href={`#${n.id}`}
+                aria-current={activeSection === n.id ? "location" : undefined}
+                onClick={() => {
+                  setActiveSection(n.id);
+                  setMenu(false);
+                }}
+              >
                 {n.label}
               </a>
             ))}
@@ -869,7 +922,10 @@ export function App() {
                   </div>
                 ))}
               </div>
-              <a className="stage-caption" href="#paraiso-laguna">
+              <a
+                className="stage-caption surface-glass surface-glass--medium"
+                href="#paraiso-laguna"
+              >
                 <span>
                   <small>{c.hero.featured}</small>
                   <strong>{c.projects[0].title}</strong>
@@ -881,7 +937,7 @@ export function App() {
               <span className="stage-note">{c.hero.visualNote}</span>
             </aside>
           </div>
-          <div className="hero-index">
+          <div className="hero-index surface-glass surface-glass--subtle">
             <div>
               <span className="eyebrow">{c.hero.indexLabel}</span>
               <p>{c.hero.indexNote}</p>
@@ -939,7 +995,10 @@ export function App() {
           </h2>
           <ol className="ecosystem-list">
             {c.ecosystem.items.map((item, index) => (
-              <li key={item.title}>
+              <li
+                className="surface-glass surface-glass--subtle"
+                key={item.title}
+              >
                 <span className="mono">0{index + 1}</span>
                 <h3>{item.title}</h3>
                 <p>{item.detail}</p>
@@ -980,7 +1039,10 @@ export function App() {
               className={`project-grid ${sector !== c.ui.all ? "project-grid-filtered" : ""}`}
             >
               {visibleProjects.map((p) => (
-                <article className="project-card" key={p.id}>
+                <article
+                  className="project-card surface-glass surface-glass--medium"
+                  key={p.id}
+                >
                   <ProjectImage project={p} />
                   <div className="project-info">
                     <div className="project-meta">
@@ -1023,7 +1085,10 @@ export function App() {
           />
           <div className="method-grid">
             {c.method.items.map((item, index) => (
-              <article key={item.title}>
+              <article
+                className="surface-glass surface-glass--medium"
+                key={item.title}
+              >
                 <span className="mono">0{index + 1}</span>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
@@ -1035,7 +1100,10 @@ export function App() {
           <Heading label={c.services.label} title={c.services.title} />
           <div className="service-grid">
             {c.services.items.map((s, i) => (
-              <article className="service-card" key={s.title}>
+              <article
+                className="service-card surface-glass surface-glass--medium"
+                key={s.title}
+              >
                 <div className="service-top">
                   <span aria-hidden="true">{s.icon}</span>
                   <span className="mono">0{i + 1}</span>
@@ -1134,7 +1202,7 @@ export function App() {
             ))}
           </div>
           <div
-            className="price-panel"
+            className="price-panel surface-glass surface-glass--medium"
             id="price-panel"
             role="tabpanel"
             aria-labelledby={`tab-${plan.id}`}
@@ -1186,7 +1254,7 @@ export function App() {
         </section>
         <section id="sobre-mi" className="section about-section">
           <div className="container about-grid">
-            <div className="about-art">
+            <div className="about-art surface-glass surface-glass--medium">
               <span className="eyebrow">{c.owner.location}</span>
               <div className="editorial-symbol" aria-hidden="true">
                 RC<span>✧</span>
