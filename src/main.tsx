@@ -4,6 +4,7 @@ import "./fonts.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
 import "./styles.css";
 import "./premium.css";
+import "./case-study.css";
 import { App } from "./App";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

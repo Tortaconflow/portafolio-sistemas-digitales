@@ -35,12 +35,13 @@ export const content = {
   seo: {
     title: "Sistemas digitales con IA en Oaxaca",
     description:
-      "Sitios web, automatización y sistemas de captación para negocios de Oaxaca y México. Conoce los proyectos y comienza con un diagnóstico de 15 minutos.",
+      "Estrategia, diseño, tecnología y automatización para conectar descubrimiento, confianza, contacto y seguimiento. Sistemas digitales para negocios de Oaxaca y México.",
     image: "/og-cover.png",
   },
   release: { approved: true },
   nav: [
-    { id: "casos", label: "Casos" },
+    { id: "paraiso-laguna", label: "Caso destacado" },
+    { id: "casos", label: "Más casos" },
     { id: "servicios", label: "Servicios" },
     { id: "proceso", label: "Proceso" },
     { id: "precios", label: "Precios" },
@@ -102,9 +103,10 @@ export const content = {
     signature: "REILY CASTRO / PORTAFOLIO",
     headline: "Diseño que",
     headlineAccent: "conecta.",
-    discipline: "Dirección visual. UX/UI. Sistemas digitales.",
+    discipline:
+      "Sistemas digitales que conectan presencia, captación y operación.",
     visualLabel: "Selección de trabajo real para Paraíso Laguna",
-    featured: "EN FOCO / DIRECCIÓN DE ARTE",
+    featured: "EN FOCO / ECOSISTEMA DIGITAL",
     visualNote: "Oaxaca, México · Diseño con intención",
 
     eyebrow: "SISTEMAS DIGITALES · OAXACA + REMOTO",
@@ -113,9 +115,9 @@ export const content = {
     find: "lo encuentren,",
     middle: " contacten y ",
     buy: "compren.",
-    body: "Transformo lo que hace único a tu negocio en una experiencia digital clara, memorable y fácil de usar. Desde su identidad visual hasta la web y el siguiente contacto.",
+    body: "Ayudo a negocios que necesitan que sus canales trabajen juntos: presencia local, contenido, sitio web, conversación y seguimiento. Entiendo primero cómo funciona el negocio; después diseño el recorrido y construyo las herramientas necesarias.",
     primary: "Cuéntame sobre tu negocio",
-    secondary: "Ver casos construidos",
+    secondary: "Explorar caso destacado",
     note: "Empezamos con una conversación de 15 minutos.",
     diagramLabel: "DE LA PRIMERA VISITA AL SIGUIENTE PASO",
     diagramTitle: "Todo conectado.",
@@ -124,7 +126,7 @@ export const content = {
       { n: "02", title: "Confían", text: "Web + casos reales" },
       { n: "03", title: "Te contactan", text: "Conversación + seguimiento" },
     ],
-    indexLabel: "EXPLORA LOS SISTEMAS",
+    indexLabel: "EXPLORA LOS PROYECTOS",
     indexNote: "Turismo / Inmobiliario / Comercio",
   },
   capabilities: [
@@ -137,20 +139,132 @@ export const content = {
   ],
   problem: {
     label: "01 / EL PUNTO DE PARTIDA",
-    title: "No siempre necesitas publicar más.",
-    emphasis: "Necesitas conectar mejor lo que ya haces.",
-    body: "Tienes redes, fotografías, WhatsApp y experiencia. Pero, si cada pieza trabaja por su cuenta, las oportunidades se pierden entre una visita y una conversación.",
-    end: "Conecto descubrimiento, confianza, contacto y seguimiento en un sistema que tiene sentido para tu negocio.",
+    title: "No solo construyo páginas.",
+    emphasis: "Diseño cómo funciona el sistema completo.",
+    body: "Una persona puede descubrirte en una búsqueda, ver tu contenido, visitar tu sitio y escribirte por WhatsApp. Cada paso debe responder a la misma propuesta y facilitar el siguiente.",
+    end: "Diseño las conexiones según lo que vendes, cómo atiendes y dónde se detiene hoy la conversación.",
     pieces: [
       "Que te encuentren",
       "Que entiendan tu valor",
       "Que den el siguiente paso",
     ],
   },
+  ecosystem: {
+    label: "UN SISTEMA, CUATRO FUNCIONES",
+    items: [
+      {
+        title: "Descubrimiento",
+        detail: "Google, Maps, redes y plataformas donde empieza la búsqueda.",
+      },
+      {
+        title: "Experiencia",
+        detail: "Sitio, contenido e identidad que explican el valor.",
+      },
+      {
+        title: "Conversión",
+        detail: "WhatsApp, formularios y una ruta hacia la reserva.",
+      },
+      {
+        title: "Operación",
+        detail: "Seguimiento, automatización e IA cuando hacen falta.",
+      },
+    ],
+  },
+  featuredCase: {
+    label: "02 / CASO DE ESTUDIO DESTACADO · TURISMO",
+    title: "Paraíso Laguna",
+    subtitle:
+      "Una experiencia digital conectada para explorar, preguntar y reservar.",
+    intro:
+      "El reto de diseño fue unir la forma en que una persona descubre una experiencia turística con la información que necesita para decidir y el canal donde puede preguntar.",
+    siteCaption:
+      "Capturas reales del sitio de Paraíso Laguna, consultado el 23 de septiembre de 2026.",
+    flowLabel: "EL SISTEMA PARAÍSO LAGUNA",
+    flowEntry: [
+      "Google / Maps",
+      "Instagram / Facebook",
+      "TripAdvisor · por confirmar",
+    ],
+    flowCore: ["Sitio web", "WhatsApp", "Objetivo: reserva", "Seguimiento"],
+    flowCaption:
+      "Un ecosistema, no una colección de canales. El esquema describe la arquitectura; no atribuye tráfico ni reservas.",
+    discoveryTitle: "Donde empieza el viaje del cliente.",
+    discoveryBody:
+      "El sistema contempla distintos puntos de entrada. Cada canal necesita información coherente y una ruta clara hacia la conversación; su estado y alcance se documentan por separado.",
+    channels: [
+      {
+        name: "Google / Maps",
+        role: "Búsqueda y ubicación local",
+        status: "Enlace al mapa identificado",
+        url: "https://maps.app.goo.gl/qfz93511MBGykmCL6",
+      },
+      {
+        name: "Instagram",
+        role: "Relato visual de experiencias",
+        status: "Perfil identificado",
+        url: "https://www.instagram.com/paraisolagunamx",
+      },
+      {
+        name: "Facebook",
+        role: "Comunidad y contenido adaptable",
+        status: "Perfil identificado",
+        url: "https://www.facebook.com/profile.php?id=61587637104410",
+      },
+      {
+        name: "TripAdvisor",
+        role: "Descubrimiento en plataformas turísticas",
+        status: "Identidad de ficha por confirmar",
+        url: "",
+      },
+    ],
+    contentTitle: "Una marca, varios puntos de contacto.",
+    contentBody:
+      "La dirección de arte y el sistema editorial reúnen fotografía, tipografía, color, composición y mensajes para contar las experiencias con consistencia en web y piezas destinadas a redes. Las piezas mostradas son activos del proyecto; su publicación en Instagram y Facebook se verifica por separado.",
+    webTitle: "Un sitio que convierte interés en una pregunta concreta.",
+    webBody:
+      "La web funciona como punto central: organiza experiencias, contenido e información para facilitar la exploración en móvil y ofrece acceso visible a WhatsApp. Las capturas muestran la versión pública revisada; no representan una simulación ni un resultado comercial.",
+    webEvidence: [
+      {
+        title: "Arquitectura",
+        detail: "Experiencias y preguntas organizadas para decidir.",
+      },
+      {
+        title: "SEO técnico",
+        detail:
+          "Metadatos, URL canónica y datos estructurados visibles en el sitio.",
+      },
+      {
+        title: "Rendimiento",
+        detail: "Imágenes WebP y versiones adaptables para distintos anchos.",
+      },
+      {
+        title: "Contacto",
+        detail: "Acceso directo a WhatsApp desde la experiencia.",
+      },
+    ],
+    automationTitle: "La conversación como parte del sistema.",
+    automationBody:
+      "El propietario reporta una implementación de automatización con IA para atender consultas. La web pública permite verificar el acceso a WhatsApp; la configuración del asistente, sus respuestas y sus resultados quedan pendientes de evidencia autorizada.",
+    automationSteps: [
+      "Sitio",
+      "WhatsApp",
+      "Asistente con IA",
+      "Clasificación de necesidad",
+      "Atención / seguimiento",
+    ],
+    comparisonTitle: "De piezas por conectar a un recorrido diseñado.",
+    comparisonBefore:
+      "Necesidad de diseño: coordinar canales, contenido, información del sitio y atención en una ruta comprensible.",
+    comparisonAfter:
+      "Sistema mostrado: identidad editorial, sitio público, entradas desde canales identificados y contacto por WhatsApp.",
+    evidenceNote:
+      "No se atribuyen reservas, mejoras de conversión ni posiciones en buscadores sin datos verificables.",
+    galleryCta: "Ver la dirección de arte completa",
+  },
   cases: {
-    label: "02 / PROYECTOS SELECCIONADOS",
-    title: "Del problema al sistema.",
-    body: "Proyectos reales en turismo, comercio, desarrollo inmobiliario e inteligencia artificial.",
+    label: "03 / CASOS EN DESARROLLO EDITORIAL",
+    title: "Otros sistemas, otros contextos.",
+    body: "Proyectos construidos en comercio, desarrollo inmobiliario e inteligencia artificial. Sus fichas se amplían conforme se documenta nueva evidencia.",
     footnote:
       "Alcances descritos por el propietario. Sin métricas comerciales ni testimonios atribuidos.",
   },
@@ -159,12 +273,12 @@ export const content = {
       id: "paraiso-laguna",
       title: "Paraíso Laguna",
       sector: "Turismo",
-      tagline: "Un ecosistema visual para contar un destino.",
+      tagline: "Identidad, web, contenido y conversación conectados.",
       status: "Trabajo construido · 16 piezas seleccionadas",
       problem:
-        "Organizar el material de un proyecto ecoturístico de la costa de Oaxaca y conectar su comunicación con la captación.",
+        "Articular la presencia y el contenido de un proyecto ecoturístico de la costa de Oaxaca con su sitio y su canal de contacto.",
       solution:
-        "PARAÍSO VISUAL DIRECTOR: organización editorial de 541 activos visuales, generación de carruseles y un sistema de comunicación turística.",
+        "Dirección visual y editorial, sitio público de experiencias y un recorrido hacia WhatsApp. El propietario reporta automatización con IA; su funcionamiento interno queda por documentar.",
       components: [
         "Organización y clasificación editorial de 541 activos visuales",
         "Generador de carruseles y exportación",
@@ -337,8 +451,31 @@ export const content = {
       evidenceApproved: true,
     },
   ] as Project[],
+  method: {
+    label: "04 / LO QUE REALMENTE HAGO",
+    title: "Cuatro disciplinas. Una decisión de negocio.",
+    body: "La combinación cambia según lo que el proyecto necesita; la herramienta se elige después de entender el objetivo.",
+    items: [
+      {
+        title: "Estrategia",
+        text: "Entender la oferta, el cliente, los puntos de entrada y dónde se pierde el siguiente paso.",
+      },
+      {
+        title: "Diseño",
+        text: "Dar claridad a la identidad, el contenido y la experiencia que una persona recorre.",
+      },
+      {
+        title: "Tecnología",
+        text: "Construir una web y conexiones que sean rápidas, utilizables y fáciles de mantener.",
+      },
+      {
+        title: "Automatización",
+        text: "Ordenar consultas y tareas repetidas con reglas claras e IA cuando aporte valor.",
+      },
+    ],
+  },
   services: {
-    label: "03 / EN QUÉ PUEDO AYUDARTE",
+    label: "05 / EN QUÉ PUEDO AYUDARTE",
     title: "Tecnología con una tarea clara.",
     items: [
       {
@@ -388,30 +525,30 @@ export const content = {
     ],
   },
   process: {
-    label: "04 / CÓMO TRABAJAMOS",
+    label: "06 / CÓMO TRABAJAMOS",
     title: "Primero el negocio.\nDespués la tecnología.",
-    body: "Sin tecnicismos innecesarios. Primero entendemos el negocio; después elegimos la tecnología.",
+    body: "Partimos del objetivo y del recorrido real de tus clientes. Priorizamos las piezas necesarias, las construimos y comprobamos cómo se conectan antes de entregarlas.",
     items: [
       {
         title: "Entender",
-        text: "Una conversación breve sobre tu negocio, lo que funciona y el problema que quieres resolver.",
+        text: "Escuchamos qué vendes, a quién atiendes, por dónde llegan hoy las personas y qué necesitas mejorar.",
       },
       {
         title: "Detectar",
-        text: "Un diagnóstico de oportunidades para decidir qué vale la pena construir primero.",
+        text: "Identificamos las fricciones del recorrido y definimos una prioridad con alcance verificable.",
       },
       {
         title: "Construir",
-        text: "Desarrollo del activo o sistema acordado, con alcance y entregables claros.",
+        text: "Diseñamos y desarrollamos las piezas acordadas, desde contenido y web hasta integraciones.",
       },
       {
         title: "Activar",
-        text: "Publicación, conexión de las piezas y acompañamiento inicial para empezar a usarlo.",
+        text: "Probamos enlaces, contacto y experiencia móvil; publicamos y dejamos claro cómo operar el sistema.",
       },
     ],
   },
   pricing: {
-    label: "05 / UN PUNTO DE PARTIDA",
+    label: "07 / UN PUNTO DE PARTIDA",
     title: "Empieza por lo que necesitas.",
     body: "Alcance claro desde el inicio. El presupuesto final depende de lo que acordemos construir.",
     tabsLabel: "Opciones de inversión",
@@ -476,7 +613,7 @@ export const content = {
     ],
   },
   about: {
-    label: "06 / DETRÁS DEL SISTEMA",
+    label: "08 / DETRÁS DEL SISTEMA",
     title: "No construyo páginas aisladas.",
     emphasis: "Diseño cómo las piezas trabajan juntas.",
     body: "Soy [NOMBRE], desarrollador web y creador de sistemas digitales en Oaxaca. Mi trabajo combina tecnología, diseño y análisis de negocio para transformar ideas dispersas en herramientas funcionales. Me interesa entender cómo opera cada proyecto antes de decidir qué construir.",
@@ -489,7 +626,7 @@ export const content = {
     ],
   },
   faq: {
-    label: "07 / SIN LETRA CHIQUITA",
+    label: "09 / SIN LETRA CHIQUITA",
     title: "Antes de comenzar.",
     items: [
       [
@@ -535,9 +672,9 @@ export const content = {
     ],
   },
   contact: {
-    label: "08 / CONVERSEMOS",
-    title: "El primer paso es\nentender tu negocio.",
-    body: "Cuéntame qué haces, qué quieres mejorar y dónde sientes que estás perdiendo oportunidades.",
+    label: "10 / CONVERSEMOS",
+    title: "Cuéntame qué quieres conseguir.",
+    body: "Antes de hablar de tecnología, entendemos el problema. Dime qué vendes, cómo te encuentran hoy y qué debería funcionar mejor.",
     direct: "También podemos empezar por aquí",
     email: "Escribirme por correo",
     messenger: "Conversar en Messenger",
@@ -564,7 +701,12 @@ export const content = {
       business: "Nombre del negocio",
       sector: "Sector",
       city: "Ciudad",
-      problem: "Principal problema",
+      offer: "¿Qué vendes o qué servicio ofreces?",
+      goal: "¿Qué te gustaría conseguir?",
+      currentChannels: "¿Por dónde llegan hoy tus clientes?",
+      website: "Sitio web actual (opcional)",
+      social: "Red social principal (opcional)",
+      problem: "¿Qué está frenando ese objetivo?",
       channel: "Canal de contacto",
       budget: "Presupuesto aproximado",
     },
@@ -590,7 +732,12 @@ export const content = {
       name: "¿Cómo te llamas?",
       business: "Nombre de tu proyecto",
       city: "¿Dónde está tu negocio?",
-      problem: "¿Qué te gustaría que funcionara mejor?",
+      offer: "Describe tu oferta en una frase",
+      goal: "Ejemplo: recibir consultas más claras",
+      currentChannels: "Ejemplo: Google Maps, Instagram, recomendaciones",
+      website: "https://tusitio.com",
+      social: "Enlace al perfil",
+      problem: "Cuéntame qué pasa ahora y dónde se detiene el proceso",
     },
   },
   footer: {

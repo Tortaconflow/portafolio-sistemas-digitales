@@ -291,6 +291,176 @@ function CaseDialog({
     </dialog>
   );
 }
+function FeaturedCase({ onOpenGallery }: { onOpenGallery: () => void }) {
+  const feature = c.featuredCase;
+  return (
+    <section
+      id="paraiso-laguna"
+      className="featured-case section"
+      aria-labelledby="featured-title"
+    >
+      <div className="container">
+        <div className="featured-intro">
+          <div>
+            <p className="eyebrow">{feature.label}</p>
+            <h2 id="featured-title">{feature.title}</h2>
+            <p className="featured-subtitle">{feature.subtitle}</p>
+          </div>
+          <div>
+            <p className="eyebrow">01 / EL PROBLEMA</p>
+            <p>{feature.intro}</p>
+          </div>
+        </div>
+        <div className="featured-hero-image">
+          <img
+            src="/projects/paraiso-laguna/sitio-real-desktop.webp"
+            alt="Captura real de la página de inicio de Paraíso Laguna en escritorio"
+            width="1600"
+            height="1000"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="featured-image-caption">
+            <span>{feature.siteCaption}</span>
+            <a href={c.projects[0].url} target="_blank" rel="noreferrer">
+              Visitar sitio público <Arrow />
+            </a>
+          </div>
+        </div>
+        <div className="ecosystem-flow" aria-label={feature.flowLabel}>
+          <p className="eyebrow">{feature.flowLabel}</p>
+          <div className="system-entry">
+            {feature.flowEntry.map((entry) => (
+              <span key={entry}>{entry}</span>
+            ))}
+          </div>
+          <div className="system-core">
+            {feature.flowCore.map((step, index) => (
+              <div key={step}>
+                <span className="mono">0{index + 1}</span>
+                <strong>{step}</strong>
+              </div>
+            ))}
+          </div>
+          <p className="system-caption">{feature.flowCaption}</p>
+        </div>
+        <div className="case-chapter">
+          <div className="case-chapter-copy">
+            <p className="eyebrow">01 / PRESENCIA Y DESCUBRIMIENTO</p>
+            <h3>{feature.discoveryTitle}</h3>
+            <p>{feature.discoveryBody}</p>
+          </div>
+          <div className="case-channel-grid">
+            {feature.channels.map((channel) => (
+              <div className="case-channel" key={channel.name}>
+                <div>
+                  <strong>{channel.name}</strong>
+                  <span className="mono">{channel.status}</span>
+                </div>
+                <p>{channel.role}</p>
+                {channel.url ? (
+                  <a href={channel.url} target="_blank" rel="noreferrer">
+                    Ver canal <Arrow />
+                  </a>
+                ) : (
+                  <span className="channel-pending">
+                    Enlace pendiente de confirmar
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="case-chapter case-chapter-editorial">
+          <div className="case-chapter-copy">
+            <p className="eyebrow">02 / CONTENIDO E IDENTIDAD</p>
+            <h3>{feature.contentTitle}</h3>
+            <p>{feature.contentBody}</p>
+            <button
+              type="button"
+              className="inline-link case-gallery-link"
+              onClick={onOpenGallery}
+            >
+              {feature.galleryCta} <Arrow />
+            </button>
+          </div>
+          <div className="case-art-pair">
+            {[c.projects[0].gallery![0], c.projects[0].gallery![13]].map(
+              (item) => (
+                <img
+                  key={item.src}
+                  src={item.preview || item.src}
+                  alt={item.alt}
+                  width="450"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ),
+            )}
+          </div>
+        </div>
+        <div className="case-chapter case-chapter-web">
+          <div className="case-chapter-copy">
+            <p className="eyebrow">03 / SITIO Y CONTACTO</p>
+            <h3>{feature.webTitle}</h3>
+            <p>{feature.webBody}</p>
+            <dl className="web-evidence">
+              {feature.webEvidence.map((item) => (
+                <div key={item.title}>
+                  <dt>{item.title}</dt>
+                  <dd>{item.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div className="case-mobile-frame">
+            <img
+              src="/projects/paraiso-laguna/sitio-real-mobile.webp"
+              alt="Captura real del sitio de Paraíso Laguna en un teléfono, con experiencias y acceso a WhatsApp"
+              width="390"
+              height="844"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+        <div className="case-chapter case-chapter-automation">
+          <div className="case-chapter-copy">
+            <p className="eyebrow">04 / CONVERSACIÓN Y AUTOMATIZACIÓN</p>
+            <h3>{feature.automationTitle}</h3>
+            <p>{feature.automationBody}</p>
+          </div>
+          <div
+            className="automation-diagram"
+            aria-label="Esquema conceptual del flujo de atención"
+          >
+            {feature.automationSteps.map((step, index) => (
+              <div key={step}>
+                <span className="mono">0{index + 1}</span>
+                <strong>{step}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="case-comparison">
+          <h3>{feature.comparisonTitle}</h3>
+          <div>
+            <article>
+              <p className="eyebrow">PUNTO DE PARTIDA</p>
+              <p>{feature.comparisonBefore}</p>
+            </article>
+            <article>
+              <p className="eyebrow">SISTEMA PRESENTADO</p>
+              <p>{feature.comparisonAfter}</p>
+            </article>
+          </div>
+          <p className="case-evidence-note">{feature.evidenceNote}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
 function Contact({ interest }: { interest: string }) {
   const [message, setMessage] = useState("");
   const [channel, setChannel] = useState("WhatsApp");
@@ -407,6 +577,51 @@ function Contact({ interest }: { interest: string }) {
               />
             </label>
             <label className="full">
+              {c.contact.fields.offer}
+              <input
+                name="offer"
+                required
+                maxLength={250}
+                placeholder={c.contact.placeholders.offer}
+              />
+            </label>
+            <label className="full">
+              {c.contact.fields.goal}
+              <input
+                name="goal"
+                required
+                maxLength={250}
+                placeholder={c.contact.placeholders.goal}
+              />
+            </label>
+            <label className="full">
+              {c.contact.fields.currentChannels}
+              <input
+                name="currentChannels"
+                required
+                maxLength={250}
+                placeholder={c.contact.placeholders.currentChannels}
+              />
+            </label>
+            <label>
+              {c.contact.fields.website}
+              <input
+                name="website"
+                type="url"
+                maxLength={300}
+                placeholder={c.contact.placeholders.website}
+              />
+            </label>
+            <label>
+              {c.contact.fields.social}
+              <input
+                name="social"
+                type="url"
+                maxLength={300}
+                placeholder={c.contact.placeholders.social}
+              />
+            </label>
+            <label className="full">
               {c.contact.fields.problem}
               <textarea
                 name="problem"
@@ -512,11 +727,12 @@ export function App() {
     [interest, setInterest] = useState("");
   const [sector, setSector] = useState(c.ui.all);
   const [quickContact, setQuickContact] = useState(false);
+  const secondaryProjects = c.projects.slice(1);
   const projectSectors = [
     c.ui.all,
-    ...new Set(c.projects.map((p) => p.sector)),
+    ...new Set(secondaryProjects.map((p) => p.sector)),
   ];
-  const visibleProjects = c.projects.filter(
+  const visibleProjects = secondaryProjects.filter(
     (p) => sector === c.ui.all || p.sector === sector,
   );
   useEffect(() => {
@@ -614,15 +830,14 @@ export function App() {
             <div className="hero-copy">
               <p className="hero-signature">{c.hero.signature}</p>
               <h1>
-                {c.hero.headline}
-                <br />
+                {c.hero.headline} <br />
                 <strong>{c.hero.headlineAccent}</strong>
               </h1>
               <p className="hero-discipline">{c.hero.discipline}</p>
               <p className="hero-description">{c.hero.body}</p>
               <div className="hero-actions">
                 <ButtonLink>{c.hero.primary}</ButtonLink>
-                <a className="inline-link" href="#casos">
+                <a className="inline-link" href="#paraiso-laguna">
                   {c.hero.secondary}
                   <span aria-hidden="true">↓</span>
                 </a>
@@ -654,7 +869,7 @@ export function App() {
                   </div>
                 ))}
               </div>
-              <a className="stage-caption" href="#casos">
+              <a className="stage-caption" href="#paraiso-laguna">
                 <span>
                   <small>{c.hero.featured}</small>
                   <strong>{c.projects[0].title}</strong>
@@ -714,6 +929,25 @@ export function App() {
             </div>
           </div>
         </section>
+        <section
+          className="ecosystem-section container"
+          aria-labelledby="ecosystem-title"
+        >
+          <p className="eyebrow">{c.ecosystem.label}</p>
+          <h2 id="ecosystem-title">
+            Del primer encuentro a la siguiente conversación.
+          </h2>
+          <ol className="ecosystem-list">
+            {c.ecosystem.items.map((item, index) => (
+              <li key={item.title}>
+                <span className="mono">0{index + 1}</span>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <FeaturedCase onOpenGallery={() => setProject(c.projects[0])} />
         <section id="casos" className="section cases-section">
           <div className="container">
             <Heading
@@ -776,6 +1010,25 @@ export function App() {
               ))}
             </div>
             <p className="small muted case-footnote">{c.cases.footnote}</p>
+          </div>
+        </section>
+        <section
+          className="section container method-section"
+          aria-label={c.method.title}
+        >
+          <Heading
+            label={c.method.label}
+            title={c.method.title}
+            body={c.method.body}
+          />
+          <div className="method-grid">
+            {c.method.items.map((item, index) => (
+              <article key={item.title}>
+                <span className="mono">0{index + 1}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
           </div>
         </section>
         <section id="servicios" className="section container">
