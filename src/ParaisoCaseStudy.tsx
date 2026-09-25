@@ -20,20 +20,9 @@ const evidence: {
   { name: "IA", state: "PENDIENTE", level: "C", detail: "Falta demostración autorizable del asistente y su funcionamiento." },
 ];
 
-const channels = [
-  { name: "Google", state: "Canal de búsqueda", note: "Datos de búsqueda observados en Search Console; gestión del buscador no aplica." },
-  { name: "Google Maps", state: "Canal identificado", note: "Enlace de ubicación; edición de la ficha pendiente de evidencia." },
-  { name: "Instagram", state: "Perfil identificado", note: "Piezas creadas; publicaciones no verificadas en este paquete." },
-  { name: "Facebook", state: "Perfil identificado", note: "Adaptación de contenido prevista; publicaciones no verificadas." },
-  { name: "TripAdvisor", state: "Ficha identificada", note: "Administración del perfil pendiente de evidencia." },
-  { name: "Website", state: "Implementación documentada", note: "Arquitectura, tours, blog y contacto en la copia local." },
-  { name: "WhatsApp", state: "Integración en código", note: "CTAs y formulario; atención y resultados no medidos aquí." },
-  { name: "Reserva", state: "Objetivo del recorrido", note: "No hay cifras verificadas de reservas." },
-  { name: "Seguimiento", state: "Etapa propuesta", note: "Operación pendiente de demostración." },
-];
-
 const built = ["WEB", "SEO", "CONTENIDO", "IDENTIDAD", "RUTA DE CONTACTO", "DATOS HISTÓRICOS / INSTRUMENTACIÓN", "TESTS ESCRITOS"];
 const carouselSequence = ["Portada", "Experiencia", "Cuidado", "Recorrido", "Incluye", "Reserva"];
+const featuredDesigns = [0, 4, 9, 13].map((index) => c.projects[0].gallery![index]);
 
 function Label({ n, children }: { n: string; children: string }) {
   return <p className="eyebrow case-section-label">{n} / {children}</p>;
@@ -74,6 +63,20 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <figcaption className="featured-image-caption"><span>Referencia visual del sitio público · correspondencia exacta con la copia local pendiente.</span><a href={c.projects[0].url} target="_blank" rel="noreferrer">Visitar sitio público ↗</a></figcaption>
         </figure>
 
+        <section className="case-design-showcase" aria-labelledby="design-showcase-title">
+          <div className="case-design-heading">
+            <div>
+              <p className="eyebrow">TRABAJO VISUAL</p>
+              <h2 id="design-showcase-title">Diseños creados para Paraíso Laguna.</h2>
+              <p>Selección de dirección de arte. Estas piezas existen como trabajo visual; su publicación en redes no está verificada.</p>
+            </div>
+            <button type="button" className="inline-link case-gallery-link" onClick={onOpenGallery}>Explorar las {c.projects[0].gallery!.length} piezas ↗</button>
+          </div>
+          <div className="case-design-grid">
+            {featuredDesigns.map((item) => <figure key={item.src} className="surface-glass surface-glass--subtle"><img src={item.preview || item.src} alt={item.alt} width="900" height="1125" loading="lazy" decoding="async" /><figcaption>{item.category} · pieza creada</figcaption></figure>)}
+          </div>
+        </section>
+
         <nav className="case-chapter-nav" aria-label="Capítulos del caso">
           {chapters.map((item, index) => <button key={item.id} type="button" aria-pressed={chapter === item.id} onClick={() => setChapter(item.id)}><span className="mono">0{index + 1}</span>{item.label}</button>)}
         </nav>
@@ -90,20 +93,12 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <p className="case-proof">[B] Matriz y arquitectura local. Seguimiento: operación pendiente de prueba.</p>
         </section>
 
-        <section className="evidence-block" aria-labelledby="ecosystem-title">
-          <Label n="03">EL ECOSISTEMA</Label>
-          <h3 id="ecosystem-title">Cada canal tiene un papel y un estado de prueba distinto.</h3>
-          <div className="evidence-channel-grid">
-            {channels.map((channel) => <details key={channel.name} className="surface-glass surface-glass--subtle"><summary><strong>{channel.name}</strong><span className="mono">{channel.state}</span></summary><p>{channel.note}</p></details>)}
-          </div>
-          <p className="case-proof">Canal identificado ≠ gestión comprobada. Google Business y TripAdvisor: pendientes.</p>
-        </section>
         </>}
 
         {chapter === "web" && <>
         <section className="evidence-block evidence-split" aria-labelledby="web-title">
           <div>
-            <Label n="04">WEB</Label>
+            <Label n="03">WEB</Label>
             <h3 id="web-title">Experiencias, respuestas y contacto en una estructura móvil.</h3>
             <p>La copia local reúne portada, páginas de tours, blog, formulario, CTAs a WhatsApp, metadatos y datos estructurados. Las capturas muestran el sitio público; falta confirmar que coincide exactamente con esa copia de código.</p>
             <div className="case-tag-list" aria-label="Áreas técnicas"><span>WEB</span><span>UX</span><span>SEO</span><span>RESPONSIVE</span><span>RUTA DE CONTACTO</span></div>
@@ -114,7 +109,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
         </section>
 
         <section className="evidence-block" aria-labelledby="seo-title">
-          <Label n="05">SEO Y DATOS HISTÓRICOS</Label>
+          <Label n="04">SEO Y DATOS HISTÓRICOS</Label>
           <h3 id="seo-title">Lo implementado y lo observado se muestran por separado.</h3>
           <div className="evidence-two-up">
             <article className="surface-glass surface-glass--medium"><span className="mono">IMPLEMENTACIÓN · [B]</span><h4>SEO técnico en la copia local</h4><ul><li><code>robots.txt</code> y <code>sitemap.xml</code></li><li>Metadatos y URL canónica</li><li>Datos estructurados JSON-LD</li><li>Páginas de tours y blog</li></ul><p>La presencia del código no acredita indexación ni una mejora de posiciones.</p></article>
@@ -125,7 +120,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
 
         {chapter === "contenido" && <>
         <section className="evidence-block" aria-labelledby="content-title">
-          <Label n="06">CONTENIDO</Label>
+          <Label n="05">CONTENIDO</Label>
           <h3 id="content-title">De una experiencia a piezas con función propia.</h3>
           <ol className="evidence-process"><li>Ficha maestra</li><li>Matriz multicanal</li><li>Carrusel creado</li><li>Adaptación Feed</li><li>Adaptación Story</li></ol>
           <div className="evidence-carousel-record" role="group" aria-label="Secuencia documentada del carrusel de tortugas">
@@ -133,11 +128,10 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
             <ol>{carouselSequence.map((step) => <li key={step}><span className="mono">{String(carouselSequence.indexOf(step) + 1).padStart(2, "0")}</span><strong>{step}</strong></li>)}</ol>
             <p>La secuencia y las decisiones editoriales están documentadas. La pieza visual completa se retiró de esta versión pública hasta confirmar permisos, personas y datos comerciales.</p>
           </div>
-          <button type="button" className="inline-link case-gallery-link" onClick={onOpenGallery}>Ver galería de dirección de arte ↗</button>
         </section>
 
         <section className="evidence-block" aria-labelledby="art-title">
-          <Label n="07">DIRECCIÓN DE ARTE</Label>
+          <Label n="06">DIRECCIÓN DE ARTE</Label>
           <h3 id="art-title">Una dirección visual, tres contextos.</h3>
           <p className="evidence-lead">El archivo de trabajo conserva un master y adaptaciones para Feed y Story. La comparación siguiente describe formatos documentados, sin mostrar piezas pendientes de autorización.</p>
           <div className="evidence-art-grid">
@@ -151,34 +145,34 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
         </section>
 
         <section className="evidence-block evidence-split" aria-labelledby="whatsapp-title">
-          <div><Label n="08">WHATSAPP</Label><h3 id="whatsapp-title">Del CTA a la conversación.</h3><p>El código local incluye enlaces y un formulario que prepara el contacto por WhatsApp. También contiene eventos <code>whatsapp_click</code> y <code>generate_lead</code>; falta verificar su recepción en producción.</p><p className="case-proof">[B] Código y documento de entrega. Reservas, atención real y resultados no documentados.</p></div>
+          <div><Label n="07">WHATSAPP</Label><h3 id="whatsapp-title">Del CTA a la conversación.</h3><p>El código local incluye enlaces y un formulario que prepara el contacto por WhatsApp. También contiene eventos <code>whatsapp_click</code> y <code>generate_lead</code>; falta verificar su recepción en producción.</p><p className="case-proof">[B] Código y documento de entrega. Reservas, atención real y resultados no documentados.</p></div>
           <div className="evidence-action-diagram" aria-label="Flujo de contacto"><span className="surface-glass surface-glass--medium">CTA del sitio</span><span aria-hidden="true">↓</span><span className="surface-glass surface-glass--medium">WhatsApp</span><small>Automatización inteligente · en evolución, demostración pendiente</small></div>
         </section>
         </>}
 
         {chapter === "evidencia" && <>
         <section className="evidence-block" aria-labelledby="qa-title">
-          <Label n="09">QA</Label>
+          <Label n="08">QA</Label>
           <h3 id="qa-title">La verificación también forma parte del trabajo.</h3>
           <div className="evidence-two-up"><article className="surface-glass surface-glass--medium"><span className="mono">TEST ESCRITO · [B]</span><h4>Suite Playwright</h4><p>Cubre 375 px y 1280 px, hero, tours, FAQ, galería, formulario, consola y diferencias del CTA en móvil/escritorio.</p></article><article className="surface-glass surface-glass--medium"><span className="mono">TEST EJECUTADO</span><h4>Pendiente de resultado fechado</h4><p>El Evidence Pack conserva el archivo de pruebas, pero no una salida que confirme su ejecución exitosa sobre esta versión del sitio.</p></article></div>
           <p className="case-proof">El CSS también incluye reglas responsive y <code>prefers-reduced-motion</code>; la experiencia pública requiere una revisión visual fechada.</p>
         </section>
 
         <section className="evidence-block" aria-labelledby="built-title">
-          <Label n="10">LO QUE QUEDÓ CONSTRUIDO</Label>
+          <Label n="09">LO QUE QUEDÓ CONSTRUIDO</Label>
           <h3 id="built-title">Componentes documentados del sistema.</h3>
           <div className="evidence-built-grid">{built.map((item) => <span key={item} className="surface-glass surface-glass--subtle">{item}</span>)}</div>
           <p className="case-proof">Cada componente tiene un alcance distinto de verificación; el panel siguiente lo detalla.</p>
         </section>
 
         <section className="evidence-block" aria-labelledby="evidence-title">
-          <Label n="11">EVIDENCE</Label>
+          <Label n="10">EVIDENCE</Label>
           <h3 id="evidence-title">Abrir la prueba detrás de cada área.</h3>
           <p className="evidence-lead">DOCUMENTADO = artefacto de trabajo; PARCIAL = parte del flujo sin resultado operativo; PENDIENTE = indicio sin demostración. A = dato directo, B = trabajo documentado, C = indicio.</p>
           <div className="evidence-panel">{evidence.map((item) => <details key={item.name} className="surface-glass surface-glass--subtle"><summary><span>{item.name}</span><span className="evidence-state">{item.state} · [{item.level}]</span></summary><p>{item.detail}</p></details>)}</div>
         </section>
 
-        <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="12">QUÉ NO AFIRMAMOS</Label><h3 id="limits-title">El alcance de la evidencia importa.</h3><p>Este caso no presenta métricas comerciales no verificadas, no atribuye crecimiento sin prueba causal, no llama publicadas a piezas creadas y no afirma gestión de Google Business o TripAdvisor sin respaldo administrativo.</p></aside>
+        <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="11">QUÉ NO AFIRMAMOS</Label><h3 id="limits-title">El alcance de la evidencia importa.</h3><p>Este caso no presenta métricas comerciales no verificadas, no atribuye crecimiento sin prueba causal, no llama publicadas a piezas creadas y no afirma gestión de Google Business o TripAdvisor sin respaldo administrativo.</p></aside>
         </>}
       </div>
     </section>

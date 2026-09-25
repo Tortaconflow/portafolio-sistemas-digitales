@@ -24,14 +24,15 @@
 .evidence-flow .mono { color: #9db9dc; margin-bottom: 30px; }
 .evidence-flow strong { font-size: clamp(16px,2vw,21px); margin-bottom: 9px; }
 .evidence-flow small { color: var(--muted); font-size: 12px; }
-.evidence-channel-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 32px; }
-.evidence-channel-grid details { padding: 0; min-width: 0; }
-.evidence-channel-grid summary { padding: 20px; cursor: pointer; list-style: none; }
-.evidence-channel-grid summary::-webkit-details-marker { display: none; }
-.evidence-channel-grid details[open] { border-color: var(--glass-border-hover); }
-.evidence-channel-grid strong { display: block; font-size: 17px; }
-.evidence-channel-grid .mono { display: block; margin-top: 6px; color: #a9c4e3; font-size: 11px; }
-.evidence-channel-grid p { color: var(--muted); font-size: 13px; margin: 0; padding: 0 20px 20px; }
+.case-design-showcase { padding-block: clamp(44px, 6vw, 76px); border-bottom: 1px solid var(--line); }
+.case-design-heading { display: flex; align-items: end; justify-content: space-between; gap: 26px; margin-bottom: 22px; }
+.case-design-heading h2 { max-width: 14ch; margin: 10px 0 14px; font-size: clamp(30px, 3.6vw, 50px); }
+.case-design-heading p:last-child { max-width: 62ch; color: var(--muted); margin-bottom: 0; }
+.case-design-heading .case-gallery-link { flex: none; min-height: 44px; }
+.case-design-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.case-design-grid figure { min-width: 0; margin: 0; padding: 8px; border-radius: 14px; }
+.case-design-grid img { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 9px; }
+.case-design-grid figcaption { padding: 10px 4px 3px; color: #c9ddf7; font: 11px 'IBM Plex Mono', monospace; }
 .evidence-split { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); gap: clamp(35px,6vw,90px); align-items: center; }
 .evidence-split > div > p:not(.eyebrow) { color: var(--muted); }
 .case-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
@@ -81,7 +82,8 @@
 .evidence-case :is(summary,button,a):focus-visible { outline: 2px solid #b1d7ff; outline-offset: 3px; }
 @media (max-width: 1024px) {
   .case-at-a-glance { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .evidence-channel-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .case-design-heading { align-items: start; flex-direction: column; }
+  .case-design-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .evidence-panel { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .evidence-built-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
@@ -96,7 +98,7 @@
 }
 @media (max-width: 520px) {
   .evidence-case .featured-intro :is(h1, h2) { font-size: clamp(42px,12vw,62px); overflow-wrap: anywhere; }
-  .evidence-flow, .evidence-channel-grid, .evidence-panel { grid-template-columns: 1fr; }
+  .evidence-flow, .evidence-panel { grid-template-columns: 1fr; }
   .evidence-process { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .case-at-a-glance { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }
   .case-at-a-glance > div { padding: 12px 8px; }
