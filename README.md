@@ -58,6 +58,8 @@ Este control comprueba los campos que implementa `scripts/check-release.ts`; act
 
 ## Publicación en Hostinger
 
+El propietario confirmó autodeploy. Después del push de `646ef1e` a `origin/main`, la URL temporal de Hostinger sirvió los mismos hashes CSS/JS que el build de ese commit. Esta comprobación confirma la publicación de esa versión; la configuración exacta de la integración aún debe revisarse en el panel. El workflow de GitHub Actions solo compila y crea un artefacto.
+
 El dominio se conecta en Hostinger y su DNS; la existencia de una rama de GitHub por sí sola no asigna un dominio. Hay dos rutas posibles según el plan y el tipo de sitio configurado:
 
 ### Integración que compila Vite desde GitHub

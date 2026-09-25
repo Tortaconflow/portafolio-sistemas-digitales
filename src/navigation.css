@@ -23,6 +23,10 @@ main :is(section, nav)[id] { scroll-margin-top: 100px; }
 .view-return a:hover { color: #fff; }
 .featured-project-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: clamp(24px, 4vw, 56px); align-items: center; overflow: hidden; margin: 34px 0 54px; padding: clamp(18px, 3vw, 32px); border-radius: 22px; }
 .featured-project-card img { display: block; width: 100%; height: clamp(220px, 28vw, 380px); object-fit: cover; border-radius: 14px; }
+.featured-project-visuals { min-width: 0; }
+.featured-project-designs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.featured-project-designs img { height: auto; aspect-ratio: 4 / 5; object-fit: contain; }
+.featured-project-visual-note { margin: 8px 0 0; font-size: 11px; }
 .featured-project-card h3 { font-size: clamp(30px, 4vw, 54px); line-height: 1.05; margin: 12px 0 18px; }
 .featured-project-card p:not(.eyebrow) { max-width: 55ch; color: var(--muted); line-height: 1.65; }
 .featured-project-card .button { margin-top: 16px; width: fit-content; }

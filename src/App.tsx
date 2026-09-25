@@ -859,7 +859,7 @@ export function App() {
               level={1}
             />
             <article className="featured-project-card surface-glass surface-glass--medium">
-              <img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Referencia visual del sitio público de Paraíso Laguna" width="1600" height="1000" loading="lazy" decoding="async" />
+              <div className="featured-project-visuals"><img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Referencia visual del sitio público de Paraíso Laguna" width="1600" height="1000" loading="lazy" decoding="async" /><div className="featured-project-designs" aria-label="Muestra de diseños creados para Paraíso Laguna">{[0, 9, 13].map((index) => { const item = c.projects[0].gallery![index]; return <img key={item.src} src={item.preview || item.src} alt={item.alt} width="900" height="1125" loading="lazy" decoding="async" />; })}</div><p className="featured-project-visual-note">Diseños creados · publicación en redes no verificada</p></div>
               <div>
                 <p className="eyebrow">CASO DESTACADO · TURISMO</p>
                 <h3>Paraíso Laguna</h3>

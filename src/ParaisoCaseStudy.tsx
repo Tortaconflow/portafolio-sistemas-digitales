@@ -1,5 +1,5 @@
 import { content as c } from "./content";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type EvidenceLevel = "A" | "B" | "C";
 
@@ -22,7 +22,8 @@ const evidence: {
 
 const built = ["WEB", "SEO", "CONTENIDO", "IDENTIDAD", "RUTA DE CONTACTO", "DATOS HISTÓRICOS / INSTRUMENTACIÓN", "TESTS ESCRITOS"];
 const carouselSequence = ["Portada", "Experiencia", "Cuidado", "Recorrido", "Incluye", "Reserva"];
-const featuredDesigns = [0, 4, 9, 13].map((index) => c.projects[0].gallery![index]);
+const featuredDesignIndices = [0, 4, 9, 13];
+const featuredDesigns = featuredDesignIndices.map((index) => c.projects[0].gallery![index]);
 
 function Label({ n, children }: { n: string; children: string }) {
   return <p className="eyebrow case-section-label">{n} / {children}</p>;
@@ -30,6 +31,20 @@ function Label({ n, children }: { n: string; children: string }) {
 
 export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void }) {
   const [chapter, setChapter] = useState<"sistema" | "web" | "contenido" | "evidencia">("sistema");
+  const [selectedDesign, setSelectedDesign] = useState<number | null>(null);
+  const designViewer = useRef<HTMLDialogElement>(null);
+  const designTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (selectedDesign !== null && !designViewer.current?.open) designViewer.current?.showModal();
+    if (selectedDesign === null && designViewer.current?.open) {
+      designViewer.current.close();
+      designTrigger.current?.focus();
+    }
+  }, [selectedDesign]);
+  const openDesign = (index: number) => {
+    designTrigger.current = document.activeElement as HTMLElement;
+    setSelectedDesign(index);
+  };
   const chapters = [
     { id: "sistema", label: "Estrategia y canales" },
     { id: "web", label: "Web y SEO" },
@@ -73,13 +88,18 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
             <button type="button" className="inline-link case-gallery-link" onClick={onOpenGallery}>Explorar las {c.projects[0].gallery!.length} piezas ↗</button>
           </div>
           <div className="case-design-grid">
-            {featuredDesigns.map((item) => <figure key={item.src} className="surface-glass surface-glass--subtle"><img src={item.preview || item.src} alt={item.alt} width="900" height="1125" loading="lazy" decoding="async" /><figcaption>{item.category} · pieza creada</figcaption></figure>)}
+            {featuredDesigns.map((item, position) => <figure key={item.src} className="surface-glass surface-glass--subtle"><button type="button" className="case-design-button" onClick={() => openDesign(featuredDesignIndices[position])} aria-label={`Ampliar diseño: ${item.alt}`}><img src={item.preview || item.src} alt="" width="900" height="1125" loading="lazy" decoding="async" /><span aria-hidden="true">↗</span></button><figcaption>{item.category} · pieza creada</figcaption></figure>)}
           </div>
+          <dialog ref={designViewer} className="art-viewer" aria-label="Diseño de Paraíso Laguna" onCancel={(event) => { event.preventDefault(); setSelectedDesign(null); }} onClick={(event) => { if (event.target === event.currentTarget) setSelectedDesign(null); }}>
+            {selectedDesign !== null && <><div className="viewer-toolbar"><span className="mono">Pieza creada · {c.projects[0].gallery![selectedDesign].category}</span><button type="button" autoFocus onClick={() => setSelectedDesign(null)}>Cerrar <span aria-hidden="true">×</span></button></div><img className="viewer-image" src={c.projects[0].gallery![selectedDesign].src} alt={c.projects[0].gallery![selectedDesign].alt} width="900" height="1125" /><p className="viewer-caption">{c.projects[0].gallery![selectedDesign].alt} · publicación en redes no verificada.</p></>}
+          </dialog>
         </section>
 
         <nav className="case-chapter-nav" aria-label="Capítulos del caso">
-          {chapters.map((item, index) => <button key={item.id} type="button" aria-pressed={chapter === item.id} onClick={() => setChapter(item.id)}><span className="mono">0{index + 1}</span>{item.label}</button>)}
+          {chapters.map((item, index) => <button key={item.id} type="button" aria-pressed={chapter === item.id} aria-controls="case-chapter-content" onClick={() => setChapter(item.id)}><span className="mono">0{index + 1}</span>{item.label}</button>)}
         </nav>
+        <p className="case-chapter-context" id="case-chapter-context">Capítulo {chapters.findIndex((item) => item.id === chapter) + 1} de 4 · {chapters.find((item) => item.id === chapter)?.label}</p>
+        <div id="case-chapter-content" role="region" aria-labelledby="case-chapter-context">
 
         {chapter === "sistema" && <>
 
@@ -174,6 +194,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
 
         <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="11">QUÉ NO AFIRMAMOS</Label><h3 id="limits-title">El alcance de la evidencia importa.</h3><p>Este caso no presenta métricas comerciales no verificadas, no atribuye crecimiento sin prueba causal, no llama publicadas a piezas creadas y no afirma gestión de Google Business o TripAdvisor sin respaldo administrativo.</p></aside>
         </>}
+        </div>
       </div>
     </section>
   );
