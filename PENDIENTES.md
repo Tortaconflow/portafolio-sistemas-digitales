@@ -1,16 +1,15 @@
-# Información pendiente
+# Estado editorial y operativo
 
-Confirmado por el propietario: **Reily Jesus Castro Vicuña**, **reilyvica@gmail.com**, repositorio **Tortaconflow/portafolio-sistemas-digitales**.
+Revisión del código local tras la reorganización del portafolio. Este archivo distingue lo que el repositorio demuestra de lo que requiere comprobación externa.
 
-- [x] El propietario autorizó dejar el repositorio público temporalmente y subir el código.
-- [ ] URL real de Messenger: `[MESSENGER_URL]`.
-- [ ] Dominio HTTPS definitivo: `[PORTFOLIO_DOMAIN]`.
-- [ ] Acceso y tipo de despliegue disponible en Hostinger: compilación de Vite o Git clásico con archivos estáticos.
-- [x] Dirección de arte real de Paraíso Laguna: 16 piezas maestras incorporadas y optimizadas.
-- [ ] Capturas reales autorizadas de BRISA, Señor Gallo VIP y Laboratorio de Diseño Educativo con IA.
-- [ ] Confirmar estados actuales y permisos de BRISA, Señor Gallo VIP y Laboratorio de Diseño Educativo con IA; ajustar `evidenceApproved`.
-- [ ] Revisar la presentación personal, alcances, precios y condiciones de entrega.
-- [ ] Completar `release.approved`, ejecutar `check:release` y generar el build definitivo.
-- [ ] Conectar dominio, comprobar HTTPS y efectuar un envío real de prueba desde el cliente de correo del propietario.
+| Área | Estado verificable en el repositorio | Pendiente externo |
+| --- | --- | --- |
+| Identidad y contacto | Nombre, correo, Messenger y WhatsApp configurados en `src/content.ts`; `check:release` pasa. | Probar recepción real de cada canal con el propietario. |
+| Dominio | URL HTTPS temporal de Hostinger configurada como canonical. | Confirmar dominio definitivo y actualizarlo solo cuando esté activo. |
+| Proyectos | Cuatro fichas con enlaces y recursos versionados; Paraíso Laguna tiene caso documentado. | Confirmar vigencia de estados y permisos de los otros casos con sus responsables. |
+| Paraíso Laguna | Código y capturas de referencia, activos editoriales y límites de evidencia descritos en el caso. | Cotejar capturas públicas con copia local; confirmar permisos de piezas pendientes, publicaciones, operación y resultados. |
+| Despliegue | GitHub Actions compila `main` y guarda `hostinger-dist`. | Confirmar en Hostinger qué repositorio, rama y método alimentan producción. El workflow no publica el sitio. |
+| Perfil social | Facebook y GitHub configurados. | Añadir Instagram o LinkedIn solo con URLs de perfil verificadas; el enlace genérico a LinkedIn se retiró. |
+| Oferta comercial | Precios y condiciones están definidos en `src/content.ts`. | Validar vigencia de precios, alcance y condiciones con el propietario antes de una campaña. |
 
-Opcional: WhatsApp `[WHATSAPP_URL]`, enlaces públicos de proyectos, Facebook, Instagram y GitHub público seleccionado. No añadir datos ni métricas que no estén confirmados.
+No se usan métricas comerciales ni resultados de conversión sin respaldo. Las tareas externas no deben convertirse en afirmaciones públicas por el solo hecho de figurar aquí.

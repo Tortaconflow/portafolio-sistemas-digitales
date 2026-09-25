@@ -49,7 +49,7 @@
   align-items: end;
   margin-bottom: 42px;
 }
-.featured-intro h2 {
+.featured-intro :is(h1, h2) {
   font-size: clamp(56px, 8vw, 112px);
   line-height: 0.98;
   margin: 16px 0 20px;
@@ -397,7 +397,7 @@
   .ecosystem-flow .mono {
     margin-bottom: 12px;
   }
-  .featured-intro h2 {
+  .featured-intro :is(h1, h2) {
     font-size: clamp(48px, 14vw, 68px);
   }
   .featured-subtitle {

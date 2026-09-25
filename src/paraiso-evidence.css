@@ -1,5 +1,5 @@
 /* Paraíso Laguna case depth; the established dark visual tokens remain authoritative. */
-.evidence-case .featured-intro h2 { font-size: clamp(48px, 7.5vw, 104px); }
+.evidence-case .featured-intro :is(h1, h2) { font-size: clamp(48px, 7.5vw, 104px); }
 .evidence-case .featured-intro > div:last-child > p:last-child { max-width: 460px; }
 .evidence-case .featured-hero-image { margin: 0; }
 .evidence-case .featured-hero-image img { display: block; }
@@ -25,10 +25,13 @@
 .evidence-flow strong { font-size: clamp(16px,2vw,21px); margin-bottom: 9px; }
 .evidence-flow small { color: var(--muted); font-size: 12px; }
 .evidence-channel-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 32px; }
-.evidence-channel-grid article { padding: 20px; min-width: 0; }
+.evidence-channel-grid details { padding: 0; min-width: 0; }
+.evidence-channel-grid summary { padding: 20px; cursor: pointer; list-style: none; }
+.evidence-channel-grid summary::-webkit-details-marker { display: none; }
+.evidence-channel-grid details[open] { border-color: var(--glass-border-hover); }
 .evidence-channel-grid strong { display: block; font-size: 17px; }
 .evidence-channel-grid .mono { display: block; margin-top: 6px; color: #a9c4e3; font-size: 11px; }
-.evidence-channel-grid p { color: var(--muted); font-size: 13px; margin: 16px 0 0; }
+.evidence-channel-grid p { color: var(--muted); font-size: 13px; margin: 0; padding: 0 20px 20px; }
 .evidence-split { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); gap: clamp(35px,6vw,90px); align-items: center; }
 .evidence-split > div > p:not(.eyebrow) { color: var(--muted); }
 .case-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
@@ -92,7 +95,7 @@
   .evidence-block:first-of-type { margin-top: 35px; }
 }
 @media (max-width: 520px) {
-  .evidence-case .featured-intro h2 { font-size: clamp(42px,12vw,62px); overflow-wrap: anywhere; }
+  .evidence-case .featured-intro :is(h1, h2) { font-size: clamp(42px,12vw,62px); overflow-wrap: anywhere; }
   .evidence-flow, .evidence-channel-grid, .evidence-panel { grid-template-columns: 1fr; }
   .evidence-process { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .case-at-a-glance { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; }

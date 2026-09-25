@@ -1,6 +1,10 @@
 # Portafolio · Reily Jesus Castro Vicuña
 
-Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código en `Tortaconflow/portafolio-sistemas-digitales`, **público temporalmente por indicación del propietario**; web pública destinada a Hostinger con dominio propio. La preferencia inicial de privacidad queda pendiente de retomar cuando el propietario lo indique.
+Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código en `Tortaconflow/portafolio-sistemas-digitales`, **público temporalmente por indicación del propietario**. El código configura una URL temporal de Hostinger; la conexión exacta del panel de producción y el dominio definitivo requieren confirmación.
+
+## Navegación del portafolio
+
+La interfaz ofrece vistas compactas por hash: `#inicio`, `#casos`, `#paraiso-laguna`, `#servicios`, `#proceso`, `#precios`, `#sobre-mi` y `#contacto`. El índice de proyectos abre Paraíso Laguna como caso individual; sus capítulos muestran estrategia, web, contenido y evidencia de forma progresiva. Los demás proyectos se consultan en diálogos. Al usar hashes, el sitio estático no necesita reglas de fallback de servidor. Los enlaces directos y los botones atrás/adelante del navegador conservan la vista.
 
 ## Uso local
 
@@ -20,7 +24,7 @@ npm run preview
 
 ## Editar el contenido
 
-Todo el contenido está en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Cambia allí las variables y vuelve a compilar. Los metadatos se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
+Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. El detalle del caso Paraíso Laguna está en `src/ParaisoCaseStudy.tsx`. Los metadatos se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
 
 - `owner`: nombre público y nombre corto.
 - `links`: correo, Messenger, WhatsApp opcional, dominio y redes. Usa URLs HTTPS completas. Los marcadores no generan enlaces rotos.
@@ -28,7 +32,7 @@ Todo el contenido está en `src/content.ts`: identidad, textos, precios, proyect
 - `pricing`: los tres planes; la cotización a medida aparece por separado.
 - `release.approved`: cambia a `true` después de validar contenido, estados y permisos.
 
-El GitHub del pie de página queda vacío: no expongas el repositorio privado como caso técnico público. Puedes añadir posteriormente una URL a tu perfil o a proyectos seleccionados que decidas hacer públicos.
+El pie de página enlaza al perfil público `Tortaconflow` en GitHub. LinkedIn se omite hasta contar con una URL de perfil verificada.
 
 ## Capturas auténticas
 
@@ -40,7 +44,7 @@ Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`
 
 El formulario valida los campos, prepara un texto, permite revisarlo y copiarlo, y abre un `mailto:` con asunto y cuerpo codificados. El usuario debe completar el envío en su aplicación de correo. Messenger abre la URL configurada; se copia y pega el mensaje manualmente porque no todos los enlaces de Messenger aceptan texto precargado. No hay envíos automáticos ni base de datos. Los datos se mantienen en memoria hasta recargar o cerrar la página.
 
-WhatsApp se activa al configurar una URL HTTPS real. No se inventó un número. No se instaló analítica sin un identificador del propietario; el servicio puede incluir su configuración una vez elegida la herramienta.
+WhatsApp tiene una URL configurada en `src/content.ts`; su recepción real debe probarse con el propietario. No se instaló analítica sin un identificador del propietario; el servicio puede incluir su configuración una vez elegida la herramienta.
 
 ## Antes del lanzamiento
 
@@ -50,7 +54,7 @@ Consulta `PENDIENTES.md` y ejecuta:
 npm run check:release
 ```
 
-Este control debe fallar mientras falten el dominio, Messenger, capturas, estados confirmados o autorización editorial. El build de vista previa sí funciona. Mientras haya pendientes, incluye `noindex, nofollow` y una lista desplegable visible. Al completar todos los datos y aprobar la versión, el siguiente build habilita la indexación y genera canonical, Open Graph y sitemap con el dominio real. `noindex` no es privacidad: el sitio publicado sigue siendo accesible por URL.
+Este control comprueba los campos que implementa `scripts/check-release.ts`; actualmente pasa con la URL temporal y los datos configurados. No sustituye la verificación externa de permisos, enlaces, canales de contacto o configuración de Hostinger. Si falla, el build aplica `noindex, nofollow` y muestra pendientes en la interfaz. Consulta `PENDIENTES.md` para los asuntos editoriales y operativos que el script no puede resolver. `noindex` no es privacidad: el sitio publicado sigue siendo accesible por URL.
 
 ## Publicación en Hostinger
 

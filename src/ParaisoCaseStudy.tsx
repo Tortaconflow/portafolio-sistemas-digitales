@@ -1,4 +1,5 @@
 import { content as c } from "./content";
+import { useState } from "react";
 
 type EvidenceLevel = "A" | "B" | "C";
 
@@ -39,13 +40,20 @@ function Label({ n, children }: { n: string; children: string }) {
 }
 
 export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void }) {
+  const [chapter, setChapter] = useState<"sistema" | "web" | "contenido" | "evidencia">("sistema");
+  const chapters = [
+    { id: "sistema", label: "Estrategia y canales" },
+    { id: "web", label: "Web y SEO" },
+    { id: "contenido", label: "Contenido y contacto" },
+    { id: "evidencia", label: "QA y evidencia" },
+  ] as const;
   return (
     <section id="paraiso-laguna" className="featured-case section evidence-case" aria-labelledby="featured-title">
       <div className="container">
         <header className="featured-intro">
           <div>
             <p className="eyebrow">CASO DESTACADO · TRABAJO DOCUMENTADO</p>
-            <h2 id="featured-title">PARAÍSO LAGUNA</h2>
+            <h1 id="featured-title">PARAÍSO LAGUNA</h1>
             <p className="featured-subtitle">Un ecosistema digital para una experiencia turística que necesita ser descubierta, entendida y contactada.</p>
           </div>
           <div>
@@ -66,6 +74,12 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <figcaption className="featured-image-caption"><span>Referencia visual del sitio público · correspondencia exacta con la copia local pendiente.</span><a href={c.projects[0].url} target="_blank" rel="noreferrer">Visitar sitio público ↗</a></figcaption>
         </figure>
 
+        <nav className="case-chapter-nav" aria-label="Capítulos del caso">
+          {chapters.map((item, index) => <button key={item.id} type="button" aria-pressed={chapter === item.id} onClick={() => setChapter(item.id)}><span className="mono">0{index + 1}</span>{item.label}</button>)}
+        </nav>
+
+        {chapter === "sistema" && <>
+
         <section className="evidence-block" aria-labelledby="strategy-title">
           <Label n="02">LA ESTRATEGIA</Label>
           <h3 id="strategy-title">Un recorrido diseñado para conectar cada pieza.</h3>
@@ -80,11 +94,13 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <Label n="03">EL ECOSISTEMA</Label>
           <h3 id="ecosystem-title">Cada canal tiene un papel y un estado de prueba distinto.</h3>
           <div className="evidence-channel-grid">
-            {channels.map((channel) => <article key={channel.name} className="surface-glass surface-glass--subtle"><strong>{channel.name}</strong><span className="mono">{channel.state}</span><p>{channel.note}</p></article>)}
+            {channels.map((channel) => <details key={channel.name} className="surface-glass surface-glass--subtle"><summary><strong>{channel.name}</strong><span className="mono">{channel.state}</span></summary><p>{channel.note}</p></details>)}
           </div>
           <p className="case-proof">Canal identificado ≠ gestión comprobada. Google Business y TripAdvisor: pendientes.</p>
         </section>
+        </>}
 
+        {chapter === "web" && <>
         <section className="evidence-block evidence-split" aria-labelledby="web-title">
           <div>
             <Label n="04">WEB</Label>
@@ -105,7 +121,9 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
             <article className="surface-glass surface-glass--medium"><span className="mono">DATOS HISTÓRICOS · [A]</span><h4>Análisis de Search Console</h4><p>Se analizaron datos históricos de búsqueda web exportados entre el 30 de mayo y el 29 de agosto de 2026. Las cifras se conservan en el Evidence Pack interno; aquí no se publican. El análisis no demuestra causalidad ni reservas.</p></article>
           </div>
         </section>
+        </>}
 
+        {chapter === "contenido" && <>
         <section className="evidence-block" aria-labelledby="content-title">
           <Label n="06">CONTENIDO</Label>
           <h3 id="content-title">De una experiencia a piezas con función propia.</h3>
@@ -136,7 +154,9 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <div><Label n="08">WHATSAPP</Label><h3 id="whatsapp-title">Del CTA a la conversación.</h3><p>El código local incluye enlaces y un formulario que prepara el contacto por WhatsApp. También contiene eventos <code>whatsapp_click</code> y <code>generate_lead</code>; falta verificar su recepción en producción.</p><p className="case-proof">[B] Código y documento de entrega. Reservas, atención real y resultados no documentados.</p></div>
           <div className="evidence-action-diagram" aria-label="Flujo de contacto"><span className="surface-glass surface-glass--medium">CTA del sitio</span><span aria-hidden="true">↓</span><span className="surface-glass surface-glass--medium">WhatsApp</span><small>Automatización inteligente · en evolución, demostración pendiente</small></div>
         </section>
+        </>}
 
+        {chapter === "evidencia" && <>
         <section className="evidence-block" aria-labelledby="qa-title">
           <Label n="09">QA</Label>
           <h3 id="qa-title">La verificación también forma parte del trabajo.</h3>
@@ -159,6 +179,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
         </section>
 
         <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="12">QUÉ NO AFIRMAMOS</Label><h3 id="limits-title">El alcance de la evidencia importa.</h3><p>Este caso no presenta métricas comerciales no verificadas, no atribuye crecimiento sin prueba causal, no llama publicadas a piezas creadas y no afirma gestión de Google Business o TripAdvisor sin respaldo administrativo.</p></aside>
+        </>}
       </div>
     </section>
   );

@@ -29,7 +29,7 @@ export const content = {
     domain: "https://sandybrown-turkey-667440.hostingersite.com",
     facebook: "https://www.facebook.com/groups/1394889298845236",
     instagram: "",
-    linkedin: "https://www.linkedin.com/feed/",
+    linkedin: "",
     github: "https://github.com/Tortaconflow",
   },
   seo: {
@@ -40,13 +40,10 @@ export const content = {
   },
   release: { approved: true },
   nav: [
-    { id: "paraiso-laguna", label: "Caso destacado" },
-    { id: "casos", label: "Más casos" },
+    { id: "inicio", label: "Inicio" },
+    { id: "casos", label: "Proyectos" },
     { id: "servicios", label: "Servicios" },
-    { id: "proceso", label: "Proceso" },
-    { id: "precios", label: "Precios" },
-    { id: "sobre-mi", label: "Sobre mí" },
-    { id: "contacto", label: "Contacto" },
+    { id: "sobre-mi", label: "Perfil" },
   ],
   ui: {
     menu: "Menú",
@@ -77,13 +74,7 @@ export const content = {
     draft: "Vista previa · datos del propietario pendientes",
     pending: "Información pendiente para publicar",
     pendingNote:
-      "Esta lista desaparece al completar la configuración y aprobar la publicación.",
-    pendingItems: [
-      "URL de Messenger real (WhatsApp queda opcional).",
-      "Dominio propio y conexión de Hostinger con la rama del repositorio.",
-      "Capturas auténticas y autorización de publicación de los cuatro casos.",
-      "Confirmación del estado actual de cada proyecto.",
-    ],
+      "Estos campos no pasaron la validación automática. Revisa también los pendientes editoriales y operativos en la documentación.",
     sector: "Sector",
     all: "Todos",
     filterProjects: "Explorar proyectos por sector",
@@ -138,7 +129,7 @@ export const content = {
     "SISTEMAS",
   ],
   problem: {
-    label: "01 / EL PUNTO DE PARTIDA",
+    label: "EL PUNTO DE PARTIDA",
     title: "No solo construyo páginas.",
     emphasis: "Diseño cómo funciona el sistema completo.",
     body: "Una persona puede descubrirte en una búsqueda, ver tu contenido, visitar tu sitio y escribirte por WhatsApp. Cada paso debe responder a la misma propuesta y facilitar el siguiente.",
@@ -171,7 +162,7 @@ export const content = {
     ],
   },
   featuredCase: {
-    label: "02 / CASO DE ESTUDIO DESTACADO · TURISMO",
+    label: "CASO DE ESTUDIO DESTACADO · TURISMO",
     title: "Paraíso Laguna",
     subtitle:
       "Una experiencia digital conectada para explorar, preguntar y reservar.",
@@ -258,9 +249,9 @@ export const content = {
     galleryCta: "Ver la dirección de arte completa",
   },
   cases: {
-    label: "03 / CASOS EN DESARROLLO EDITORIAL",
-    title: "Otros sistemas, otros contextos.",
-    body: "Proyectos construidos en comercio, desarrollo inmobiliario e inteligencia artificial. Sus fichas se amplían conforme se documenta nueva evidencia.",
+    label: "PROYECTOS DOCUMENTADOS",
+    title: "Proyectos en distintos contextos.",
+    body: "Explora el caso de Paraíso Laguna y tres proyectos en inmobiliario, comercio e inteligencia artificial. Cada ficha indica su alcance y evidencia disponible.",
     footnote:
       "Alcances descritos por el propietario. Sin métricas comerciales ni testimonios atribuidos.",
   },
@@ -448,7 +439,7 @@ export const content = {
     },
   ] as Project[],
   method: {
-    label: "04 / LO QUE REALMENTE HAGO",
+    label: "CÓMO COMBINO DISCIPLINAS",
     title: "Cuatro disciplinas. Una decisión de negocio.",
     body: "La combinación cambia según lo que el proyecto necesita; la herramienta se elige después de entender el objetivo.",
     items: [
@@ -471,7 +462,7 @@ export const content = {
     ],
   },
   services: {
-    label: "05 / EN QUÉ PUEDO AYUDARTE",
+    label: "EN QUÉ PUEDO AYUDARTE",
     title: "Tecnología con una tarea clara.",
     items: [
       {
@@ -521,7 +512,7 @@ export const content = {
     ],
   },
   process: {
-    label: "06 / CÓMO TRABAJAMOS",
+    label: "CÓMO TRABAJAMOS",
     title: "Primero el negocio.\nDespués la tecnología.",
     body: "Partimos del objetivo y del recorrido real de tus clientes. Priorizamos las piezas necesarias, las construimos y comprobamos cómo se conectan antes de entregarlas.",
     items: [
@@ -544,7 +535,7 @@ export const content = {
     ],
   },
   pricing: {
-    label: "07 / UN PUNTO DE PARTIDA",
+    label: "UN PUNTO DE PARTIDA",
     title: "Empieza por lo que necesitas.",
     body: "Alcance claro desde el inicio. El presupuesto final depende de lo que acordemos construir.",
     tabsLabel: "Opciones de inversión",
@@ -609,10 +600,10 @@ export const content = {
     ],
   },
   about: {
-    label: "08 / DETRÁS DEL SISTEMA",
+    label: "DETRÁS DEL SISTEMA",
     title: "No construyo páginas aisladas.",
     emphasis: "Diseño cómo las piezas trabajan juntas.",
-    body: "Soy [NOMBRE], desarrollador web y creador de sistemas digitales en Oaxaca. Mi trabajo combina tecnología, diseño y análisis de negocio para transformar ideas dispersas en herramientas funcionales. Me interesa entender cómo opera cada proyecto antes de decidir qué construir.",
+    body: "Soy Reily, desarrollador web y creador de sistemas digitales en Oaxaca. Mi trabajo combina tecnología, diseño y análisis de negocio para transformar ideas dispersas en herramientas funcionales. Me interesa entender cómo opera cada proyecto antes de decidir qué construir.",
     stamp: "CRITERIO HUMANO.\nTECNOLOGÍA APLICADA.",
     location: "Desde Oaxaca, para proyectos en México.",
     principles: [
@@ -622,7 +613,7 @@ export const content = {
     ],
   },
   faq: {
-    label: "09 / SIN LETRA CHIQUITA",
+    label: "SIN LETRA CHIQUITA",
     title: "Antes de comenzar.",
     items: [
       [
@@ -668,7 +659,7 @@ export const content = {
     ],
   },
   contact: {
-    label: "10 / CONVERSEMOS",
+    label: "CONVERSEMOS",
     title: "Cuéntame qué quieres conseguir.",
     body: "Antes de hablar de tecnología, entendemos el problema. Dime qué vendes, cómo te encuentran hoy y qué debería funcionar mejor.",
     direct: "También podemos empezar por aquí",

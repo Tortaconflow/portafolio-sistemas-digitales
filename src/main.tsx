@@ -7,6 +7,7 @@ import "./premium.css";
 import "./case-study.css";
 import "./visual-system.css";
 import "./paraiso-evidence.css";
+import "./navigation.css";
 import { App } from "./App";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

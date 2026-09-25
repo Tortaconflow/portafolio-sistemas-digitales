@@ -15,6 +15,13 @@ import {
 } from "./content";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
+type View = "inicio" | "proyectos" | "servicios" | "perfil";
+function viewForHash(hash: string): View {
+  if (["#casos", "#paraiso-laguna"].includes(hash)) return "proyectos";
+  if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
+  if (["#sobre-mi", "#contacto"].includes(hash)) return "perfil";
+  return "inicio";
+}
 function ButtonLink({
   children,
   href = "#contacto",
@@ -43,15 +50,17 @@ function Heading({
   label,
   title,
   body,
+  level = 2,
 }: {
   label: string;
   title: string;
   body?: string;
+  level?: 1 | 2;
 }) {
   return (
     <div className="section-heading">
       <p className="eyebrow">{label}</p>
-      <h2>{title}</h2>
+      {level === 1 ? <h1>{title}</h1> : <h2>{title}</h2>}
       {body && <p className="section-description">{body}</p>}
     </div>
   );
@@ -552,6 +561,10 @@ function Contact({ interest }: { interest: string }) {
   );
 }
 export function App() {
+  const [view, setView] = useState<View>(() => viewForHash(window.location.hash));
+  const [caseOpen, setCaseOpen] = useState(() => window.location.hash === "#paraiso-laguna");
+  const [servicePanel, setServicePanel] = useState(() => window.location.hash === "#precios" ? "precios" : window.location.hash === "#proceso" ? "proceso" : "servicios");
+  const [profilePanel, setProfilePanel] = useState(() => window.location.hash === "#contacto" ? "contacto" : "perfil");
   const [menu, setMenu] = useState(false),
     [project, setProject] = useState<Project | null>(null),
     [planIndex, setPlanIndex] = useState(0),
@@ -559,7 +572,6 @@ export function App() {
   const [sector, setSector] = useState(c.ui.all);
   const [quickContact, setQuickContact] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
   const secondaryProjects = c.projects.slice(1);
   const projectSectors = [
     c.ui.all,
@@ -569,46 +581,54 @@ export function App() {
     (p) => sector === c.ui.all || p.sector === sector,
   );
   useEffect(() => {
-    let heroVisible = true,
-      contactVisible = false;
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target.id === "inicio") heroVisible = entry.isIntersecting;
-        if (entry.target.id === "contacto")
-          contactVisible = entry.isIntersecting;
-      }
-      setQuickContact(!heroVisible && !contactVisible);
-    });
-    ["inicio", "contacto"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const syncRoute = () => {
+      const hash = window.location.hash;
+      setView(viewForHash(hash));
+      setCaseOpen(hash === "#paraiso-laguna");
+      setServicePanel(hash === "#precios" ? "precios" : hash === "#proceso" ? "proceso" : "servicios");
+      setProfilePanel(hash === "#contacto" ? "contacto" : "perfil");
+      setMenu(false);
+      window.requestAnimationFrame(() => {
+        if (hash && hash !== "#main") document.getElementById(hash.slice(1))?.scrollIntoView();
+        else window.scrollTo(0, 0);
+      });
+    };
+    const followInternalLink = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!link) return;
+      const hash = link.getAttribute("href") || "#inicio";
+      if (hash === "#main") return;
+      event.preventDefault();
+      if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+      syncRoute();
+    };
+    document.addEventListener("click", followInternalLink);
+    window.addEventListener("popstate", syncRoute);
+    window.addEventListener("hashchange", syncRoute);
+    return () => {
+      document.removeEventListener("click", followInternalLink);
+      window.removeEventListener("popstate", syncRoute);
+      window.removeEventListener("hashchange", syncRoute);
+    };
   }, []);
   useEffect(() => {
     const updateScroll = () => {
       setScrolled(window.scrollY > 24);
-      if (window.scrollY < 120) setActiveSection("");
+      setQuickContact(window.scrollY > 600 && view !== "perfil");
     };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
     return () => window.removeEventListener("scroll", updateScroll);
-  }, []);
+  }, [view]);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        }
-      },
-      { rootMargin: "-25% 0px -55% 0px" },
-    );
-    c.nav.forEach(({ id }) => {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
+    window.requestAnimationFrame(() => {
+      const id = window.location.hash.slice(1);
+      if (id && id !== "main") document.getElementById(id)?.scrollIntoView();
     });
-    return () => observer.disconnect();
-  }, []);
+  }, [view, caseOpen, servicePanel, profilePanel]);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const plan = c.pricing.plans[planIndex];
   const pending = releaseIssues();
@@ -659,9 +679,8 @@ export function App() {
               <a
                 key={n.id}
                 href={`#${n.id}`}
-                aria-current={activeSection === n.id ? "location" : undefined}
+                aria-current={viewForHash(`#${n.id}`) === view ? "page" : undefined}
                 onClick={() => {
-                  setActiveSection(n.id);
                   setMenu(false);
                 }}
               >
@@ -683,7 +702,7 @@ export function App() {
         </div>
       </header>
       <main id="main">
-        <section id="inicio" className="hero container">
+        <section id="inicio" className="hero container" hidden={view !== "inicio"}>
           <div className="hero-top">
             <p className="eyebrow">
               <span className="live-dot" />
@@ -758,7 +777,10 @@ export function App() {
             </div>
             <div className="index-cases">
               {c.projects.slice(0, 3).map((p, i) => (
-                <button key={p.id} onClick={() => setProject(p)}>
+                <button key={p.id} onClick={() => {
+                  window.location.hash = i === 0 ? "#paraiso-laguna" : "#casos";
+                  if (i > 0) setProject(p);
+                }}>
                   <span className="mono">0{i + 1}</span>
                   {p.title}
                   <Arrow />
@@ -767,7 +789,7 @@ export function App() {
             </div>
           </div>
         </section>
-        <div className="capabilities">
+        <div className="capabilities" hidden={view !== "inicio"}>
           <div className="container">
             {c.capabilities.map((x) => (
               <span key={x}>
@@ -777,7 +799,9 @@ export function App() {
             ))}
           </div>
         </div>
-        <section className="section container problem-section">
+        {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Capacidades que se conectan."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Capacidades</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
+        {view === "servicios" && servicePanel === "servicios" && <details className="approach-details"><summary className="container">Ver el enfoque: del descubrimiento al contacto <span aria-hidden="true">+</span></summary>
+        <section className="section container problem-section" hidden={view !== "servicios" || servicePanel !== "servicios"}>
           <p className="eyebrow">{c.problem.label}</p>
           <div className="two-col">
             <h2>
@@ -802,6 +826,7 @@ export function App() {
         <section
           className="ecosystem-section container"
           aria-labelledby="ecosystem-title"
+          hidden={view !== "servicios" || servicePanel !== "servicios"}
         >
           <p className="eyebrow">{c.ecosystem.label}</p>
           <h2 id="ecosystem-title">
@@ -820,14 +845,28 @@ export function App() {
             ))}
           </ol>
         </section>
-        <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
-        <section id="casos" className="section cases-section">
+        </details>}
+        {view === "proyectos" && caseOpen && <>
+          <nav className="container view-return" aria-label="Volver al índice"><a href="#casos">← Todos los proyectos</a></nav>
+          <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
+        </>}
+        <section id="casos" className="section cases-section" hidden={view !== "proyectos" || caseOpen}>
           <div className="container">
             <Heading
               label={c.cases.label}
               title={c.cases.title}
               body={c.cases.body}
+              level={1}
             />
+            <article className="featured-project-card surface-glass surface-glass--medium">
+              <img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Referencia visual del sitio público de Paraíso Laguna" width="1600" height="1000" loading="lazy" decoding="async" />
+              <div>
+                <p className="eyebrow">CASO DESTACADO · TURISMO</p>
+                <h3>Paraíso Laguna</h3>
+                <p>Contenido, sitio y ruta de contacto documentados. La publicación social, la operación y el impacto comercial siguen pendientes de prueba.</p>
+                <a className="button" href="#paraiso-laguna">Explorar caso y evidencia <Arrow /></a>
+              </div>
+            </article>
             <div className="project-explorer">
               <div
                 className="gallery-filters"
@@ -891,6 +930,7 @@ export function App() {
         <section
           className="section container method-section"
           aria-label={c.method.title}
+          hidden={view !== "servicios" || servicePanel !== "servicios"}
         >
           <Heading
             label={c.method.label}
@@ -910,7 +950,7 @@ export function App() {
             ))}
           </div>
         </section>
-        <section id="servicios" className="section container">
+        <section id="capacidades" className="section container" hidden={view !== "servicios" || servicePanel !== "servicios"}>
           <Heading label={c.services.label} title={c.services.title} />
           <div className="service-grid">
             {c.services.items.map((s, i) => (
@@ -950,7 +990,7 @@ export function App() {
             ))}
           </div>
         </section>
-        <section id="proceso" className="section process-section">
+        <section id="proceso" className="section process-section" hidden={view !== "servicios" || servicePanel !== "proceso"}>
           <div className="container">
             <div className="process-header">
               <Heading label={c.process.label} title={c.process.title} />
@@ -970,7 +1010,7 @@ export function App() {
             </div>
           </div>
         </section>
-        <section id="precios" className="section container pricing-section">
+        <section id="precios" className="section container pricing-section" hidden={view !== "servicios" || servicePanel !== "precios"}>
           <Heading
             label={c.pricing.label}
             title={c.pricing.title}
@@ -1066,7 +1106,8 @@ export function App() {
             </a>
           </div>
         </section>
-        <section id="sobre-mi" className="section about-section">
+        {view === "perfil" && <div className="container view-title"><p className="eyebrow">PERFIL Y CONTACTO</p><h1>{profilePanel === "contacto" ? "Hablemos de tu proyecto." : "Reily Castro."}</h1><nav className="view-switcher" aria-label="Perfil y contacto"><a href="#sobre-mi" aria-current={profilePanel === "perfil" ? "page" : undefined}>Perfil</a><a href="#contacto" aria-current={profilePanel === "contacto" ? "page" : undefined}>Contacto</a></nav></div>}
+        <section id="sobre-mi" className="section about-section" hidden={view !== "perfil" || profilePanel !== "perfil"}>
           <div className="container about-grid">
             <div className="about-art surface-glass surface-glass--medium">
               <span className="eyebrow">{c.owner.location}</span>
@@ -1079,7 +1120,7 @@ export function App() {
             <div>
               <Heading label={c.about.label} title={c.about.title} />
               <h3>{c.about.emphasis}</h3>
-              <p>{c.about.body.replace("[NOMBRE]", c.owner.shortName)}</p>
+              <p>{c.about.body}</p>
               <ul className="plain-list">
                 {c.about.principles.map((x) => (
                   <li key={x}>
@@ -1091,7 +1132,7 @@ export function App() {
             </div>
           </div>
         </section>
-        <section className="section container faq-section">
+        <section className="section container faq-section" hidden={view !== "perfil" || profilePanel !== "perfil"}>
           <Heading label={c.faq.label} title={c.faq.title} />
           <div>
             {c.faq.items.map(([q, a]) => (
@@ -1105,8 +1146,8 @@ export function App() {
             ))}
           </div>
         </section>
-        <Contact interest={interest} />
-        {pending.length > 0 && (
+        {view === "perfil" && profilePanel === "contacto" && <Contact interest={interest} />}
+        {view === "perfil" && pending.length > 0 && (
           <aside className="container pending-section">
             <details>
               <summary>
@@ -1116,7 +1157,7 @@ export function App() {
               <h2>{c.ui.pending}</h2>
               <p>{c.ui.pendingNote}</p>
               <ul>
-                {c.ui.pendingItems.map((x) => (
+                {pending.map((x) => (
                   <li key={x}>{x}</li>
                 ))}
               </ul>
@@ -1152,7 +1193,7 @@ export function App() {
               </a>
             ))}
           <a href="#contacto">
-            {c.nav.at(-1)?.label}
+            Contacto
             <Arrow />
           </a>
         </div>
