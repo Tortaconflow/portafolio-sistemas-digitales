@@ -147,6 +147,29 @@ body {
   letter-spacing: 0.02em;
 }
 
+/* B04 institutional assets. Scope to branding; keep the existing UX intact. */
+.cidiks-symbol {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  object-fit: contain;
+}
+.cidiks-wordmark {
+  display: block;
+  width: 96px;
+  height: 40px;
+  object-fit: contain;
+  object-position: left center;
+}
+.cidiks-footer-symbol {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
 .site-header nav {
   display: flex;
   gap: 24px;

@@ -732,11 +732,9 @@ export function App() {
             href="#inicio"
             aria-label={`${c.brand.fullName} · ${c.brand.descriptor} · ${c.ui.backTop}`}
           >
-            <span className="brand-mark" aria-hidden="true">
-              C
-            </span>
+            <img className="cidiks-symbol" src={c.brand.symbol} width="40" height="40" alt="" aria-hidden="true" />
             <span>
-              {c.brand.name}
+              <img className="cidiks-wordmark" src={c.brand.wordmark} width="96" height="40" alt="" aria-hidden="true" />
               <small>{c.brand.creator}</small>
             </span>
           </a>
@@ -1290,6 +1288,7 @@ export function App() {
       <footer className="container">
         <div>
           <a href="#inicio" className="footer-name">
+            <img className="cidiks-footer-symbol" src={c.brand.symbol} width="40" height="40" alt="" aria-hidden="true" />
             {c.brand.fullName}
           </a>
           <p>{c.brand.descriptor} · {c.brand.tagline}</p>

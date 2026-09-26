@@ -1,4 +1,18 @@
 /* Compact views retain the portfolio's established visual language with Cídiks warm palette. */
+/* Preserve the original responsive navigation after visual-system's desktop rules. */
+.site-header .menu-toggle { display: none; }
+@media (max-width: 1150px) {
+  .site-header .nav-cta { display: none; }
+}
+@media (max-width: 850px) {
+  .site-header .menu-toggle { display: flex; min-height: 44px; align-items: center; }
+  .site-header nav { display: none; left: 0; right: 0; width: auto; }
+  .site-header nav.open { display: grid; }
+}
+@media (max-width: 600px) {
+  /* Contain the existing rotated artwork; it must not widen the mobile page. */
+  .visual-stage { overflow: clip; }
+}
 [hidden] { display: none !important; }
 main :is(section, nav)[id] { scroll-margin-top: 100px; }
 .site-header nav a[aria-current="page"] { color: var(--action); box-shadow: inset 0 -2px 0 var(--action); }

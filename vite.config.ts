@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import {
   content,
   isWebUrl,
-  isConfigured,
   releaseIssues,
 } from "./src/content.ts";
 const escapeHtml = (s: string) =>
@@ -23,9 +22,7 @@ export default defineConfig({
         const domain = isWebUrl(content.links.domain)
           ? new URL(content.links.domain).origin
           : "";
-        const title = isConfigured(content.owner.name)
-          ? `${content.owner.name} · ${content.seo.title}`
-          : content.seo.title;
+        const title = content.seo.title;
         const schema = {
           "@context": "https://schema.org",
           "@type": "WebSite",
@@ -41,6 +38,11 @@ export default defineConfig({
       <meta property="og:description" content="${escapeHtml(content.seo.description)}" />
       <meta property="og:type" content="website" /><meta property="og:locale" content="es_MX" />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="${escapeHtml(title)}" />
+      <meta name="twitter:description" content="${escapeHtml(content.seo.description)}" />
+      <meta name="twitter:image:alt" content="Cídiks · Reily Castro · Diseño web, automatización e IA aplicada" />
+      <meta property="og:image:alt" content="Cídiks · Reily Castro · Diseño web, automatización e IA aplicada" />
+      ${domain ? `<meta name="twitter:image" content="${escapeHtml(domain + content.seo.image)}" />` : ""}
       ${domain ? `<link rel="canonical" href="${escapeHtml(domain)}/" /><meta property="og:url" content="${escapeHtml(domain)}/" /><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}" /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />` : ""}
       <script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script>`;
         return html.replace("<!-- SEO_CONTENT -->", tags);

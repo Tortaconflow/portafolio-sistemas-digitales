@@ -21,6 +21,8 @@ export const content = {
     creator: "Reily Castro",
     fullName: "Cídiks · Reily Castro",
     ascii: "cidiks",
+    symbol: "/brand/symbol/cidiks-symbol-color.svg",
+    wordmark: "/brand/wordmark/cidiks-wordmark.svg",
     descriptor: "Diseño web, automatización e IA aplicada",
     tagline: "Comprender la raíz. Construir con sentido.",
     commercialProposal: "De una necesidad concreta a una solución digital que puedas usar.",
@@ -45,7 +47,7 @@ export const content = {
     title: "Cídiks · Reily Castro | Diseño web, automatización e IA aplicada",
     description:
       "De una necesidad concreta a una solución digital que puedas usar. Diseño de sitios web, conexiones de atención y automatización para negocios en Oaxaca y México.",
-    image: "/og-cover.png",
+    image: "/brand/social/og-cidiks-1200x630.png",
   },
   release: { approved: true },
   nav: [
