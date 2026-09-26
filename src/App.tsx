@@ -1,4 +1,7 @@
 import { ParaisoCaseStudy } from "./ParaisoCaseStudy";
+import { DiagnosticTool } from "./DiagnosticTool";
+import { EducationSection } from "./EducationSection";
+import { track } from "./analytics";
 import {
   useEffect,
   useRef,
@@ -305,10 +308,21 @@ function Contact({ interest }: { interest: string }) {
   const [message, setMessage] = useState("");
   const [channel, setChannel] = useState("WhatsApp");
   const [feedback, setFeedback] = useState("");
+  const [hasStartedForm, setHasStartedForm] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const emailReady = isEmail(c.links.email),
     messengerReady = isWebUrl(c.links.messenger),
     whatsappReady = isWebUrl(c.links.whatsapp);
+
+  function handleFormInteraction() {
+    if (!hasStartedForm) {
+      setHasStartedForm(true);
+      track("form_start", {
+        channel_selected: (channel.toLowerCase() === "correo" ? "correo" : channel.toLowerCase() === "messenger" ? "messenger" : "whatsapp"),
+      });
+    }
+  }
+
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -321,6 +335,11 @@ function Contact({ interest }: { interest: string }) {
         .join("\n")}`,
     );
     setFeedback("");
+    const selectedChan = (channel.toLowerCase() === "correo" ? "correo" : channel.toLowerCase() === "messenger" ? "messenger" : "whatsapp") as "whatsapp" | "correo" | "messenger";
+    track("form_prepare", {
+      channel_selected: selectedChan,
+      has_interest: Boolean(interest),
+    });
     window.setTimeout(() => resultRef.current?.focus(), 0);
   }
   useEffect(() => {
@@ -347,17 +366,41 @@ function Contact({ interest }: { interest: string }) {
           <div className="contact-direct">
             <p className="eyebrow">{c.contact.direct}</p>
             {messengerReady && (
-              <a href={c.links.messenger}>
+              <a
+                href={c.links.messenger}
+                onClick={() =>
+                  track("contact_click", {
+                    channel: "messenger",
+                    origin: "direct",
+                  })
+                }
+              >
                 {c.contact.messenger} <Arrow />
               </a>
             )}
             {emailReady && (
-              <a href={`mailto:${c.links.email}`}>
+              <a
+                href={`mailto:${c.links.email}`}
+                onClick={() =>
+                  track("contact_click", {
+                    channel: "correo",
+                    origin: "direct",
+                  })
+                }
+              >
                 {c.contact.email} <Arrow />
               </a>
             )}
             {isWebUrl(c.links.whatsapp) && (
-              <a href={c.links.whatsapp}>
+              <a
+                href={c.links.whatsapp}
+                onClick={() =>
+                  track("contact_click", {
+                    channel: "whatsapp",
+                    origin: "direct",
+                  })
+                }
+              >
                 {c.contact.whatsapp} <Arrow />
               </a>
             )}
@@ -369,7 +412,9 @@ function Contact({ interest }: { interest: string }) {
         <form
           className="contact-form surface-glass surface-glass--strong"
           onSubmit={submit}
+          onFocus={handleFormInteraction}
           onChange={() => {
+            handleFormInteraction();
             setMessage("");
             setFeedback("");
           }}
@@ -521,6 +566,12 @@ function Contact({ interest }: { interest: string }) {
                     href={`${c.links.whatsapp}?text=${encodeURIComponent(message)}`}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() =>
+                      track("contact_click", {
+                        channel: "whatsapp",
+                        origin: "direct",
+                      })
+                    }
                   >
                     {c.contact.whatsappSend}
                     <Arrow />
@@ -530,6 +581,12 @@ function Contact({ interest }: { interest: string }) {
                   <a
                     className="button"
                     href={`mailto:${c.links.email}?subject=${encodeURIComponent(c.contact.subject)}&body=${encodeURIComponent(message)}`}
+                    onClick={() =>
+                      track("contact_click", {
+                        channel: "correo",
+                        origin: "direct",
+                      })
+                    }
                   >
                     {c.contact.mail}
                     <Arrow />
@@ -541,6 +598,12 @@ function Contact({ interest }: { interest: string }) {
                     href={c.links.messenger}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() =>
+                      track("contact_click", {
+                        channel: "messenger",
+                        origin: "direct",
+                      })
+                    }
                   >
                     {c.contact.messengerSend}
                     <Arrow />
@@ -581,18 +644,34 @@ export function App() {
     (p) => sector === c.ui.all || p.sector === sector,
   );
   useEffect(() => {
+    function mapHashToAnalyticsView(hash: string): "inicio" | "proyectos" | "servicios" | "sobre-mi" | "contacto" {
+      if (hash === "#contacto") return "contacto";
+      if (hash === "#sobre-mi") return "sobre-mi";
+      if (["#casos", "#paraiso-laguna"].includes(hash)) return "proyectos";
+      if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
+      return "inicio";
+    }
+
     const syncRoute = () => {
       const hash = window.location.hash;
-      setView(viewForHash(hash));
+      const nextView = viewForHash(hash);
+      setView(nextView);
       setCaseOpen(hash === "#paraiso-laguna");
       setServicePanel(hash === "#precios" ? "precios" : hash === "#proceso" ? "proceso" : "servicios");
       setProfilePanel(hash === "#contacto" ? "contacto" : "perfil");
       setMenu(false);
+      track("page_view", {
+        view: mapHashToAnalyticsView(hash),
+      });
       window.requestAnimationFrame(() => {
         if (hash && hash !== "#main") document.getElementById(hash.slice(1))?.scrollIntoView();
         else window.scrollTo(0, 0);
       });
     };
+    // Track initial page view
+    track("page_view", {
+      view: mapHashToAnalyticsView(window.location.hash),
+    });
     const followInternalLink = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const target = event.target;
@@ -651,14 +730,14 @@ export function App() {
           <a
             className="brand"
             href="#inicio"
-            aria-label={`${c.owner.name} · ${c.owner.role} · ${c.ui.backTop}`}
+            aria-label={`${c.brand.fullName} · ${c.brand.descriptor} · ${c.ui.backTop}`}
           >
             <span className="brand-mark" aria-hidden="true">
-              RC
+              C
             </span>
             <span>
-              {c.owner.name}
-              <small>{c.owner.role}</small>
+              {c.brand.name}
+              <small>{c.brand.creator}</small>
             </span>
           </a>
           <button
@@ -706,7 +785,7 @@ export function App() {
           <div className="hero-top">
             <p className="eyebrow">
               <span className="live-dot" />
-              {c.hero.eyebrow}
+              {c.brand.fullName}
             </p>
             <span className="hero-coordinate" aria-hidden="true">
               OAX. / MX
@@ -715,6 +794,7 @@ export function App() {
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="hero-signature">{c.hero.signature}</p>
+              <p className="hero-descriptor-tag">{c.hero.descriptor}</p>
               <h1>
                 {c.hero.headline} <br />
                 <strong>{c.hero.headlineAccent}</strong>
@@ -722,8 +802,10 @@ export function App() {
               <p className="hero-discipline">{c.hero.discipline}</p>
               <p className="hero-description">{c.hero.body}</p>
               <div className="hero-actions">
-                <ButtonLink>{c.hero.primary}</ButtonLink>
-                <a className="inline-link" href="#paraiso-laguna">
+                <ButtonLink href="#contacto" onClick={() => setInterest(c.hero.primary)}>
+                  {c.hero.primary}
+                </ButtonLink>
+                <a className="inline-link" href="#casos">
                   {c.hero.secondary}
                   <span aria-hidden="true">↓</span>
                 </a>
@@ -798,6 +880,38 @@ export function App() {
               </span>
             ))}
           </div>
+        </div>
+        <section id="diagnostico" className="section container diagnostic-section" hidden={view !== "inicio"}>
+          <div className="diagnostic-intro">
+            <p className="eyebrow">DIAGNÓSTICO LIGERO · ORIENTACIÓN INICIAL</p>
+            <h2>¿Qué necesito resolver primero?</h2>
+            <p className="section-description">
+              No necesitas saber de diseño web ni de automatizaciones para empezar. Responde estas 3 breves preguntas y te orientamos sobre el área donde conviene enfocar el primer paso.
+            </p>
+          </div>
+          <DiagnosticTool
+            onComplete={(area) => {
+              if (typeof window !== "undefined" && (window as unknown as { trackEvent?: (e: string, d?: unknown) => void }).trackEvent) {
+                (window as unknown as { trackEvent: (e: string, d?: unknown) => void }).trackEvent("diagnostic_complete", { need_detected: area });
+              }
+            }}
+            onSelectCta={(areaTitle) => {
+              setInterest(`Diagnóstico: ${areaTitle}`);
+              if (typeof window !== "undefined" && (window as unknown as { trackEvent?: (e: string, d?: unknown) => void }).trackEvent) {
+                (window as unknown as { trackEvent: (e: string, d?: unknown) => void }).trackEvent("contact_click", { origin: "diagnostic" });
+              }
+            }}
+          />
+        </section>
+        <div hidden={view !== "inicio"}>
+          <EducationSection
+            onGoToDiagnostic={() => {
+              document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            onSelectTopic={(topicTitle) => {
+              setInterest(`Consulta educativa: ${topicTitle}`);
+            }}
+          />
         </div>
         {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Capacidades que se conectan."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Capacidades</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
         {view === "servicios" && servicePanel === "servicios" && <details className="approach-details"><summary className="container">Ver el enfoque: del descubrimiento al contacto <span aria-hidden="true">+</span></summary>
@@ -963,6 +1077,7 @@ export function App() {
                   <span className="mono">0{i + 1}</span>
                 </div>
                 <h3>{s.title}</h3>
+                {s.subtitle && <p className="service-subtitle">{s.subtitle}</p>}
                 <p>{s.text}</p>
                 <span className="eyebrow">{s.tags}</span>
                 <details className="service-scope">
@@ -1112,10 +1227,10 @@ export function App() {
             <div className="about-art surface-glass surface-glass--medium">
               <span className="eyebrow">{c.owner.location}</span>
               <div className="editorial-symbol" aria-hidden="true">
-                RC<span>✧</span>
+                Cídiks
               </div>
               <p>{c.about.stamp}</p>
-              <span className="mono">{c.about.location}</span>
+              <span className="mono">{c.brand.tagline}</span>
             </div>
             <div>
               <Heading label={c.about.label} title={c.about.title} />
@@ -1175,9 +1290,9 @@ export function App() {
       <footer className="container">
         <div>
           <a href="#inicio" className="footer-name">
-            {c.owner.name}
+            {c.brand.fullName}
           </a>
-          <p>{c.footer.tagline}</p>
+          <p>{c.brand.descriptor} · {c.brand.tagline}</p>
         </div>
         <div className="footer-links">
           {(["facebook", "linkedin", "instagram", "github"] as const)
@@ -1192,7 +1307,15 @@ export function App() {
                 <Arrow />
               </a>
             ))}
-          <a href="#contacto">
+          <a
+            href="#contacto"
+            onClick={() =>
+              track("contact_click", {
+                channel: "formulario",
+                origin: "footer",
+              })
+            }
+          >
             Contacto
             <Arrow />
           </a>
@@ -1210,7 +1333,17 @@ export function App() {
       {quickContact && !project && !menu && isWebUrl(c.links.whatsapp) && (
         <aside className="quick-contact">
           <span>{c.ui.quickNote}</span>
-          <a href={c.links.whatsapp} target="_blank" rel="noreferrer">
+          <a
+            href={c.links.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() =>
+              track("contact_click", {
+                channel: "whatsapp",
+                origin: "direct",
+              })
+            }
+          >
             {c.ui.quickContact}
             <Arrow />
           </a>
