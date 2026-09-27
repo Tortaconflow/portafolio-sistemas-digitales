@@ -11,9 +11,31 @@ export type AnalyticsEventName =
   | "contact_click"
   | "form_start"
   | "form_prepare"
-  | "form_submit";
+  | "form_submit"
+  | "diagnostic_started"
+  | "diagnostic_question_answered"
+  | "diagnostic_completed"
+  | "solution_recommended"
+  | "contact_started"
+  | "contact_submitted"
+  | "case_study_opened"
+  | "education_opened"
+  | "agent_started"
+  | "agent_completed";
 
-export type AbstractNeedCategory = "presencia" | "conversion" | "operacion" | "desconocido";
+export type AbstractNeedCategory =
+  | "presencia"
+  | "conversion"
+  | "operacion"
+  | "desconocido"
+  | "descubrimiento"
+  | "confianza"
+  | "comunicacion"
+  | "automatizacion"
+  | "organizacion"
+  | "ventas"
+  | "reservas"
+  | "seguimiento";
 
 export interface AnalyticsPayloads {
   page_view: {
@@ -38,7 +60,7 @@ export interface AnalyticsPayloads {
   };
   contact_click: {
     channel: "whatsapp" | "correo" | "messenger" | "formulario";
-    origin?: "hero" | "nav" | "footer" | "diagnostic" | "education" | "direct";
+    origin?: "hero" | "nav" | "footer" | "diagnostic" | "education" | "direct" | "agent";
   };
   form_start: {
     channel_selected: "whatsapp" | "correo" | "messenger";
@@ -52,6 +74,42 @@ export interface AnalyticsPayloads {
   form_submit: {
     channel_selected: "whatsapp" | "correo" | "messenger";
     has_interest: boolean;
+  };
+
+  // Nuevos eventos semánticos de evolución del portafolio
+  diagnostic_started: {
+    source?: "hero" | "nav" | "direct" | "education" | "opportunity_section" | "astra";
+  };
+  diagnostic_question_answered: {
+    question_id: string;
+    step_index: number;
+  };
+  diagnostic_completed: {
+    steps_completed: number;
+    primary_area: string;
+  };
+  solution_recommended: {
+    solution_type: string;
+    priority: "Alta" | "Media" | "Exploratoria";
+  };
+  contact_started: {
+    origin: "direct" | "diagnostic" | "agent" | "hero" | "case_study";
+  };
+  contact_submitted: {
+    channel: "whatsapp" | "correo" | "messenger";
+  };
+  case_study_opened: {
+    case_id: string;
+  };
+  education_opened: {
+    topic_id: string;
+  };
+  agent_started: {
+    mode: "interactive_consultant";
+  };
+  agent_completed: {
+    classified_need: string;
+    recommended_solution: string;
   };
 }
 

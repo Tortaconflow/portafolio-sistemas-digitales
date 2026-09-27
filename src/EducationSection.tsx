@@ -11,7 +11,7 @@ export function EducationSection({ onGoToDiagnostic, onSelectTopic }: EducationS
   const [activeArticleId, setActiveArticleId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("Todas");
 
-  const categories = ["Todas", "Presencia", "Conversión", "Operación"];
+  const categories = ["Todas", "Presencia", "Conversión", "Operación", "Estrategia"];
 
   const filteredArticles = EDUCATION_ARTICLES.filter(
     (art) => filterCategory === "Todas" || art.category === filterCategory

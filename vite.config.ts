@@ -33,7 +33,7 @@ export default defineConfig({
         };
         const tags = `<title>${escapeHtml(title)}</title>
       <meta name="description" content="${escapeHtml(content.seo.description)}" />
-      <meta name="robots" content="${releaseIssues().length ? "noindex, nofollow" : "index, follow"}" />
+      <meta name="robots" content="${content.seo.allowIndexing && !releaseIssues().length ? "index, follow" : "noindex, nofollow"}" />
       <meta property="og:title" content="${escapeHtml(title)}" />
       <meta property="og:description" content="${escapeHtml(content.seo.description)}" />
       <meta property="og:type" content="website" /><meta property="og:locale" content="es_MX" />
@@ -51,7 +51,7 @@ export default defineConfig({
         const domain = isWebUrl(content.links.domain)
           ? new URL(content.links.domain).origin
           : "";
-        const ready = !releaseIssues().length;
+        const ready = content.seo.allowIndexing && !releaseIssues().length;
         this.emitFile({
           type: "asset",
           fileName: "robots.txt",

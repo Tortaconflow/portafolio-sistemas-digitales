@@ -54,7 +54,7 @@ Consulta `PENDIENTES.md` y ejecuta:
 npm run check:release
 ```
 
-Este control comprueba los campos que implementa `scripts/check-release.ts`; actualmente pasa con la URL temporal y los datos configurados. No sustituye la verificación externa de permisos, enlaces, canales de contacto o configuración de Hostinger. Si falla, el build aplica `noindex, nofollow` y muestra pendientes en la interfaz. Consulta `PENDIENTES.md` para los asuntos editoriales y operativos que el script no puede resolver. `noindex` no es privacidad: el sitio publicado sigue siendo accesible por URL.
+Este control comprueba los campos que implementa `scripts/check-release.ts`; actualmente pasa con la URL temporal y los datos configurados. No sustituye la verificación externa de permisos, enlaces, canales de contacto o configuración de Hostinger. La indexación se controla por separado mediante `content.seo.allowIndexing`, que permanece desactivado durante el pre-lanzamiento; el build emite `noindex, nofollow`, bloquea rastreo en `robots.txt` y no crea sitemap. Si el control falla, también muestra pendientes en la interfaz. Consulta `PENDIENTES.md` y `docs/p1-prelaunch.md` antes de habilitar indexación. `noindex` no es privacidad: el sitio publicado sigue siendo accesible por URL.
 
 ## Publicación en Hostinger
 

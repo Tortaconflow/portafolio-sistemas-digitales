@@ -14,6 +14,15 @@ export type Project = {
   tone: string;
   evidenceApproved: boolean;
   gallery?: { src: string; preview?: string; alt: string; category: string }[];
+  caseStudyAnswers?: {
+    problemExisted: string;
+    clientContext: string;
+    decidedToBuild: string;
+    whyBuiltThisWay: string;
+    whatChanged: string;
+    whatCanBeMeasured: string;
+    whatRemainsToImprove: string;
+  };
 };
 export const content = {
   brand: {
@@ -23,14 +32,14 @@ export const content = {
     ascii: "cidiks",
     symbol: "/brand/symbol/cidiks-symbol-color.svg",
     wordmark: "/brand/wordmark/cidiks-wordmark.svg",
-    descriptor: "Diseño web, automatización e IA aplicada",
+    descriptor: "Soluciones digitales, automatización e ingeniería para negocios",
     tagline: "Comprender la raíz. Construir con sentido.",
     commercialProposal: "De una necesidad concreta a una solución digital que puedas usar.",
   },
   owner: {
     name: "Reily Castro",
     shortName: "Reily",
-    role: "Diseño web, automatización e IA aplicada",
+    role: "Soluciones digitales, automatización e ingeniería para negocios",
     location: "Oaxaca, México",
   },
   links: {
@@ -44,10 +53,12 @@ export const content = {
     github: "https://github.com/Tortaconflow",
   },
   seo: {
-    title: "Cídiks · Reily Castro | Diseño web, automatización e IA aplicada",
+    title: "Cídiks · Reily Castro | Soluciones digitales orientadas a problemas reales",
     description:
-      "De una necesidad concreta a una solución digital que puedas usar. Diseño de sitios web, conexiones de atención y automatización para negocios en Oaxaca y México.",
+      "Construcción de soluciones digitales orientadas a problemas reales de negocio. Sitios web, conexiones de atención y automatización para negocios en Oaxaca y México.",
     image: "/brand/social/og-cidiks-1200x630.png",
+    // Activar sólo tras decidir el dominio final y verificar su despliegue.
+    allowIndexing: false,
   },
   release: { approved: true },
   nav: [
@@ -109,9 +120,10 @@ export const content = {
     headlineAccent: "que puedas usar.",
     discipline:
       "Comprender la raíz. Construir con sentido.",
-    body: "Soy Reily Castro. Diseño sitios web y conecto herramientas para facilitar la atención y la operación de tu negocio. Cada proyecto empieza por comprender qué necesitas resolver.",
+    body: "Soy Reily Castro. Diseño sitios web y conecto herramientas digitales para facilitar la atención y operación de negocios. Cada proyecto comienza entendiendo qué necesitas resolver.",
     visualLabel: "Selección de trabajo real para Paraíso Laguna",
     featured: "EN FOCO / ECOSISTEMA DIGITAL",
+    caseLabel: "Primer caso de estudio",
     visualNote: "Oaxaca, México · Comprender la raíz, construir con sentido",
     primary: "Cuéntame qué necesitas resolver",
     secondary: "Ver proyectos",
@@ -120,23 +132,23 @@ export const content = {
     indexNote: "Turismo / Inmobiliario / Comercio / IA",
   },
   capabilities: [
-    "WEB",
+    "DIAGNÓSTICO",
+    "SOLUCIONES DIGITALES",
     "CONVERSIÓN",
     "AUTOMATIZACIÓN",
-    "IA APLICADA",
-    "UX/UI",
-    "SISTEMAS",
+    "SISTEMAS ÁGILES",
+    "PERFORMANCE REAL",
   ],
   problem: {
     label: "EL PUNTO DE PARTIDA",
-    title: "No solo construyo páginas.",
-    emphasis: "Diseño cómo funciona el sistema completo.",
-    body: "Una persona puede descubrirte en una búsqueda, ver tu contenido, visitar tu sitio y escribirte por WhatsApp. Cada paso debe responder a la misma propuesta y facilitar el siguiente.",
-    end: "Diseño las conexiones según lo que vendes, cómo atiendes y dónde se detiene hoy la conversación.",
+    title: "Una web no genera valor por existir.",
+    emphasis: "Tiene valor cuando resuelve una fricción concreta.",
+    body: "Tener presencia digital no garantiza ventas. Una solución funciona cuando una persona te descubre, entiende con claridad qué haces, confía en tu negocio, encuentra lo que busca y puede contactarte o reservar sin tropiezos.",
+    end: "Diseño sistemas conectados según lo que vendes, cómo atiendes y dónde se enfrían hoy tus oportunidades.",
     pieces: [
-      "Que te encuentren",
-      "Que entiendan tu valor",
-      "Que den el siguiente paso",
+      "Descubrimiento y confianza",
+      "Claridad de información",
+      "Conversación y conversión fluida",
     ],
   },
   ecosystem: {
@@ -278,6 +290,22 @@ export const content = {
       url: "https://paraisolaguna.com/",
       tone: "laguna",
       evidenceApproved: true,
+      caseStudyAnswers: {
+        problemExisted:
+          "Experiencias ecoturísticas de alto valor en la Costa de Oaxaca que se comunicaban de forma fragmentada en redes, con dudas reiteradas de visitantes y sin un canal ordenado de consulta.",
+        clientContext:
+          "Operador turístico local que recibe visitantes nacionales y extranjeros con conexiones móviles intermitentes y consultas frecuentes sobre horarios, inclusiones y traslados.",
+        decidedToBuild:
+          "Un sistema compuesto por dirección visual editorial unificada, sitio web de experiencias optimizado para carga ultrarrápida en móviles y ruta directa a WhatsApp.",
+        whyBuiltThisWay:
+          "Se priorizó web estática ultraliviana (WebP adaptable, sin JavaScript pesado) para garantizar que abra al instante incluso en cobertura 3G/4G de playa o carretera.",
+        whatChanged:
+          "La información esencial (qué incluye, recomendaciones, ubicación y contacto) quedó centralizada en un solo lugar navegable con un clic hacia WhatsApp.",
+        whatCanBeMeasured:
+          "Objetivo del proyecto: reducción de consultas redundantes por mensaje, tiempo de carga móvil verificado y disponibilidad ininterrumpida de información.",
+        whatRemainsToImprove:
+          "Verificar en campo la recepción real de analítica de eventos en producción, documentar el funcionamiento del asistente de reservas y consolidar la gestión de perfiles locales.",
+      },
       gallery: [
         {
           src: "/projects/paraiso-laguna/aventura-cabalgata-costa-4x5.webp",
@@ -384,6 +412,22 @@ export const content = {
         "Galería de terreno y entorno natural en la costa",
         "Flujo de atención y visita física directo a WhatsApp",
       ],
+      caseStudyAnswers: {
+        problemExisted:
+          "Los prospectos interesados en terrenos comunales tenían dudas recurrentes sobre certeza legal, plazos de financiamiento y precios de lotes individuales, lo que saturaba la atención manual en mensajes sueltos.",
+        clientContext:
+          "Desarrollo campestre en la costa oaxaqueña donde los compradores provienen de diversas ciudades y requieren claridad jurídica y simulación de mensualidades antes de agendar una visita presencial.",
+        decidedToBuild:
+          "Landing page interactiva con calculadora en tiempo real a 42 meses, buscador de lotes por presupuesto, visualización del entorno y enlace directo a asesor por WhatsApp con el lote cotizado prellenado.",
+        whyBuiltThisWay:
+          "La calculadora en el navegador evita que el prospecto espere horas por una cotización básica, filtrando a la conversación de WhatsApp a personas con interés real y capacidad presupuestal alineada.",
+        whatChanged:
+          "El interesado llega a WhatsApp sabiendo cuánto pagaría de enganche y mensualidad por el lote de su interés, eliminando fricción previa.",
+        whatCanBeMeasured:
+          "Resultado observado: prospectos que inician conversación con lote y presupuesto específico ya seleccionado en la calculadora interactiva.",
+        whatRemainsToImprove:
+          "Conectar el plano interactivo con un inventario actualizado en tiempo real conforme se reserven lotes y registrar trazabilidad completa de citas.",
+      },
       image: "/projects/gubidxa-01.jpeg",
       imageAlt: "Vista del terreno y entorno en Fraccionamiento Gubidxa",
       url: "https://palevioletred-fish-135686.hostingersite.com",
@@ -407,6 +451,22 @@ export const content = {
         "Cotización y pedido mediante WhatsApp",
         "Optimización de velocidad y conversión",
       ],
+      caseStudyAnswers: {
+        problemExisted:
+          "Venta de mayoreo gestionada enviando listas de precios en fotos sueltas o documentos PDF pesados que los compradores no podían leer cómodamente en sus celulares.",
+        clientContext:
+          "Negocio comercial con alta rotación de inventario y clientes mayoristas que necesitan armar pedidos rápidos desde el teléfono sin instalar aplicaciones complejas ni crear cuentas obligatorias.",
+        decidedToBuild:
+          "Un catálogo web ágil y ligero con selector de cantidades y un botón final que formatea el pedido completo en un mensaje estructurado de WhatsApp listo para enviar.",
+        whyBuiltThisWay:
+          "Evita la fricción de un ecommerce tradicional (pasarelas complejas, contraseñas, pagos obligados) que frenaba a los compradores de mayoreo acostumbrados al trato directo por mensaje.",
+        whatChanged:
+          "El cliente selecciona los modelos y cantidades en pantalla y envía el pedido ordenado al vendedor en un solo toque, reduciendo errores de captura.",
+        whatCanBeMeasured:
+          "Resultado observado: pedidos recibidos con desglose exacto de producto y cantidad en el primer mensaje de WhatsApp.",
+        whatRemainsToImprove:
+          "Integrar un panel simple de actualización de stock para que los productos agotados se oculten automáticamente sin editar código.",
+      },
       image: "/projects/senor-gallo-og.png",
       imageAlt: "Vista del catálogo digital de mayoreo Señor Gallo VIP",
       url: "https://darkslategray-dinosaur-608809.hostingersite.com",
@@ -430,6 +490,22 @@ export const content = {
         "Laboratorio de toma de decisiones interdisciplinarias",
         "Interfaz inmersiva desarrollada en React y Tailwind CSS",
       ],
+      caseStudyAnswers: {
+        problemExisted:
+          "La discusión pública sobre inteligencia artificial suele ser hiper-técnica o superficial, careciendo de perspectiva histórica profunda y diversidad de tradiciones éticas.",
+        clientContext:
+          "Proyecto de investigación e interlocución humanística que requería navegar 100 marcos de pensamiento de forma interactiva y accesible para estudiantes e investigadores.",
+        decidedToBuild:
+          "Una plataforma enciclopédica interactiva con consultas guiadas, mapas conceptuales y simulación dialógica basada en fuentes históricas primarias y secundarias.",
+        whyBuiltThisWay:
+          "Se estructuró como una base de conocimiento modular en el cliente para permitir navegación inmediata sin latencia de servidor en cada consulta conceptual.",
+        whatChanged:
+          "El usuario puede confrontar un dilema ético contemporáneo con perspectivas de distintas épocas y culturas en una sola interfaz interactiva.",
+        whatCanBeMeasured:
+          "Objetivo del proyecto: arquitectura de 100 perspectivas documentadas, velocidad de respuesta en interacción y rigor de citas conceptuales.",
+        whatRemainsToImprove:
+          "Optimizar el peso inicial de bundles y enriquecer el mapa de grafos interactivo para dispositivos móviles con baja memoria.",
+      },
       image: "/projects/consejo-og.svg",
       imageAlt: "Plataforma interactiva El Consejo de las Cien Miradas",
       url: "https://github.com/Tortaconflow/el-consejo-de-las-cien-miradas",

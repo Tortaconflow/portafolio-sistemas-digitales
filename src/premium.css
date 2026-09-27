@@ -191,6 +191,8 @@ h2 {
   position: relative;
   isolation: isolate;
   min-width: 0;
+  /* La cinta rotada es decorativa y sobresale de su escenario a 1280 px. */
+  overflow: clip;
 }
 .glass-ribbon {
   position: absolute;

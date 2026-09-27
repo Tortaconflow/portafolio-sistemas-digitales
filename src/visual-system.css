@@ -1220,30 +1220,779 @@ footer {
   border-color: var(--action);
 }
 
-/* Responsive & accesibilidad */
-@media (max-width: 850px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .visual-stage {
-    margin-top: 20px;
-  }
-  .artwork-stack {
-    height: 380px;
-  }
+/* ==========================================================================
+   EVOLUCIÓN EDITORIAL: DIAGNÓSTICO, ASTRA, OPORTUNIDAD Y PERFORMANCE
+   ========================================================================== */
+
+/* Tarjetas de diagnóstico estructurado */
+.diagnostic-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0 24px;
 }
 
-@media (max-width: 640px) {
+.diagnostic-card-item {
+  padding: 16px 18px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.diagnostic-card-item .card-item-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.diagnostic-card-item p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0;
+}
+
+.diagnostic-card-item.highlight-item {
+  background: #f7faf7;
+  border-left: 3px solid var(--action);
+}
+
+.diagnostic-card-item.highlight-step {
+  background: var(--action-light);
+  border-left: 3px solid var(--action);
+}
+
+.priority-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.priority-alta {
+  background: #fde8e4;
+  color: var(--terracotta);
+  border: 1px solid #f6cfc7;
+}
+
+.priority-media {
+  background: #eef4ed;
+  color: var(--action);
+  border: 1px solid #dce5da;
+}
+
+.priority-exploratoria {
+  background: #edf1f8;
+  color: #35618f;
+  border: 1px solid #ced8e6;
+}
+
+/* Sección: ¿Dónde está tu oportunidad? */
+.opportunity-section {
+  padding-block: 60px 40px;
+  border-top: 1px solid var(--line);
+}
+
+.opportunity-intro {
+  max-width: 760px;
+  margin-bottom: 32px;
+}
+
+.opportunity-intro h2 {
+  font-size: clamp(26px, 3.2vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 10px 0 14px;
+}
+
+.opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.opportunity-card {
+  padding: 20px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 150px;
+  transition: all var(--motion-fast) ease;
+}
+
+.opportunity-card:hover {
+  border-color: var(--action);
+  transform: translateY(-2px);
+}
+
+.opportunity-card.is-active {
+  border-color: var(--action);
+  background: #f8faf8;
+  box-shadow: 0 4px 18px rgba(36, 76, 59, 0.12);
+}
+
+.opportunity-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.opportunity-letter {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--action);
+}
+
+.opportunity-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.opportunity-card.is-active .opportunity-status-indicator {
+  background: var(--action);
+}
+
+.opportunity-text {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0;
+}
+
+.opportunity-click-hint {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--action);
+  font-weight: 600;
+}
+
+.opportunity-result-box {
+  margin-top: 10px;
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--surface-radius);
+  border-left: 4px solid var(--action);
+  animation: fadeIn 200ms ease;
+}
+
+/* Sección ASTRA Agent */
+.astra-section {
+  padding-block: 40px 80px;
+}
+
+.astra-container {
+  padding: clamp(24px, 3.5vw, 40px);
+  border-radius: var(--surface-radius);
+}
+
+.astra-identity-header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+}
+
+.astra-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.astra-avatar-svg {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(36, 76, 59, 0.2);
+}
+
+.astra-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.astra-tag {
+  font-size: 11px;
+  color: var(--action);
+  font-weight: 600;
+}
+
+.astra-pill {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--action-light);
+  color: var(--action);
+}
+
+.astra-identity-header h2 {
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.astra-manifesto {
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 12px 0 8px;
+}
+
+.astra-identity-disclaimer {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.astra-welcome-card {
+  padding: 24px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.astra-welcome-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.astra-welcome-card ul {
+  margin-bottom: 24px;
+}
+
+.astra-bubble {
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+
+.astra-bubble-sender {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--action);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.astra-bubble-question {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.astra-bubble-clarification {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.astra-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.astra-custom-input-form {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
+}
+
+.astra-custom-input-form label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.astra-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.astra-input-row input {
+  flex: 1;
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.astra-honest-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #fdfaf3;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--terracotta);
+  margin: 16px 0;
+}
+
+.astra-honest-alert p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* Filosofía de Ingeniería y Performance */
+.engineering-section {
+  padding-block: 60px 80px;
+  border-top: 1px solid var(--line);
+}
+
+.engineering-intro {
+  max-width: 800px;
+  margin-bottom: 36px;
+}
+
+.engineering-intro h2 {
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 10px 0 14px;
+}
+
+.value-chain-diagram {
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--surface-radius);
+  margin-bottom: 36px;
+}
+
+.value-chain-diagram h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 8px 0;
+}
+
+.value-chain-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.value-chain-steps {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.value-chain-steps li:not(.chain-arrow) {
+  padding: 14px 18px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 140px;
+}
+
+.value-chain-steps strong {
+  font-size: 14px;
+  color: var(--action);
+}
+
+.value-chain-steps small {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.chain-arrow {
+  color: var(--terracotta);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.engineering-principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.principles-card,
+.metrics-card {
+  padding: clamp(24px, 3vw, 32px);
+  border-radius: var(--surface-radius);
+}
+
+.principles-card h3,
+.metrics-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.principles-card li {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.principles-card strong {
+  color: var(--ink);
+}
+
+.metrics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.metric-row {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.metric-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.metric-meta strong {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.metric-values {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.metric-badge {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--action);
+  background: var(--action-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.metric-impact {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Casos de estudio: Estructura de 7 preguntas */
+.case-study-seven-answers {
+  margin: 28px 0;
+  padding: 24px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.case-study-seven-answers .eyebrow {
+  margin-bottom: 16px;
+}
+
+.case-answer-block {
+  margin-bottom: 16px;
+}
+
+.case-answer-block strong {
+  display: block;
+  font-size: 13px;
+  color: var(--action);
+  margin-bottom: 4px;
+}
+
+.case-answer-block p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+}
+
+.case-answer-block.highlight-observed {
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: #fdfaf3;
+  border-left: 3px solid var(--terracotta);
+}
+
+/* ==========================================================================
+   REFINAMIENTO MOBILE: HEADER, HERO, ESPACIADOS Y PERFORMANCE
+   ========================================================================== */
+
+@media (max-width: 850px) {
+  /* Header compacto profesional de 64px: presencia de marca legible y ergonomía táctil */
+  .site-header {
+    top: 8px;
+    margin: 8px auto 0;
+    width: calc(100% - 24px);
+    border-radius: 12px;
+  }
+  .nav-row {
+    min-height: 64px;
+    padding-inline: 8px;
+    width: 100%;
+  }
+  .site-header .brand {
+    gap: 10px;
+    font-size: 13px;
+  }
+  .cidiks-symbol {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+  .cidiks-wordmark {
+    width: 82px;
+    height: 28px;
+  }
+  .brand small {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+  .site-header .menu-toggle {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--action);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 8px;
+    background: var(--action-light);
+    border: 1px solid transparent;
+  }
+  .site-header .menu-toggle:focus-visible {
+    outline: 2px solid var(--action);
+    outline-offset: 2px;
+  }
+
+  /* Espaciado móvil consistente: 24px lateral, secciones 48-64px */
+  .container {
+    width: calc(100% - 48px); /* 24px lateral padding */
+  }
+  .section {
+    padding-block: clamp(48px, 8vw, 64px);
+  }
+
+  /* Hero Mobile */
+  .hero {
+    padding-block: 20px 32px;
+  }
+  .hero-top {
+    margin-bottom: 12px;
+  }
+  .hero-top .eyebrow {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  .hero-coordinate {
+    font-size: 10px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .hero-copy {
+    max-width: 100%;
+  }
+
+  .hero-signature {
+    font-size: 11px;
+    margin-bottom: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-descriptor-tag {
+    font-size: 13px;
+    margin-bottom: 14px;
+    color: var(--muted);
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 6.5vw, 36px);
+    line-height: 1.16;
+    letter-spacing: -0.035em;
+    margin-bottom: 14px;
+  }
+
+  .hero-discipline {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  .hero-description {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  /* Botones CTA en móvil */
   .hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .hero-actions .button {
+    width: 100%;
+    min-height: 52px;
+    justify-content: center;
+    font-size: 15px;
+    padding: 14px 20px;
+  }
+
+  .hero-actions .inline-link {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* Microcopy discreto que no compite con CTA */
+  .hero-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 12px;
+    text-align: center;
+    opacity: 0.85;
+    line-height: 1.4;
+  }
+
+  /* Visual stage: no debe empujar contenido ni invadir el hero */
+  .visual-stage {
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .artwork-stack {
+    max-width: 260px;
+    height: 220px;
+    margin-inline: auto;
+  }
+
+  .artwork-sheet {
+    width: 180px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(32, 41, 37, 0.08);
+  }
+
+  .sheet-0 {
+    transform: rotate(-4deg) translate(-15px, -8px);
+  }
+  .sheet-1 {
+    transform: rotate(3deg) translate(12px, 6px);
+  }
+  .sheet-2 {
+    transform: rotate(-1deg) translate(0, 0);
+  }
+
+  .stage-caption {
+    margin-top: 14px;
+    padding: 10px 14px;
+    font-size: 12px;
+    width: 100%;
+    max-width: 320px;
+    justify-content: space-between;
+  }
+
+  .stage-note {
+    font-size: 11px;
+    margin-top: 6px;
+    opacity: 0.75;
+  }
+
+  .hero-index {
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .value-chain-steps {
     flex-direction: column;
     align-items: stretch;
   }
-  .hero-actions .button {
-    width: 100%;
+  .chain-arrow {
+    text-align: center;
   }
-  .hero-index {
-    padding: 18px;
+
+  .astra-input-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Pantallas muy pequeñas (320px - 360px) */
+  .container {
+    width: calc(100% - 32px); /* 16px lateral padding en dispositivos ultraestrechos */
+  }
+  .hero h1 {
+    font-size: 26px;
+  }
+  .artwork-sheet {
+    width: 160px;
+  }
+  .artwork-stack {
+    max-width: 220px;
+    height: 190px;
   }
 }
 
@@ -1257,3 +2006,47 @@ footer {
     scroll-behavior: auto !important;
   }
 }
+
+/* Suspense lazy load placeholders - prevent CLS and match visual system */
+.lazy-placeholder {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 32px 24px;
+  margin: 32px auto;
+  color: var(--muted);
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  text-align: center;
+}
+.lazy-placeholder.placeholder-case {
+  min-height: 480px;
+}
+.lazy-placeholder.placeholder-education {
+  min-height: 380px;
+}
+.lazy-placeholder.placeholder-diagnostic {
+  min-height: 320px;
+}
+.lazy-placeholder.placeholder-philosophy {
+  min-height: 240px;
+}
+.lazy-placeholder.placeholder-opportunity {
+  min-height: 340px;
+}
+.lazy-placeholder-indicator {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--action);
+  border-radius: 50%;
+  animation: lazy-spin 1s linear infinite;
+}
+@keyframes lazy-spin {
+  to { transform: rotate(360deg); }
+}
+

@@ -1,14 +1,33 @@
-import { ParaisoCaseStudy } from "./ParaisoCaseStudy";
-import { DiagnosticTool } from "./DiagnosticTool";
-import { EducationSection } from "./EducationSection";
 import { track } from "./analytics";
 import {
+  lazy,
+  Suspense,
   useEffect,
   useRef,
   useState,
   type FormEvent,
   type ReactNode,
 } from "react";
+
+// Lazy load below-the-fold modules to minimize initial hero bundle
+const ParaisoCaseStudy = lazy(() =>
+  import("./ParaisoCaseStudy").then((m) => ({ default: m.ParaisoCaseStudy }))
+);
+const DiagnosticTool = lazy(() =>
+  import("./DiagnosticTool").then((m) => ({ default: m.DiagnosticTool }))
+);
+const EducationSection = lazy(() =>
+  import("./EducationSection").then((m) => ({ default: m.EducationSection }))
+);
+const OpportunitySection = lazy(() =>
+  import("./OpportunitySection").then((m) => ({ default: m.OpportunitySection }))
+);
+const AstraAgent = lazy(() =>
+  import("./AstraAgent").then((m) => ({ default: m.AstraAgent }))
+);
+const EngineeringPhilosophy = lazy(() =>
+  import("./EngineeringPhilosophy").then((m) => ({ default: m.EngineeringPhilosophy }))
+);
 import {
   content as c,
   isEmail,
@@ -296,6 +315,39 @@ function CaseDialog({
               <li key={x}>{x}</li>
             ))}
           </ul>
+          {project.caseStudyAnswers && (
+            <div className="case-study-seven-answers">
+              <span className="eyebrow">ESTUDIO DE CASO · PREGUNTAS Y EVIDENCIA</span>
+              <div className="case-answer-block">
+                <strong>1. ¿Qué problema existía?</strong>
+                <p>{project.caseStudyAnswers.problemExisted}</p>
+              </div>
+              <div className="case-answer-block">
+                <strong>2. ¿Qué contexto tenía el cliente?</strong>
+                <p>{project.caseStudyAnswers.clientContext}</p>
+              </div>
+              <div className="case-answer-block">
+                <strong>3. ¿Qué se decidió construir?</strong>
+                <p>{project.caseStudyAnswers.decidedToBuild}</p>
+              </div>
+              <div className="case-answer-block">
+                <strong>4. ¿Por qué se construyó así?</strong>
+                <p>{project.caseStudyAnswers.whyBuiltThisWay}</p>
+              </div>
+              <div className="case-answer-block">
+                <strong>5. ¿Qué cambió?</strong>
+                <p>{project.caseStudyAnswers.whatChanged}</p>
+              </div>
+              <div className="case-answer-block highlight-observed">
+                <strong>6. ¿Qué puede medirse?</strong>
+                <p>{project.caseStudyAnswers.whatCanBeMeasured}</p>
+              </div>
+              <div className="case-answer-block">
+                <strong>7. ¿Qué queda por mejorar?</strong>
+                <p>{project.caseStudyAnswers.whatRemainsToImprove}</p>
+              </div>
+            </div>
+          )}
           {project.gallery?.length ? (
             <ProjectGallery key={project.id} items={project.gallery} />
           ) : null}
@@ -317,6 +369,7 @@ function Contact({ interest }: { interest: string }) {
   function handleFormInteraction() {
     if (!hasStartedForm) {
       setHasStartedForm(true);
+      track("contact_started", { origin: "direct" });
       track("form_start", {
         channel_selected: (channel.toLowerCase() === "correo" ? "correo" : channel.toLowerCase() === "messenger" ? "messenger" : "whatsapp"),
       });
@@ -339,6 +392,9 @@ function Contact({ interest }: { interest: string }) {
     track("form_prepare", {
       channel_selected: selectedChan,
       has_interest: Boolean(interest),
+    });
+    track("contact_submitted", {
+      channel: selectedChan,
     });
     window.setTimeout(() => resultRef.current?.focus(), 0);
   }
@@ -794,7 +850,8 @@ export function App() {
               <p className="hero-signature">{c.hero.signature}</p>
               <p className="hero-descriptor-tag">{c.hero.descriptor}</p>
               <h1>
-                {c.hero.headline} <br />
+                De una necesidad concreta <br />
+                a una solución digital <br />
                 <strong>{c.hero.headlineAccent}</strong>
               </h1>
               <p className="hero-discipline">{c.hero.discipline}</p>
@@ -840,7 +897,7 @@ export function App() {
                 href="#paraiso-laguna"
               >
                 <span>
-                  <small>{c.hero.featured}</small>
+                  <small>{c.hero.featured} · {c.hero.caseLabel}</small>
                   <strong>{c.projects[0].title}</strong>
                 </span>
                 <span className="stage-caption-arrow" aria-hidden="true">
@@ -879,38 +936,87 @@ export function App() {
             ))}
           </div>
         </div>
+        <Suspense fallback={
+          <div className="container lazy-placeholder placeholder-opportunity surface-glass surface-glass--subtle" aria-hidden="true">
+            <div className="lazy-placeholder-indicator" />
+            <span>Cargando matriz de oportunidades...</span>
+          </div>
+        }>
+          <OpportunitySection
+            onSelectOpportunity={(scenarioText, solution) => {
+              setInterest(`Escenario reconocido: "${scenarioText}" → Solución: ${solution}`);
+              document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            onOpenFullDiagnostic={() => {
+              document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          />
+        </Suspense>
+
         <section id="diagnostico" className="section container diagnostic-section" hidden={view !== "inicio"}>
           <div className="diagnostic-intro">
-            <p className="eyebrow">DIAGNÓSTICO LIGERO · ORIENTACIÓN INICIAL</p>
-            <h2>¿Qué necesito resolver primero?</h2>
+            <p className="eyebrow">DIAGNÓSTICO LIGERO DETERMINISTA</p>
+            <h2>Evalúa tu necesidad en 3 preguntas</h2>
             <p className="section-description">
               No necesitas saber de diseño web ni de automatizaciones para empezar. Responde estas 3 breves preguntas y te orientamos sobre el área donde conviene enfocar el primer paso.
             </p>
           </div>
-          <DiagnosticTool
-            onComplete={(area) => {
-              if (typeof window !== "undefined" && (window as unknown as { trackEvent?: (e: string, d?: unknown) => void }).trackEvent) {
-                (window as unknown as { trackEvent: (e: string, d?: unknown) => void }).trackEvent("diagnostic_complete", { need_detected: area });
-              }
-            }}
-            onSelectCta={(areaTitle) => {
-              setInterest(`Diagnóstico: ${areaTitle}`);
-              if (typeof window !== "undefined" && (window as unknown as { trackEvent?: (e: string, d?: unknown) => void }).trackEvent) {
-                (window as unknown as { trackEvent: (e: string, d?: unknown) => void }).trackEvent("contact_click", { origin: "diagnostic" });
-              }
-            }}
-          />
+          <Suspense fallback={
+            <div className="diagnostic-widget surface-glass surface-glass--strong lazy-placeholder placeholder-diagnostic" aria-hidden="true">
+              <div className="lazy-placeholder-indicator" />
+              <span>Preparando diagnóstico determinista...</span>
+            </div>
+          }>
+            <DiagnosticTool
+              onSelectCta={(areaTitle) => {
+                setInterest(`Diagnóstico: ${areaTitle}`);
+                document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
+          </Suspense>
         </section>
-        <div hidden={view !== "inicio"}>
-          <EducationSection
-            onGoToDiagnostic={() => {
-              document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            onSelectTopic={(topicTitle) => {
-              setInterest(`Consulta educativa: ${topicTitle}`);
+
+        <Suspense fallback={
+          <div className="container astra-section lazy-placeholder surface-glass surface-glass--subtle" style={{ minHeight: "220px" }} aria-hidden="true">
+            <div className="lazy-placeholder-indicator" />
+            <span>Iniciando entorno consultivo ASTRA...</span>
+          </div>
+        }>
+          <AstraAgent
+            onSelectCta={(diagnosisSummary) => {
+              setInterest(diagnosisSummary);
+              document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
             }}
           />
+        </Suspense>
+
+        <div hidden={view !== "inicio"}>
+          <Suspense fallback={
+            <div className="container lazy-placeholder placeholder-education surface-glass surface-glass--subtle" aria-hidden="true">
+              <div className="lazy-placeholder-indicator" />
+              <span>Cargando recursos educativos...</span>
+            </div>
+          }>
+            <EducationSection
+              onGoToDiagnostic={() => {
+                document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              onSelectTopic={(topicTitle) => {
+                setInterest(`Consulta educativa: ${topicTitle}`);
+                document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
+          </Suspense>
         </div>
+
+        <Suspense fallback={
+          <div className="container lazy-placeholder placeholder-philosophy surface-glass surface-glass--subtle" aria-hidden="true">
+            <div className="lazy-placeholder-indicator" />
+            <span>Cargando principios de ingeniería...</span>
+          </div>
+        }>
+          <EngineeringPhilosophy />
+        </Suspense>
         {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Capacidades que se conectan."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Capacidades</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
         {view === "servicios" && servicePanel === "servicios" && <details className="approach-details"><summary className="container">Ver el enfoque: del descubrimiento al contacto <span aria-hidden="true">+</span></summary>
         <section className="section container problem-section" hidden={view !== "servicios" || servicePanel !== "servicios"}>
@@ -960,7 +1066,14 @@ export function App() {
         </details>}
         {view === "proyectos" && caseOpen && <>
           <nav className="container view-return" aria-label="Volver al índice"><a href="#casos">← Todos los proyectos</a></nav>
-          <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
+          <Suspense fallback={
+            <div className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong" aria-hidden="true">
+              <div className="lazy-placeholder-indicator" />
+              <span>Cargando caso de estudio y evidencia...</span>
+            </div>
+          }>
+            <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
+          </Suspense>
         </>}
         <section id="casos" className="section cases-section" hidden={view !== "proyectos" || caseOpen}>
           <div className="container">

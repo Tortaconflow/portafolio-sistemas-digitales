@@ -10,11 +10,10 @@ import {
 import { track } from "./analytics";
 
 interface DiagnosticProps {
-  onComplete?: (area: string) => void;
   onSelectCta?: (areaTitle: string) => void;
 }
 
-export function DiagnosticTool({ onComplete, onSelectCta }: DiagnosticProps) {
+export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
   // Historial de respuestas [idOpciónPaso1, idOpciónPaso2, idOpciónPaso3]
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [step, setStep] = useState<number>(0);
@@ -56,10 +55,9 @@ export function DiagnosticTool({ onComplete, onSelectCta }: DiagnosticProps) {
       setStep(totalSteps);
       const res = classifyDiagnostic(updated);
       track("diagnostic_complete", { steps_completed: totalSteps });
+      track("diagnostic_completed", { steps_completed: totalSteps, primary_area: res.primaryArea });
       track("need_detected", { need: res.primaryArea });
-      if (onComplete) {
-        onComplete(res.primaryArea);
-      }
+      track("solution_recommended", { solution_type: res.possibleSolution, priority: res.priority });
       window.setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 50);
@@ -75,6 +73,7 @@ export function DiagnosticTool({ onComplete, onSelectCta }: DiagnosticProps) {
   const handleRestart = () => {
     setSelectedOptions([]);
     setStep(0);
+    setHasStarted(false);
   };
 
   return (
@@ -126,7 +125,13 @@ export function DiagnosticTool({ onComplete, onSelectCta }: DiagnosticProps) {
                   role="radio"
                   aria-checked={isSelected}
                   className={`diagnostic-option-btn ${isSelected ? "is-selected" : ""}`}
-                  onClick={() => handleSelectOption(opt.id)}
+                  onClick={() => {
+                    track("diagnostic_question_answered", {
+                      question_id: currentQuestion.id,
+                      step_index: step + 1,
+                    });
+                    handleSelectOption(opt.id);
+                  }}
                 >
                   <span className="option-indicator" aria-hidden="true" />
                   <span className="option-text">{opt.label}</span>
@@ -138,33 +143,64 @@ export function DiagnosticTool({ onComplete, onSelectCta }: DiagnosticProps) {
       ) : result ? (
         <div className="diagnostic-result" ref={resultRef} tabIndex={-1}>
           <div className="result-header">
-            <span className="eyebrow">ORIENTACIÓN INICIAL DETERMINISTA</span>
+            <span className="eyebrow">DIAGNÓSTICO ESTRUCTURADO</span>
             <h3>Área principal a revisar: {result.areaTitle}</h3>
             <p className="result-area-sub">{result.areaSubtitle}</p>
           </div>
 
           <div className="result-body">
-            <div className="result-section">
-              <h4>¿Por qué?</h4>
-              <p>{result.explanation}</p>
-            </div>
+            <div className="diagnostic-card-grid">
+              <div className="diagnostic-card-item">
+                <span className="card-item-label">Situación actual</span>
+                <p>{result.currentSituation}</p>
+              </div>
 
-            <div className="result-section highlight-step">
-              <h4>Siguiente paso sugerido</h4>
-              <p>{result.suggestedStep}</p>
+              <div className="diagnostic-card-item">
+                <span className="card-item-label">Principal oportunidad</span>
+                <p>{result.mainOpportunity}</p>
+              </div>
+
+              <div className="diagnostic-card-item">
+                <span className="card-item-label">Fricción detectada</span>
+                <p>{result.detectedFriction}</p>
+              </div>
+
+              <div className="diagnostic-card-item highlight-item">
+                <span className="card-item-label">Solución posible</span>
+                <p>{result.possibleSolution}</p>
+              </div>
+
+              <div className="diagnostic-card-item">
+                <span className="card-item-label">Prioridad recomendada</span>
+                <p>
+                  <span className={`priority-badge priority-${result.priority.toLowerCase()}`}>
+                    {result.priority}
+                  </span>
+                </p>
+              </div>
+
+              <div className="diagnostic-card-item highlight-step">
+                <span className="card-item-label">Siguiente paso recomendado</span>
+                <p>{result.recommendedNextStep}</p>
+              </div>
             </div>
 
             <p className="result-disclaimer mono">
-              Nota: Esta es una orientación inicial calculada por reglas claras según tus respuestas, no una auditoría infalible ni una garantía de resultados comerciales.
+              Nota: Orientación inicial calculada por reglas deterministas según tus respuestas. No promete cifras económicas garantizadas: busca facilitar procesos, medir con claridad y reducir tareas repetitivas.
             </p>
 
             <div className="result-actions">
               <a
                 href="#contacto"
                 className="button"
-                onClick={() => onSelectCta && onSelectCta(result.areaTitle)}
+                onClick={() => {
+                  track("contact_started", { origin: "diagnostic" });
+                  if (onSelectCta) {
+                    onSelectCta(`Diagnóstico (${result.areaTitle}): ${result.possibleSolution}`);
+                  }
+                }}
               >
-                Quiero revisar esto con Reily <span aria-hidden="true">↗</span>
+                Quiero hablar sobre mi proyecto <span aria-hidden="true">↗</span>
               </a>
               <button
                 type="button"

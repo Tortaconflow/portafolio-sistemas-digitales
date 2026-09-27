@@ -29,6 +29,14 @@ export interface DiagnosticResult {
   explanation: string;
   suggestedStep: string;
   ctaText: string;
+
+  // Tarjeta de diagnóstico estructurada
+  currentSituation: string;
+  mainOpportunity: string;
+  detectedFriction: string;
+  possibleSolution: string;
+  priority: "Alta" | "Media" | "Exploratoria";
+  recommendedNextStep: string;
 }
 
 // Paso 1: ¿Qué quieres conseguir?
@@ -293,10 +301,21 @@ export function classifyDiagnostic(selectedOptionIds: string[]): DiagnosticResul
         areaTitle: "Presencia digital",
         areaSubtitle: "Presentación, claridad de oferta y descubrimiento local",
         explanation:
-          "Por lo que nos cuentas, parece que una de las primeras áreas a revisar podría ser cómo te encuentran y qué tan claro se explica lo que ofreces. Si las personas no logran encontrar tu negocio en Google o se confunden al ver información dispersa, el esfuerzo comercial se frena antes de empezar.",
+          "Por lo que nos cuentas, una de las primeras áreas a revisar es cómo te encuentran y qué tan claro se explica lo que ofreces. Si las personas no logran encontrar tu negocio en Google o se confunden al ver información dispersa, el esfuerzo comercial se frena antes de empezar.",
         suggestedStep:
           "Antes de construir herramientas complejas, conviene ordenar tu propuesta en una página web clara y optimizar tu ficha local para que quien busque tus servicios entienda tu valor de inmediato.",
         ctaText: "Revisar presencia digital con Reily",
+        currentSituation:
+          "Información del negocio dispersa o difícil de encontrar cuando un cliente potencial busca en internet.",
+        mainOpportunity:
+          "Posicionar tu negocio en búsquedas locales y presentar tu oferta con total claridad en un punto central.",
+        detectedFriction:
+          "El cliente tiene dudas sobre si el negocio sigue activo, horarios o qué ofrece exactamente.",
+        possibleSolution:
+          "Página web ligera enfocada en resolver dudas básicas y ficha optimizada en Google Maps con contacto directo.",
+        priority: selectedOptionIds.includes("resolver_pronto") ? "Alta" : "Media",
+        recommendedNextStep:
+          "Definir las 5 dudas más frecuentes de tus clientes y verificar tu perfil de ubicación local.",
       };
 
     case "conversion":
@@ -306,10 +325,21 @@ export function classifyDiagnostic(selectedOptionIds: string[]): DiagnosticResul
         areaTitle: "Conversión y contacto",
         areaSubtitle: "Ruta desde la visita hasta el mensaje o cotización",
         explanation:
-          "Por lo que nos cuentas, parece que tu negocio ya genera cierto interés, pero una de las primeras áreas a revisar podría ser el camino hacia la consulta. Cuando una persona tiene dudas sobre precios, horarios o debe dar demasiados pasos para preguntar por WhatsApp, muchas oportunidades se enfrían.",
+          "Por lo que nos cuentas, tu negocio ya genera interés, pero la fricción está en el camino hacia la consulta. Cuando una persona tiene dudas sobre precios, horarios o debe dar demasiados pasos para preguntar por WhatsApp, muchas oportunidades se enfrían.",
         suggestedStep:
           "Conviene simplificar el recorrido: organizar la información de decisión en la web (experiencias, catálogo o condiciones) y colocar rutas directas a WhatsApp con contexto previo para que el cliente pregunte con certeza.",
         ctaText: "Revisar flujo de contacto con Reily",
+        currentSituation:
+          "Personas interesadas que llegan por redes o recomendación pero no concretan preguntas o pedidos.",
+        mainOpportunity:
+          "Reducir los pasos entre ver lo que vendes y mandar un mensaje estructurado de WhatsApp.",
+        detectedFriction:
+          "Conversaciones que se enfrían por falta de claridad en precios, opciones o proceso de compra.",
+        possibleSolution:
+          "Catálogo interactivo o landing page con selector directo a WhatsApp que prellena el mensaje con la consulta.",
+        priority: "Alta",
+        recommendedNextStep:
+          "Estructurar un mensaje predeterminado con las opciones clave de tu catálogo para filtrar consultas reales.",
       };
 
     case "operacion":
@@ -324,6 +354,17 @@ export function classifyDiagnostic(selectedOptionIds: string[]): DiagnosticResul
         suggestedStep:
           "Conviene identificar las dos o tres tareas que más tiempo consumen (preguntas frecuentes, registro de interesados o recordatorios) y conectar una solución ligera que ordene la atención sin añadir complejidad.",
         ctaText: "Revisar operación y tareas con Reily",
+        currentSituation:
+          "Atención manual intensiva, repetición de respuestas y riesgo de olvidar clientes en seguimiento.",
+        mainOpportunity:
+          "Recuperar horas semanales conectando herramientas sencillas que registren prospectos y automaticen avisos.",
+        detectedFriction:
+          "Horas perdidas copiando datos o respondiendo preguntas idénticas que deberían responderse antes.",
+        possibleSolution:
+          "Flujo ligero de atención con respuestas predefinidas, registro automático de prospectos o filtro inteligente.",
+        priority: selectedOptionIds.includes("resolver_pronto") ? "Alta" : "Media",
+        recommendedNextStep:
+          "Listar las 3 tareas más repetitivas de tu semana y evaluar si pueden estandarizarse con reglas simples.",
       };
   }
 }
