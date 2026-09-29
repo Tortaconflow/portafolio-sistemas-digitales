@@ -8,6 +8,7 @@ import "./case-study.css";
 import "./visual-system.css";
 import "./paraiso-evidence.css";
 import "./navigation.css";
+import "./altitud-case-study.css";
 import { App } from "./App";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

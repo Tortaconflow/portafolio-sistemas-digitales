@@ -46,7 +46,7 @@ export const content = {
     email: "reilyvica@gmail.com",
     messenger: "https://m.me/reilyvica",
     whatsapp: "https://wa.me/529541621210",
-    domain: "https://sandybrown-turkey-667440.hostingersite.com",
+    domain: "https://reilycastro.com",
     facebook: "https://www.facebook.com/groups/1394889298845236",
     instagram: "",
     linkedin: "",
@@ -57,8 +57,8 @@ export const content = {
     description:
       "Construcción de soluciones digitales orientadas a problemas reales de negocio. Sitios web, conexiones de atención y automatización para negocios en Oaxaca y México.",
     image: "/brand/social/og-cidiks-1200x630.png",
-    // Activar sólo tras decidir el dominio final y verificar su despliegue.
-    allowIndexing: false,
+    // Dominio final confirmado por el propietario; habilitar sólo en el build de producción.
+    allowIndexing: true,
   },
   release: { approved: true },
   nav: [
@@ -262,9 +262,9 @@ export const content = {
   cases: {
     label: "PROYECTOS DOCUMENTADOS",
     title: "Proyectos en distintos contextos.",
-    body: "Explora el caso de Paraíso Laguna y tres proyectos en inmobiliario, comercio e inteligencia artificial. Cada ficha indica su alcance y evidencia disponible.",
+    body: "Explora el caso de Paraíso Laguna y proyectos en inmobiliario, comercio e inteligencia artificial. ALTITUD presenta una exploración conceptual de moda desde Oaxaca.",
     footnote:
-      "Alcances descritos por el propietario. Sin métricas comerciales ni testimonios atribuidos.",
+      "ALTITUD es un proyecto conceptual, no un cliente comercial. Sin métricas comerciales ni testimonios atribuidos.",
   },
   projects: [
     {
@@ -510,6 +510,30 @@ export const content = {
       imageAlt: "Plataforma interactiva El Consejo de las Cien Miradas",
       url: "https://github.com/Tortaconflow/el-consejo-de-las-cien-miradas",
       tone: "edu",
+      evidenceApproved: true,
+    },
+    {
+      id: "altitud",
+      title: "ALTITUD",
+      sector: "Moda conceptual",
+      tagline: "Streetwear / Oaxaca / Creative Direction.",
+      status: "Proyecto conceptual · identidad y campaña",
+      problem:
+        "Explorar una identidad contemporánea inspirada en Oaxaca que conecte territorio, paisaje, arquitectura y cultura urbana sin recurrir a una representación turística convencional.",
+      solution:
+        "Sistema conceptual de streetwear articulado con dirección creativa, identidad visual, prendas editoriales, campaña y contenido visual asistido por IA.",
+      components: [
+        "Concepto: Raíces en movimiento",
+        "Dirección creativa e identidad visual",
+        "Sistema gráfico y aplicaciones en prendas",
+        "Campaña editorial y lookbook",
+        "Flujo creativo con IA generativa y dirección de arte",
+      ],
+      image: "/projects/altitud/altitud-001-campaign.jpg",
+      imageAlt:
+        "Proyecto conceptual ALTITUD: modelo con camiseta gráfica y paisaje urbano de Oaxaca.",
+      url: "",
+      tone: "altitud",
       evidenceApproved: true,
     },
   ] as Project[],

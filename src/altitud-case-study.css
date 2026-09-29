@@ -1,0 +1,138 @@
+.altitud-case {
+  --altitud-bg: #171916;
+  --altitud-paper: #f4f1e8;
+  --altitud-muted: #a9aaa1;
+  --altitud-line: rgba(244, 241, 232, .24);
+  --altitud-accent: #bd4e32;
+  margin: clamp(16px, 3vw, 34px) auto 0;
+  max-width: 1600px;
+  overflow: clip;
+  background: var(--altitud-bg);
+  color: var(--altitud-paper);
+  font-family: "Manrope Variable", sans-serif;
+}
+.altitud-case h1,
+.altitud-case h2,
+.altitud-case h3,
+.altitud-case p,
+.altitud-case figure { margin-top: 0; }
+.altitud-case h1,
+.altitud-case h2 { color: inherit; font-weight: 600; }
+.altitud-micro,
+.altitud-label,
+.altitud-case figcaption,
+.altitud-concept-tag,
+.altitud-steps > li > span {
+  font-family: var(--mono, "IBM Plex Mono", monospace);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.altitud-micro { color: var(--altitud-muted); }
+.altitud-hero {
+  min-height: min(780px, calc(100svh - 96px));
+  padding: clamp(28px, 5vw, 76px);
+  display: grid;
+  grid-template-columns: minmax(260px, .85fr) minmax(0, 1.15fr);
+  gap: clamp(22px, 5vw, 76px);
+  align-items: center;
+  border-bottom: 1px solid var(--altitud-line);
+}
+.altitud-hero-copy { min-width: 0; }
+.altitud-hero-copy > .altitud-micro { margin-bottom: 22px; }
+.altitud-hero h1 {
+  margin-bottom: 24px;
+  font-size: clamp(76px, 13.4vw, 176px);
+  line-height: .74;
+  letter-spacing: -.105em;
+}
+.altitud-hero h1 > span { display: block; }
+.altitud-hero h1 > span + span { margin-top: .12em; }
+.altitud-period { color: var(--altitud-accent); }
+.altitud-descriptor { margin-bottom: 24px; font-size: clamp(14px, 1.5vw, 19px); line-height: 1.55; }
+.altitud-manifesto { margin: 0 0 28px; font-size: clamp(18px, 2.5vw, 30px); font-weight: 500; letter-spacing: -.04em; }
+.altitud-coordinates { display: flex; gap: 20px; margin-bottom: 26px; }
+.altitud-concept-tag { display: inline-block; border: 1px solid var(--altitud-line); padding: 8px 10px; }
+.altitud-figure { min-width: 0; margin-bottom: clamp(46px, 9vw, 120px); }
+.altitud-figure img { display: block; width: 100%; height: auto; max-height: 1100px; object-fit: contain; object-position: center; }
+.altitud-figure figcaption { display: flex; justify-content: space-between; gap: 14px; padding-top: 11px; margin-top: 11px; border-top: 1px solid var(--altitud-line); color: var(--altitud-muted); }
+.altitud-figure figcaption span:first-child { color: var(--altitud-paper); }
+.altitud-hero-image { margin: 0; }
+.altitud-hero-image img { max-height: min(720px, 75svh); }
+.altitud-intro,
+.altitud-idea,
+.altitud-visual-language,
+.altitud-product,
+.altitud-campaign,
+.altitud-process,
+.altitud-close { padding: clamp(68px, 11vw, 150px) clamp(24px, 6.5vw, 94px); }
+.altitud-intro { display: grid; grid-template-columns: minmax(160px, .65fr) minmax(0, 1.8fr); gap: clamp(32px, 9vw, 130px); border-bottom: 1px solid var(--altitud-line); }
+.altitud-label { margin-bottom: 18px; color: var(--altitud-muted); }
+.altitud-disciplines ul { list-style: none; padding: 0; margin: 0; font-size: 12px; line-height: 2.05; }
+.altitud-intro-copy { max-width: 810px; margin: 0; font-size: clamp(22px, 3.2vw, 43px); line-height: 1.28; letter-spacing: -.045em; }
+.altitud-idea { border-bottom: 1px solid var(--altitud-line); }
+.altitud-idea-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(240px, .7fr); gap: clamp(32px, 8vw, 120px); align-items: end; }
+.altitud-idea h2,
+.altitud-section-head h2,
+.altitud-product-head h2,
+.altitud-campaign-head h2 { margin: 0; font-size: clamp(56px, 10vw, 132px); line-height: .9; letter-spacing: -.09em; text-transform: uppercase; }
+.altitud-idea h2 span { color: var(--altitud-accent); }
+.altitud-idea-top > p { max-width: 420px; margin: 0 0 8px; font-size: clamp(20px, 2.4vw, 30px); font-style: italic; line-height: 1.4; }
+.altitud-wordfield { display: flex; flex-wrap: wrap; gap: 13px clamp(18px, 3.4vw, 48px); list-style: none; margin: clamp(54px, 9vw, 110px) 0 0; padding: 18px 0 0; border-top: 1px solid var(--altitud-line); }
+.altitud-wordfield li { font-size: clamp(12px, 1.5vw, 18px); letter-spacing: .1em; text-transform: uppercase; }
+.altitud-wordfield li:nth-child(even) { color: var(--altitud-muted); }
+.altitud-section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(30px, 5vw, 66px); }
+.altitud-section-head .altitud-micro { text-align: right; }
+.altitud-image-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 42px); align-items: start; }
+.altitud-image-pair .altitud-offset { margin-top: clamp(36px, 8vw, 112px); }
+.altitud-street-image { max-width: 900px; margin-left: auto; margin-right: auto; }
+.altitud-product { border-block: 1px solid var(--altitud-line); background: #20221e; }
+.altitud-product-head,
+.altitud-campaign-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, .7fr); gap: clamp(30px, 7vw, 100px); align-items: end; margin-bottom: clamp(34px, 6vw, 76px); }
+.altitud-product-head > p,
+.altitud-campaign-head > p { max-width: 500px; margin: 0 0 6px; font-size: clamp(16px, 1.8vw, 22px); line-height: 1.55; color: #d2d1ca; }
+.altitud-product-pair .altitud-figure { margin-bottom: 0; }
+.altitud-product-note { margin: 24px 0 0; }
+.altitud-campaign-head h2 { font-size: clamp(50px, 8vw, 104px); }
+.altitud-campaign-head > p { color: var(--altitud-paper); }
+.altitud-fog-image { max-width: 1122px; margin-left: auto; margin-right: auto; }
+.altitud-process { background: #20221e; border-block: 1px solid var(--altitud-line); }
+.altitud-steps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--altitud-line); }
+.altitud-steps > li { display: grid; grid-template-columns: 48px minmax(140px, .7fr) minmax(0, 1.5fr); gap: 20px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--altitud-line); }
+.altitud-steps > li > span { color: var(--altitud-accent); }
+.altitud-steps h3 { margin: 0; color: var(--altitud-paper); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.altitud-steps p { max-width: 560px; margin: 0; color: #c5c5bd; font-size: 14px; line-height: 1.6; }
+.altitud-close { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, .85fr); gap: clamp(28px, 6vw, 84px); align-items: center; }
+.altitud-close-image { margin: 0; }
+.altitud-close-copy h2 { margin: 24px 0 32px; font-size: clamp(42px, 6.5vw, 82px); line-height: .98; letter-spacing: -.075em; }
+.altitud-close-copy h2 span { color: var(--altitud-accent); }
+.altitud-close-copy > a { display: inline-flex; min-height: 44px; align-items: center; color: var(--altitud-paper); font-size: 13px; font-weight: 600; text-decoration: none; }
+.altitud-close-copy > a:hover { color: #e2a18e; }
+.altitud-case :is(a, button):focus-visible { outline: 2px solid #e2a18e; outline-offset: 4px; }
+.altitud-figure img { transition: transform 500ms ease; }
+@media (prefers-reduced-motion: reduce) { .altitud-figure img { transition: none; } }
+@media (max-width: 760px) {
+  .altitud-hero { min-height: 0; grid-template-columns: 1fr; padding: 44px clamp(20px, 6vw, 36px) 28px; gap: 30px; }
+  .altitud-hero h1 { font-size: clamp(86px, 22vw, 152px); }
+  .altitud-hero-image img { max-height: none; }
+  .altitud-intro { grid-template-columns: 1fr; gap: 32px; }
+  .altitud-intro-copy { font-size: clamp(24px, 6.3vw, 38px); }
+  .altitud-idea-top,
+  .altitud-product-head,
+  .altitud-campaign-head { grid-template-columns: 1fr; gap: 28px; }
+  .altitud-idea h2 { font-size: clamp(62px, 16vw, 112px); }
+  .altitud-idea-top > p { max-width: 550px; }
+  .altitud-section-head h2 { font-size: clamp(50px, 13vw, 82px); }
+  .altitud-product-head h2,
+  .altitud-campaign-head h2 { font-size: clamp(48px, 12vw, 78px); }
+  .altitud-image-pair { grid-template-columns: 1fr; }
+  .altitud-image-pair .altitud-offset { margin-top: 0; }
+  .altitud-steps > li { grid-template-columns: 32px minmax(0, 1fr); gap: 8px 14px; }
+  .altitud-steps p { grid-column: 2; }
+  .altitud-close { grid-template-columns: 1fr; }
+  .altitud-close-copy h2 { font-size: clamp(44px, 11vw, 66px); }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .altitud-figure:hover img { transform: scale(1.008); }
+}

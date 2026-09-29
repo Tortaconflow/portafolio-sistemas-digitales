@@ -13,6 +13,9 @@ import {
 const ParaisoCaseStudy = lazy(() =>
   import("./ParaisoCaseStudy").then((m) => ({ default: m.ParaisoCaseStudy }))
 );
+const AltitudCaseStudy = lazy(() =>
+  import("./AltitudCaseStudy").then((m) => ({ default: m.AltitudCaseStudy }))
+);
 const DiagnosticTool = lazy(() =>
   import("./DiagnosticTool").then((m) => ({ default: m.DiagnosticTool }))
 );
@@ -39,7 +42,7 @@ import {
 const Arrow = () => <span aria-hidden="true">↗</span>;
 type View = "inicio" | "proyectos" | "servicios" | "perfil";
 function viewForHash(hash: string): View {
-  if (["#casos", "#paraiso-laguna"].includes(hash)) return "proyectos";
+  if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash)) return "proyectos";
   if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
   if (["#sobre-mi", "#contacto"].includes(hash)) return "perfil";
   return "inicio";
@@ -95,12 +98,12 @@ function ProjectImage({
   compact?: boolean;
 }) {
   return project.image ? (
-    <div className="project-image">
+    <div className={`project-image ${project.id === "altitud" ? "project-image--portrait" : ""}`}>
       <img
         src={project.image}
         alt={project.imageAlt}
-        width="1200"
-        height="750"
+        width={project.id === "altitud" ? 1122 : 1200}
+        height={project.id === "altitud" ? 1402 : 750}
         loading="lazy"
         decoding="async"
       />
@@ -682,6 +685,7 @@ function Contact({ interest }: { interest: string }) {
 export function App() {
   const [view, setView] = useState<View>(() => viewForHash(window.location.hash));
   const [caseOpen, setCaseOpen] = useState(() => window.location.hash === "#paraiso-laguna");
+  const [altitudOpen, setAltitudOpen] = useState(() => window.location.hash === "#altitud");
   const [servicePanel, setServicePanel] = useState(() => window.location.hash === "#precios" ? "precios" : window.location.hash === "#proceso" ? "proceso" : "servicios");
   const [profilePanel, setProfilePanel] = useState(() => window.location.hash === "#contacto" ? "contacto" : "perfil");
   const [menu, setMenu] = useState(false),
@@ -703,7 +707,7 @@ export function App() {
     function mapHashToAnalyticsView(hash: string): "inicio" | "proyectos" | "servicios" | "sobre-mi" | "contacto" {
       if (hash === "#contacto") return "contacto";
       if (hash === "#sobre-mi") return "sobre-mi";
-      if (["#casos", "#paraiso-laguna"].includes(hash)) return "proyectos";
+      if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash)) return "proyectos";
       if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
       return "inicio";
     }
@@ -713,6 +717,7 @@ export function App() {
       const nextView = viewForHash(hash);
       setView(nextView);
       setCaseOpen(hash === "#paraiso-laguna");
+      setAltitudOpen(hash === "#altitud");
       setServicePanel(hash === "#precios" ? "precios" : hash === "#proceso" ? "proceso" : "servicios");
       setProfilePanel(hash === "#contacto" ? "contacto" : "perfil");
       setMenu(false);
@@ -763,7 +768,7 @@ export function App() {
       const id = window.location.hash.slice(1);
       if (id && id !== "main") document.getElementById(id)?.scrollIntoView();
     });
-  }, [view, caseOpen, servicePanel, profilePanel]);
+  }, [view, caseOpen, altitudOpen, servicePanel, profilePanel]);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const plan = c.pricing.plans[planIndex];
   const pending = releaseIssues();
@@ -1075,7 +1080,18 @@ export function App() {
             <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
           </Suspense>
         </>}
-        <section id="casos" className="section cases-section" hidden={view !== "proyectos" || caseOpen}>
+        {view === "proyectos" && altitudOpen && <>
+          <nav className="container view-return" aria-label="Volver al índice"><a href="#casos">← Todos los proyectos</a></nav>
+          <Suspense fallback={
+            <div className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong" aria-hidden="true">
+              <div className="lazy-placeholder-indicator" />
+              <span>Cargando caso conceptual ALTITUD...</span>
+            </div>
+          }>
+            <AltitudCaseStudy />
+          </Suspense>
+        </>}
+        <section id="casos" className="section cases-section" hidden={view !== "proyectos" || caseOpen || altitudOpen}>
           <div className="container">
             <Heading
               label={c.cases.label}
@@ -1138,7 +1154,7 @@ export function App() {
                       </span>
                       <button
                         className="text-button"
-                        onClick={() => setProject(p)}
+                        onClick={() => p.id === "altitud" ? (window.location.hash = "#altitud") : setProject(p)}
                         aria-label={`${c.ui.case}: ${p.title}`}
                       >
                         {c.ui.case}
