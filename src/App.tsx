@@ -99,14 +99,18 @@ function ProjectImage({
 }) {
   return project.image ? (
     <div className={`project-image ${project.id === "altitud" ? "project-image--portrait" : ""}`}>
-      <img
-        src={project.image}
-        alt={project.imageAlt}
-        width={project.id === "altitud" ? 1122 : 1200}
-        height={project.id === "altitud" ? 1402 : 750}
-        loading="lazy"
-        decoding="async"
-      />
+      {project.id === "altitud" ? (
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/projects/altitud/altitud-001-campaign-480.webp 480w, /projects/altitud/altitud-001-campaign-900.webp 900w, /projects/altitud/altitud-001-campaign-1122.webp 1122w"
+            sizes="(max-width: 520px) 100vw, (max-width: 768px) 50vw, 33vw"
+          />
+          <img src={project.image} alt={project.imageAlt} width={1122} height={1402} loading="lazy" decoding="async" />
+        </picture>
+      ) : (
+        <img src={project.image} alt={project.imageAlt} width={1200} height={750} loading="lazy" decoding="async" />
+      )}
     </div>
   ) : (
     <div className={`project-art ${project.tone} ${compact ? "compact" : ""}`}>

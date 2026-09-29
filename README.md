@@ -36,7 +36,7 @@ El pie de página enlaza al perfil público `Tortaconflow` en GitHub. LinkedIn s
 
 ## Capturas auténticas
 
-Paraíso Laguna incluye 16 piezas maestras del caso. ALTITUD usa siete originales aportados para este proyecto conceptual. Los demás casos mantienen fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
+Paraíso Laguna incluye 16 piezas maestras del caso. ALTITUD usa siete originales aportados para este proyecto conceptual, conservados en JPEG y acompañados por derivados WebP responsivos con respaldo JPEG. Los demás casos mantienen fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
 
 Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`. Se recomienda 1200 × 750 px y menos de 200 KB cuando sea posible, preservando la legibilidad. Configura `image: '/projects/nombre.webp'` e `imageAlt` descriptivo. La galería usa carga diferida y dimensiones reservadas. Cuando los tres primeros casos tengan imágenes configuradas, el hero mostrará automáticamente su composición de capturas reales en lugar del diagrama.
 

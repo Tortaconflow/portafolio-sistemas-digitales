@@ -60,17 +60,28 @@ function EditorialImage({
   priority?: boolean;
 }) {
   const image = images[name];
+  const stem = image.src.replace(/\.jpg$/, "");
+  const widths = [...new Set([480, Math.min(900, image.width), image.width])];
+  const srcSet = widths
+    .map((width) => `${stem}-${width}.webp ${width}w`)
+    .join(", ");
+  const sizes = name === "street"
+    ? "(max-width: 760px) 100vw, 75vw"
+    : "(max-width: 760px) 100vw, 50vw";
   return (
     <figure className={`altitud-figure ${className}`}>
-      <img
-        src={image.src}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "auto"}
-        decoding="async"
-      />
+      <picture>
+        <source type="image/webp" srcSet={srcSet} sizes={sizes} />
+        <img
+          src={image.src}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
+        />
+      </picture>
       <figcaption>
         <span>{number} / {caption}</span>
         <span>Oaxaca / MX</span>

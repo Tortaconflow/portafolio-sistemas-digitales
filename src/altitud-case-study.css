@@ -55,6 +55,7 @@
 .altitud-coordinates { display: flex; gap: 20px; margin-bottom: 26px; }
 .altitud-concept-tag { display: inline-block; border: 1px solid var(--altitud-line); padding: 8px 10px; }
 .altitud-figure { min-width: 0; margin-bottom: clamp(46px, 9vw, 120px); }
+.altitud-figure picture { display: block; }
 .altitud-figure img { display: block; width: 100%; height: auto; max-height: 1100px; object-fit: contain; object-position: center; }
 .altitud-figure figcaption { display: flex; justify-content: space-between; gap: 14px; padding-top: 11px; margin-top: 11px; border-top: 1px solid var(--altitud-line); color: var(--altitud-muted); }
 .altitud-figure figcaption span:first-child { color: var(--altitud-paper); }

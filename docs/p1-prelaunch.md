@@ -6,7 +6,7 @@ La única URL base del sitio se configura en `src/content.ts`, `content.links.do
 
 Para completar la migración del dominio:
 
-1. El propietario solicitó publicar en el dominio final. El HTTPS, el canonical, `robots.txt`, sitemap y los bundles coincidentes se verificaron después del despliegue.
+1. El propietario solicitó publicar en el dominio final. El HTTPS, el canonical, `robots.txt`, sitemap y los bundles coincidentes se verificaron después del despliegue. ALTITUD carga WebP responsivos con JPEG de respaldo; los originales se conservan sin cambios.
 2. Confirmar en Search Console la indexación del dominio, enviar el sitemap y revisar las vistas previas sociales.
 3. La consulta al subdominio temporal de Hostinger se reinició durante la revisión, sin una respuesta HTTP verificable. Si sigue activo, configurar una redirección HTTP 301 por ruta al dominio final. Después, confirmar códigos 301/200 y que no existan cadenas o bucles.
 
