@@ -1,10 +1,10 @@
 # Portafolio · Reily Jesus Castro Vicuña
 
-Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código en `Tortaconflow/portafolio-sistemas-digitales`, **público temporalmente por indicación del propietario**. El código configura una URL temporal de Hostinger; la conexión exacta del panel de producción y el dominio definitivo requieren confirmación.
+Web en español de México, con React, TypeScript y Vite. Sitio estático sin backend, CMS ni credenciales en el navegador. Código en `Tortaconflow/portafolio-sistemas-digitales`, **público temporalmente por indicación del propietario**. El dominio final es `https://reilycastro.com`; el sitio publicado y su TLS se verificaron el 29 de septiembre de 2026.
 
 ## Navegación del portafolio
 
-La interfaz ofrece vistas compactas por hash: `#inicio`, `#casos`, `#paraiso-laguna`, `#servicios`, `#proceso`, `#precios`, `#sobre-mi` y `#contacto`. El índice de proyectos abre Paraíso Laguna como caso individual; sus capítulos muestran estrategia, web, contenido y evidencia de forma progresiva. Los demás proyectos se consultan en diálogos. Al usar hashes, el sitio estático no necesita reglas de fallback de servidor. Los enlaces directos y los botones atrás/adelante del navegador conservan la vista.
+La interfaz ofrece vistas compactas por hash: `#inicio`, `#casos`, `#paraiso-laguna`, `#altitud`, `#servicios`, `#proceso`, `#precios`, `#sobre-mi` y `#contacto`. El índice abre Paraíso Laguna como caso de estudio y ALTITUD como caso conceptual editorial. Los demás proyectos se consultan en diálogos. Al usar hashes, el sitio estático no necesita reglas de fallback de servidor. Los enlaces directos y los botones atrás/adelante del navegador conservan la vista.
 
 ## Uso local
 
@@ -24,7 +24,7 @@ npm run preview
 
 ## Editar el contenido
 
-Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. El detalle del caso Paraíso Laguna está en `src/ParaisoCaseStudy.tsx`. Los metadatos se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
+Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Los casos editoriales están en `src/ParaisoCaseStudy.tsx` y `src/AltitudCaseStudy.tsx`. Los metadatos del dominio se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
 
 - `owner`: nombre público y nombre corto.
 - `links`: correo, Messenger, WhatsApp opcional, dominio y redes. Usa URLs HTTPS completas. Los marcadores no generan enlaces rotos.
@@ -36,7 +36,7 @@ El pie de página enlaza al perfil público `Tortaconflow` en GitHub. LinkedIn s
 
 ## Capturas auténticas
 
-Paraíso Laguna incluye 16 piezas maestras reales autorizadas por el propietario al incorporarlas al portafolio. Los demás casos mantienen fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
+Paraíso Laguna incluye 16 piezas maestras del caso. ALTITUD usa siete originales aportados para este proyecto conceptual. Los demás casos mantienen fichas tipográficas explícitamente marcadas como pendientes, sin simular interfaces ni resultados. El diagrama del hero explica el flujo comercial y tampoco se presenta como captura de un proyecto.
 
 Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`. Se recomienda 1200 × 750 px y menos de 200 KB cuando sea posible, preservando la legibilidad. Configura `image: '/projects/nombre.webp'` e `imageAlt` descriptivo. La galería usa carga diferida y dimensiones reservadas. Cuando los tres primeros casos tengan imágenes configuradas, el hero mostrará automáticamente su composición de capturas reales en lugar del diagrama.
 
@@ -54,11 +54,11 @@ Consulta `PENDIENTES.md` y ejecuta:
 npm run check:release
 ```
 
-Este control comprueba los campos que implementa `scripts/check-release.ts`; actualmente pasa con la URL temporal y los datos configurados. No sustituye la verificación externa de permisos, enlaces, canales de contacto o configuración de Hostinger. La indexación se controla por separado mediante `content.seo.allowIndexing`, que permanece desactivado durante el pre-lanzamiento; el build emite `noindex, nofollow`, bloquea rastreo en `robots.txt` y no crea sitemap. Si el control falla, también muestra pendientes en la interfaz. Consulta `PENDIENTES.md` y `docs/p1-prelaunch.md` antes de habilitar indexación. `noindex` no es privacidad: el sitio publicado sigue siendo accesible por URL.
+Este control comprueba los campos que implementa `scripts/check-release.ts`; pasó con el dominio final y los datos configurados. No sustituye la verificación externa de permisos, enlaces ni recepción de canales de contacto. `content.seo.allowIndexing` está activo para el dominio final; el build emite `index, follow`, `robots.txt` permite rastreo y se genera `sitemap.xml` con la URL canónica del dominio. La versión publicada se verificó contra los hashes del build el 29 de septiembre de 2026. La indexación efectiva en buscadores requiere seguimiento por separado.
 
 ## Publicación en Hostinger
 
-El propietario confirmó autodeploy. Después del push de `646ef1e` a `origin/main`, la URL temporal de Hostinger sirvió los mismos hashes CSS/JS que el build de ese commit. Esta comprobación confirma la publicación de esa versión; la configuración exacta de la integración aún debe revisarse en el panel. El workflow de GitHub Actions solo compila y crea un artefacto.
+La compilación de GitHub Actions de `2f0a07e` terminó correctamente. Después del push a `origin/main`, `https://reilycastro.com` sirvió los mismos hashes CSS/JS, canonical, `robots.txt` y sitemap del build; la ruta `/#altitud` y sus imágenes se verificaron en producción. El workflow de GitHub Actions compila y crea el artefacto; Hostinger sirve la versión estática.
 
 El dominio se conecta en Hostinger y su DNS; la existencia de una rama de GitHub por sí sola no asigna un dominio. Hay dos rutas posibles según el plan y el tipo de sitio configurado:
 

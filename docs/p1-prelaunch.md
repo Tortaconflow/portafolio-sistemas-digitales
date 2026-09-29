@@ -2,13 +2,13 @@
 
 ## SEO y migración futura
 
-La única URL base del sitio se configura en `src/content.ts`, `content.links.domain`. Hoy apunta al subdominio temporal de Hostinger. `vite.config.ts` deriva de ahí canonical, `og:url`, imágenes sociales absolutas, `WebSite.url` y, cuando corresponda, sitemap. `content.seo.allowIndexing` permanece en `false`: el build emite `noindex, nofollow`, `robots.txt` con `Disallow: /` y ningún sitemap XML. `check:release` valida contenido y rutas, pero no autoriza indexación ni comprueba permisos externos.
+La única URL base del sitio se configura en `src/content.ts`, `content.links.domain`. Desde el 29 de septiembre de 2026 apunta a `https://reilycastro.com`. `vite.config.ts` deriva de ahí canonical, `og:url`, imágenes sociales absolutas, `WebSite.url` y sitemap. El dominio respondió por HTTPS; el build emitió `index, follow`, `robots.txt` con `Allow: /` y sitemap. La versión servida coincide con los hashes del build. `check:release` valida contenido y rutas, pero no verifica la indexación efectiva ni permisos externos.
 
-Cuando se decida y active el dominio definitivo:
+Para completar la migración del dominio:
 
-1. Confirmar dominio, TLS, despliegue y consentimiento para publicar; cambiar **sólo** `content.links.domain` y después `content.seo.allowIndexing` a `true` para el build de producción.
-2. Reconstruir y verificar en el dominio real `title`, descripción, canonical, robots, sitemap, OG, Twitter, JSON-LD y carga de la imagen social. Confirmar que el servidor/CDN no sobreescriba `robots.txt` ni agregue encabezados `X-Robots-Tag` contradictorios.
-3. Si el subdominio temporal sigue accesible, configurar en el hosting una redirección HTTP 301 por ruta hacia el dominio final. Este repositorio no crea la redirección porque el dominio aún no existe. Verificar después códigos 301/200, ausencia de cadenas/bucles, canonical final y sitemap con URLs finales. Revisar Search Console y compartir una vista previa social.
+1. El propietario solicitó publicar en el dominio final. El HTTPS, el canonical, `robots.txt`, sitemap y los bundles coincidentes se verificaron después del despliegue.
+2. Confirmar en Search Console la indexación del dominio, enviar el sitemap y revisar las vistas previas sociales.
+3. La consulta al subdominio temporal de Hostinger se reinició durante la revisión, sin una respuesta HTTP verificable. Si sigue activo, configurar una redirección HTTP 301 por ruta al dominio final. Después, confirmar códigos 301/200 y que no existan cadenas o bucles.
 
 Las referencias a subdominios en `content.projects[*].url` son **destinos de casos de clientes**, no la URL base del portafolio; no deben migrarse junto con ella. Las rutas de favicon, logo e imágenes de proyecto son relativas al origen del sitio. El subdominio temporal puede seguir apareciendo en documentación histórica y en el HTML de la build anterior hasta desplegar una nueva versión.
 
