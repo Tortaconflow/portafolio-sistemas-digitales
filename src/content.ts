@@ -13,6 +13,8 @@ export type Project = {
   url: string;
   tone: string;
   evidenceApproved: boolean;
+  heroBrief?: string;
+  summary?: string;
   gallery?: { src: string; preview?: string; alt: string; category: string }[];
   caseStudyAnswers?: {
     problemExisted: string;
@@ -115,19 +117,19 @@ export const content = {
   hero: {
     brandMark: "Cídiks",
     signature: "Cídiks · Reily Castro",
-    descriptor: "Diseño web, automatización e IA aplicada",
+    descriptor: "Diseño web · Automatización · IA para negocios",
     headline: "De una necesidad concreta a una solución digital",
     headlineAccent: "que puedas usar.",
     discipline:
       "Comprender la raíz. Construir con sentido.",
-    body: "Soy Reily Castro. Diseño sitios web y conecto herramientas digitales para facilitar la atención y operación de negocios. Cada proyecto comienza entendiendo qué necesitas resolver.",
+    body: "Soy Reily Castro. Diseño sitios web, conecto herramientas, automatizo procesos y aplico IA cuando realmente aporta valor a un negocio. Ayudo a proyectos y empresas a resolver necesidades digitales concretas: desde una web clara para que sus clientes los encuentren, hasta ordenar su atención y reducir tareas repetitivas sin comprar tecnología por moda.",
     visualLabel: "Selección de trabajo real para Paraíso Laguna",
     featured: "EN FOCO / ECOSISTEMA DIGITAL",
     caseLabel: "Primer caso de estudio",
     visualNote: "Oaxaca, México · Comprender la raíz, construir con sentido",
     primary: "Cuéntame qué necesitas resolver",
     secondary: "Ver proyectos",
-    note: "Empezamos por entender tu necesidad concreta.",
+    note: "Conversación inicial de 15 minutos para orientarte sin compromiso.",
     indexLabel: "EXPLORA PROYECTOS SELECCIONADOS",
     indexNote: "Turismo / Inmobiliario / Comercio / IA",
   },
@@ -271,6 +273,9 @@ export const content = {
       id: "paraiso-laguna",
       title: "Paraíso Laguna",
       sector: "Turismo",
+      heroBrief: "Ecoturismo · Web y contacto WhatsApp",
+      summary:
+        "Operador ecoturístico en la Costa de Oaxaca: sitio web de experiencias y tours para móvil, dirección de contenido visual y canal directo de consulta y reserva por WhatsApp.",
       tagline: "Identidad, web, contenido y conversación conectados.",
       status: "Trabajo construido · 16 piezas seleccionadas",
       problem:
@@ -399,6 +404,9 @@ export const content = {
       id: "gubidxa",
       title: "Fraccionamiento Gubidxa",
       sector: "Inmobiliario",
+      heroBrief: "Inmobiliario · Calculadora de lotes",
+      summary:
+        "Desarrollo campestre en la Costa de Oaxaca: landing page con calculadora interactiva de financiamiento a 42 meses y canal directo a WhatsApp con lote cotizado prellenado.",
       tagline: "Certeza, inventario y captación en la Costa de Oaxaca.",
       status: "Trabajo construido y activo",
       problem:
@@ -437,7 +445,10 @@ export const content = {
     {
       id: "senor-gallo",
       title: "Señor Gallo VIP",
-      sector: "Comercio",
+      sector: "Comercio mayorista",
+      heroBrief: "Comercio · Catálogo de mayoreo",
+      summary:
+        "Negocio comercial mayorista: catálogo digital para armar pedidos desde el móvil y enviarlos listos por WhatsApp, reemplazando listas de precios en fotos y PDFs.",
       tagline: "Del catálogo al pedido, sin pasos de más.",
       status: "Trabajo construido y activo",
       problem:
@@ -477,6 +488,9 @@ export const content = {
       id: "consejo-cien-miradas",
       title: "El Consejo de las Cien Miradas",
       sector: "Inteligencia Artificial",
+      heroBrief: "IA · Plataforma dialógica",
+      summary:
+        "Plataforma interactiva de consulta humanística: motor dialógico y atlas conceptual de 100 perspectivas éticas frente al desarrollo de la IA.",
       tagline: "100 voces históricas y tradiciones frente al dilema de la IA.",
       status: "Trabajo construido y documentado",
       problem:
@@ -516,6 +530,9 @@ export const content = {
       id: "altitud",
       title: "ALTITUD",
       sector: "Moda conceptual",
+      heroBrief: "Conceptual · Dirección creativa",
+      summary:
+        "Proyecto conceptual de streetwear desde Oaxaca: dirección creativa, identidad visual, prendas editoriales y campaña asistida por IA.",
       tagline: "Streetwear / Oaxaca / Creative Direction.",
       status: "Proyecto conceptual · identidad y campaña",
       problem:

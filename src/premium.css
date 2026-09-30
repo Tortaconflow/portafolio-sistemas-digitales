@@ -266,7 +266,7 @@ h2 {
 }
 .stage-caption {
   position: absolute;
-  bottom: 32px;
+  bottom: 40px;
   left: 10%;
   right: 11%;
   display: flex;
@@ -302,7 +302,7 @@ h2 {
 }
 .stage-note {
   position: absolute;
-  bottom: 2px;
+  bottom: 8px;
   width: 100%;
   text-align: center;
   font: 9px var(--mono);
@@ -679,7 +679,7 @@ textarea {
     font-size: 13px;
   }
   .visual-stage {
-    height: 365px;
+    height: 420px;
   }
   .sheet-0 {
     top: 75px;
@@ -696,19 +696,21 @@ textarea {
     font-size: 40px;
   }
   .stage-caption {
-    left: 3%;
-    right: 0;
-    bottom: 27px;
-    padding: 12px;
+    left: 4%;
+    right: 4%;
+    bottom: 46px;
+    padding: 10px 14px;
   }
   .stage-caption strong {
-    font-size: 16px;
+    font-size: 15px;
   }
   .stage-caption small {
-    font-size: 7px;
+    font-size: 8px;
   }
   .stage-note {
-    font-size: 7px;
+    bottom: 8px;
+    font-size: 9px;
+    line-height: 1.2;
   }
   .hero-index {
     padding: 15px;
@@ -814,7 +816,7 @@ textarea {
     font-size: 9px;
   }
   .visual-stage {
-    height: 370px;
+    height: 415px;
     width: min(360px, 100%);
     margin: 0 auto;
   }
@@ -831,12 +833,15 @@ textarea {
     top: 104px;
   }
   .stage-caption {
-    left: 10%;
-    right: 10%;
-    bottom: 22px;
+    left: 4%;
+    right: 4%;
+    bottom: 44px;
+    padding: 10px 14px;
   }
   .stage-note {
-    bottom: 0;
+    bottom: 8px;
+    font-size: 9px;
+    line-height: 1.25;
   }
   .hero-index {
     margin-top: 24px;
@@ -1281,6 +1286,9 @@ textarea {
 .quick-contact a:hover {
   background: #355579;
 }
+.quick-contact-text-mobile {
+  display: none;
+}
 .project-grid-filtered {
   grid-template-columns: 1fr;
 }
@@ -1303,9 +1311,26 @@ textarea {
   }
 }
 @media (max-width: 600px) {
+  .quick-contact {
+    padding: 3px;
+    right: 12px;
+    bottom: 12px;
+  }
   .quick-contact a {
     font-size: 11px;
-    padding: 10px 15px;
+    padding: 7px 12px;
+    gap: 6px;
+    min-height: 36px;
+  }
+  .quick-contact a > span[aria-hidden="true"] {
+    font-size: 14px;
+  }
+  .quick-contact-text {
+    display: none;
+  }
+  .quick-contact-text-mobile {
+    display: inline;
+    font-weight: 700;
   }
   .project-explorer .gallery-filters button {
     font-size: 10px;

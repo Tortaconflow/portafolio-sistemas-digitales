@@ -122,10 +122,10 @@ export function OpportunitySection({
   return (
     <section id="oportunidad" className="section container opportunity-section" aria-labelledby="opportunity-title">
       <div className="opportunity-intro">
-        <p className="eyebrow">RECONOCIMIENTO RÁPIDO · SIN COMPROMISO</p>
-        <h2 id="opportunity-title">¿Dónde está tu oportunidad?</h2>
+        <p className="eyebrow">DIAGNÓSTICO RÁPIDO · SIN COMPROMISO</p>
+        <h2 id="opportunity-title">¿Dónde estás perdiendo oportunidades?</h2>
         <p className="section-description">
-          Antes de contratar una página o comprar tecnología, identifica qué fricción describe mejor lo que hoy experimenta tu negocio. Selecciona el escenario más cercano:
+          Antes de invertir en una web o comprar herramientas, identifica qué fricción frena hoy a tu negocio. Selecciona la situación que mejor describa lo que te pasa:
         </p>
       </div>
 

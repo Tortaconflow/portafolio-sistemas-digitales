@@ -186,7 +186,7 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
             </div>
 
             <p className="result-disclaimer mono">
-              Nota: Orientación inicial calculada por reglas deterministas según tus respuestas. No promete cifras económicas garantizadas: busca facilitar procesos, medir con claridad y reducir tareas repetitivas.
+              Nota: Una primera orientación basada en tus respuestas para identificar qué tipo de solución se adapta mejor a tu momento actual. No promete resultados comerciales mágicos: busca darte claridad y un punto de partida concreto.
             </p>
 
             <div className="result-actions">

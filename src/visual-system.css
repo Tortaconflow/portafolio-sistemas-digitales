@@ -483,6 +483,40 @@ body {
   color: var(--action);
 }
 
+.index-case-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.index-case-title strong {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.index-case-title small {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.project-summary {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-block: 8px 12px;
+}
+
+.featured-project-summary {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-block: 10px 8px;
+}
+
 /* Capabilities banner */
 .capabilities {
   border-block: 1px solid var(--line);

@@ -928,7 +928,10 @@ export function App() {
                   if (i > 0) setProject(p);
                 }}>
                   <span className="mono">0{i + 1}</span>
-                  {p.title}
+                  <span className="index-case-title">
+                    <strong>{p.title}</strong>
+                    {p.heroBrief && <small>{p.heroBrief}</small>}
+                  </span>
                   <Arrow />
                 </button>
               ))}
@@ -948,7 +951,7 @@ export function App() {
         <Suspense fallback={
           <div className="container lazy-placeholder placeholder-opportunity surface-glass surface-glass--subtle" aria-hidden="true">
             <div className="lazy-placeholder-indicator" />
-            <span>Cargando matriz de oportunidades...</span>
+            <span>Cargando escenarios...</span>
           </div>
         }>
           <OpportunitySection
@@ -964,16 +967,16 @@ export function App() {
 
         <section id="diagnostico" className="section container diagnostic-section" hidden={view !== "inicio"}>
           <div className="diagnostic-intro">
-            <p className="eyebrow">DIAGNÓSTICO LIGERO DETERMINISTA</p>
+            <p className="eyebrow">DIAGNÓSTICO INICIAL · 1 MINUTO</p>
             <h2>Evalúa tu necesidad en 3 preguntas</h2>
             <p className="section-description">
-              No necesitas saber de diseño web ni de automatizaciones para empezar. Responde estas 3 breves preguntas y te orientamos sobre el área donde conviene enfocar el primer paso.
+              Una primera orientación basada en tus respuestas para identificar dónde puede estar tu principal oportunidad digital y qué conviene resolver primero, sin rodeos técnicos ni falsas promesas.
             </p>
           </div>
           <Suspense fallback={
             <div className="diagnostic-widget surface-glass surface-glass--strong lazy-placeholder placeholder-diagnostic" aria-hidden="true">
               <div className="lazy-placeholder-indicator" />
-              <span>Preparando diagnóstico determinista...</span>
+              <span>Preparando orientación inicial...</span>
             </div>
           }>
             <DiagnosticTool
@@ -1108,7 +1111,10 @@ export function App() {
               <div>
                 <p className="eyebrow">CASO DESTACADO · TURISMO</p>
                 <h3>Paraíso Laguna</h3>
-                <p>Contenido, sitio y ruta de contacto documentados. La publicación social, la operación y el impacto comercial siguen pendientes de prueba.</p>
+                <p className="featured-project-summary">
+                  <strong>Operador ecoturístico en la Costa de Oaxaca:</strong> sitio web ágil para consultar experiencias en móvil, dirección de contenido visual y canal directo a WhatsApp para resolver dudas y agendar.
+                </p>
+                <p className="small muted">Trabajo construido: sitio público, dirección visual y ruta de contacto.</p>
                 <a className="button" href="#paraiso-laguna">Explorar caso y evidencia <Arrow /></a>
               </div>
             </article>
@@ -1150,7 +1156,11 @@ export function App() {
                       </span>
                     </div>
                     <h3>{p.title}</h3>
-                    <p>{p.tagline}</p>
+                    {p.summary ? (
+                      <p className="project-summary">{p.summary}</p>
+                    ) : (
+                      <p>{p.tagline}</p>
+                    )}
                     <div className="project-bottom">
                       <span className="status">
                         <span />
@@ -1464,11 +1474,12 @@ export function App() {
       </footer>
       {quickContact && !project && !menu && isWebUrl(c.links.whatsapp) && (
         <aside className="quick-contact">
-          <span>{c.ui.quickNote}</span>
+          <span className="quick-contact-note">{c.ui.quickNote}</span>
           <a
             href={c.links.whatsapp}
             target="_blank"
             rel="noreferrer"
+            aria-label={c.ui.quickContact}
             onClick={() =>
               track("contact_click", {
                 channel: "whatsapp",
@@ -1476,7 +1487,8 @@ export function App() {
               })
             }
           >
-            {c.ui.quickContact}
+            <span className="quick-contact-text">{c.ui.quickContact}</span>
+            <span className="quick-contact-text-mobile" aria-hidden="true">WhatsApp</span>
             <Arrow />
           </a>
         </aside>
