@@ -55,10 +55,11 @@ export const content = {
     github: "https://github.com/Tortaconflow",
   },
   seo: {
-    title: "Cídiks · Reily Castro | Soluciones digitales orientadas a problemas reales",
+    title: "Diseño Web, Automatización e IA para Negocios | Reily Castro",
     description:
-      "Construcción de soluciones digitales orientadas a problemas reales de negocio. Sitios web, conexiones de atención y automatización para negocios en Oaxaca y México.",
+      "Diseño sitios web rápidos, automatizo procesos y creo soluciones con IA para negocios en Oaxaca y México. Soluciones a medida. Conoce mis proyectos.",
     image: "/brand/social/og-cidiks-1200x630.png",
+    googleSiteVerification: "YwXexq6z7XtunddelCV-31rZvF8qUGq_QmAimSU4owY",
     // Dominio final confirmado por el propietario; habilitar sólo en el build de producción.
     allowIndexing: true,
   },
@@ -437,7 +438,8 @@ export const content = {
           "Conectar el plano interactivo con un inventario actualizado en tiempo real conforme se reserven lotes y registrar trazabilidad completa de citas.",
       },
       image: "/projects/gubidxa-01.jpeg",
-      imageAlt: "Vista del terreno y entorno en Fraccionamiento Gubidxa",
+      imageAlt:
+        "Fraccionamiento Gubidxa: visualización de terrenos y desarrollo inmobiliario en Oaxaca",
       url: "https://palevioletred-fish-135686.hostingersite.com",
       tone: "brisa",
       evidenceApproved: true,
@@ -479,7 +481,8 @@ export const content = {
           "Integrar un panel simple de actualización de stock para que los productos agotados se oculten automáticamente sin editar código.",
       },
       image: "/projects/senor-gallo-og.png",
-      imageAlt: "Vista del catálogo digital de mayoreo Señor Gallo VIP",
+      imageAlt:
+        "Catálogo digital de mayoreo y sistema de pedidos para Señor Gallo VIP",
       url: "https://darkslategray-dinosaur-608809.hostingersite.com",
       tone: "gallo",
       evidenceApproved: true,
@@ -521,7 +524,8 @@ export const content = {
           "Optimizar el peso inicial de bundles y enriquecer el mapa de grafos interactivo para dispositivos móviles con baja memoria.",
       },
       image: "/projects/consejo-og.svg",
-      imageAlt: "Plataforma interactiva El Consejo de las Cien Miradas",
+      imageAlt:
+        "Plataforma digital interactiva y archivo cultural El Consejo de las Cien Miradas",
       url: "https://github.com/Tortaconflow/el-consejo-de-las-cien-miradas",
       tone: "edu",
       evidenceApproved: true,

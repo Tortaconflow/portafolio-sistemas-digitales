@@ -25,13 +25,62 @@ export default defineConfig({
         const title = content.seo.title;
         const schema = {
           "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: title,
-          description: content.seo.description,
-          inLanguage: "es-MX",
-          ...(domain ? { url: domain } : {}),
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": `${domain}/#website`,
+              url: domain,
+              name: title,
+              description: content.seo.description,
+              inLanguage: "es-MX",
+              publisher: {
+                "@id": `${domain}/#organization`,
+              },
+            },
+            {
+              "@type": ["ProfessionalService", "LocalBusiness"],
+              "@id": `${domain}/#organization`,
+              name: "Cídiks · Reily Castro",
+              url: domain,
+              logo: `${domain}${content.brand.symbol}`,
+              image: `${domain}${content.seo.image}`,
+              description: content.seo.description,
+              telephone: "+529541621210",
+              priceRange: "$$",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Oaxaca",
+                addressRegion: "OAX",
+                addressCountry: "MX",
+              },
+              founder: {
+                "@type": "Person",
+                name: "Reily Castro",
+                jobTitle: "Ingeniero de Software y Consultor Digital",
+                url: domain,
+                sameAs: [
+                  "https://github.com/Tortaconflow",
+                  "https://wa.me/529541621210",
+                ],
+              },
+              knowsAbout: [
+                "Desarrollo web",
+                "Diseño web responsive",
+                "Automatización de procesos",
+                "Inteligencia artificial para negocios",
+                "Integración de sistemas y APIs",
+              ],
+              areaServed: [
+                { "@type": "AdministrativeArea", name: "Oaxaca" },
+                { "@type": "Country", name: "México" },
+              ],
+            },
+          ],
         };
-        const tags = `<title>${escapeHtml(title)}</title>
+        const verification = content.seo.googleSiteVerification
+          ? `\n      <meta name="google-site-verification" content="${escapeHtml(content.seo.googleSiteVerification)}" />`
+          : "";
+        const tags = `<title>${escapeHtml(title)}</title>${verification}
       <meta name="description" content="${escapeHtml(content.seo.description)}" />
       <meta name="robots" content="${content.seo.allowIndexing && !releaseIssues().length ? "index, follow" : "noindex, nofollow"}" />
       <meta property="og:title" content="${escapeHtml(title)}" />
