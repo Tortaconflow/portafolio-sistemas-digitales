@@ -117,29 +117,29 @@ export const content = {
   hero: {
     brandMark: "Cídiks",
     signature: "Cídiks · Reily Castro",
-    descriptor: "Diseño web · Automatización · IA para negocios",
-    headline: "De una necesidad concreta a una solución digital",
-    headlineAccent: "que puedas usar.",
+    descriptor: "Sitios web · Automatización · Inteligencia artificial",
+    headline: "Sitios web, automatización",
+    headlineAccent: "e IA para negocios.",
     discipline:
       "Comprender la raíz. Construir con sentido.",
-    body: "Soy Reily Castro. Diseño sitios web, conecto herramientas, automatizo procesos y aplico IA cuando realmente aporta valor a un negocio. Ayudo a proyectos y empresas a resolver necesidades digitales concretas: desde una web clara para que sus clientes los encuentren, hasta ordenar su atención y reducir tareas repetitivas sin comprar tecnología por moda.",
+    body: "Soy Reily Castro. Ayudo a negocios que necesitan mostrar mejor lo que ofrecen, atender consultas sin retrasos o reducir tareas repetitivas. Diseño sitios web, conecto herramientas y aplico inteligencia artificial cuando ayuda a resolver el problema.",
     visualLabel: "Selección de trabajo real para Paraíso Laguna",
-    featured: "EN FOCO / ECOSISTEMA DIGITAL",
-    caseLabel: "Primer caso de estudio",
+    featured: "CASO DESTACADO · TURISMO",
+    caseLabel: "Web y consultas por WhatsApp",
     visualNote: "Oaxaca, México · Comprender la raíz, construir con sentido",
     primary: "Cuéntame qué necesitas resolver",
     secondary: "Ver proyectos",
     note: "Conversación inicial de 15 minutos para orientarte sin compromiso.",
     indexLabel: "EXPLORA PROYECTOS SELECCIONADOS",
-    indexNote: "Turismo / Inmobiliario / Comercio / IA",
+    indexNote: "Turismo / Terrenos / Mayoreo",
   },
   capabilities: [
     "DIAGNÓSTICO",
-    "SOLUCIONES DIGITALES",
-    "CONVERSIÓN",
+    "SITIOS WEB",
+    "CATÁLOGOS",
     "AUTOMATIZACIÓN",
-    "SISTEMAS ÁGILES",
-    "PERFORMANCE REAL",
+    "IA APLICADA",
+    "CARGA RÁPIDA",
   ],
   problem: {
     label: "EL PUNTO DE PARTIDA",
@@ -263,8 +263,8 @@ export const content = {
   },
   cases: {
     label: "PROYECTOS DOCUMENTADOS",
-    title: "Proyectos en distintos contextos.",
-    body: "Explora el caso de Paraíso Laguna y proyectos en inmobiliario, comercio e inteligencia artificial. ALTITUD presenta una exploración conceptual de moda desde Oaxaca.",
+    title: "Qué construí y para qué sirve.",
+    body: "Una web para consultar tours, una calculadora de pagos de terrenos, un catálogo para enviar pedidos por WhatsApp y una herramienta para explorar dilemas sobre IA. ALTITUD es una propuesta conceptual de moda desde Oaxaca.",
     footnote:
       "ALTITUD es un proyecto conceptual, no un cliente comercial. Sin métricas comerciales ni testimonios atribuidos.",
   },
@@ -273,7 +273,7 @@ export const content = {
       id: "paraiso-laguna",
       title: "Paraíso Laguna",
       sector: "Turismo",
-      heroBrief: "Ecoturismo · Web y contacto WhatsApp",
+      heroBrief: "Turismo · Web y consultas por WhatsApp",
       summary:
         "Operador ecoturístico en la Costa de Oaxaca: sitio web de experiencias y tours para móvil, dirección de contenido visual y canal directo de consulta y reserva por WhatsApp.",
       tagline: "Identidad, web, contenido y conversación conectados.",
@@ -404,9 +404,9 @@ export const content = {
       id: "gubidxa",
       title: "Fraccionamiento Gubidxa",
       sector: "Inmobiliario",
-      heroBrief: "Inmobiliario · Calculadora de lotes",
+      heroBrief: "Terrenos · Calculadora de pagos",
       summary:
-        "Desarrollo campestre en la Costa de Oaxaca: landing page con calculadora interactiva de financiamiento a 42 meses y canal directo a WhatsApp con lote cotizado prellenado.",
+        "Sitio web de terrenos en la Costa de Oaxaca: permite calcular el enganche y los pagos a 42 meses y consultar por WhatsApp con el lote elegido.",
       tagline: "Certeza, inventario y captación en la Costa de Oaxaca.",
       status: "Trabajo construido y activo",
       problem:
@@ -446,7 +446,7 @@ export const content = {
       id: "senor-gallo",
       title: "Señor Gallo VIP",
       sector: "Comercio mayorista",
-      heroBrief: "Comercio · Catálogo de mayoreo",
+      heroBrief: "Mayoreo · Catálogo y pedidos por WhatsApp",
       summary:
         "Negocio comercial mayorista: catálogo digital para armar pedidos desde el móvil y enviarlos listos por WhatsApp, reemplazando listas de precios en fotos y PDFs.",
       tagline: "Del catálogo al pedido, sin pasos de más.",
@@ -488,9 +488,9 @@ export const content = {
       id: "consejo-cien-miradas",
       title: "El Consejo de las Cien Miradas",
       sector: "Inteligencia Artificial",
-      heroBrief: "IA · Plataforma dialógica",
+      heroBrief: "IA · Consulta de perspectivas éticas",
       summary:
-        "Plataforma interactiva de consulta humanística: motor dialógico y atlas conceptual de 100 perspectivas éticas frente al desarrollo de la IA.",
+        "Herramienta para estudiantes e investigadores: permite explorar dilemas sobre inteligencia artificial desde 100 perspectivas filosóficas e históricas.",
       tagline: "100 voces históricas y tradiciones frente al dilema de la IA.",
       status: "Trabajo construido y documentado",
       problem:
@@ -530,9 +530,9 @@ export const content = {
       id: "altitud",
       title: "ALTITUD",
       sector: "Moda conceptual",
-      heroBrief: "Conceptual · Dirección creativa",
+      heroBrief: "Moda · Identidad y campaña conceptual",
       summary:
-        "Proyecto conceptual de streetwear desde Oaxaca: dirección creativa, identidad visual, prendas editoriales y campaña asistida por IA.",
+        "Propuesta conceptual de moda urbana desde Oaxaca: identidad visual, diseño de prendas y campaña asistida por IA.",
       tagline: "Streetwear / Oaxaca / Creative Direction.",
       status: "Proyecto conceptual · identidad y campaña",
       problem:
@@ -593,9 +593,9 @@ export const content = {
     items: [
       {
         icon: "↗",
-        title: "Presencia digital",
+        title: "Sitios web y catálogos",
         subtitle: "Para negocios que necesitan ser encontrados y generar confianza.",
-        text: "Estructuro y diseño sitios web, landing pages y catálogos claros, rápidos y adaptados a móvil para presentar mejor tu propuesta de valor.",
+        text: "Diseño sitios web y catálogos que explican qué vendes, responden las dudas de tus clientes y facilitan el contacto desde el celular.",
         tags: "SITIOS WEB / CONTENIDO / SEO TÉCNICO / PRESENCIA LOCAL",
         deliverables: [
           "Diseño web y desarrollo adaptable a móviles",
@@ -608,7 +608,7 @@ export const content = {
         icon: "◎",
         title: "Atención y seguimiento",
         subtitle: "Para negocios que reciben solicitudes pero pierden oportunidades.",
-        text: "Conecto los puntos de contacto de tu negocio para que el visitante pueda comunicarse fácilmente y tú puedas organizar las consultas sin fricción.",
+        text: "Conecto tu web, WhatsApp y formularios para que tus clientes puedan contactarte y tú puedas organizar las consultas y darles seguimiento.",
         tags: "WHATSAPP / FORMULARIOS / CONEXIONES / CRM",
         deliverables: [
           "Rutas claras y directas hacia WhatsApp desde la web",
@@ -621,7 +621,7 @@ export const content = {
         icon: "⌘",
         title: "Automatización e IA aplicada",
         subtitle: "Para procesos manuales y tareas repetitivas.",
-        text: "Conecto herramientas para reducir carga operativa. No vendo IA como adorno: analizamos qué problema concreto resuelve y dónde ahorra tiempo.",
+        text: "Conecto herramientas para reducir tareas manuales. Revisamos qué conviene automatizar y si la inteligencia artificial ayuda a resolver el problema.",
         tags: "PROCESOS / CONECTIVIDAD / IA APLICADA / REGLAS",
         deliverables: [
           "Identificación de fricciones operativas y tareas repetidas",

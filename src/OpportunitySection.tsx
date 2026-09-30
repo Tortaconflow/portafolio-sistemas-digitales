@@ -125,7 +125,7 @@ export function OpportunitySection({
         <p className="eyebrow">DIAGNÓSTICO RÁPIDO · SIN COMPROMISO</p>
         <h2 id="opportunity-title">¿Dónde estás perdiendo oportunidades?</h2>
         <p className="section-description">
-          Antes de invertir en una web o comprar herramientas, identifica qué fricción frena hoy a tu negocio. Selecciona la situación que mejor describa lo que te pasa:
+          Antes de invertir en una web o comprar herramientas, identifica qué dificulta que te encuentren, te contacten o hagan un pedido. Elige la situación que mejor describa tu negocio:
         </p>
       </div>
 
@@ -166,7 +166,7 @@ export function OpportunitySection({
               <p>{selected.briefDiagnosis.situation}</p>
             </div>
             <div className="diagnostic-card-item">
-              <span className="card-item-label">Fricción</span>
+              <span className="card-item-label">Qué lo dificulta</span>
               <p>{selected.briefDiagnosis.friction}</p>
             </div>
             <div className="diagnostic-card-item highlight-item">

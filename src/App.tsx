@@ -859,8 +859,7 @@ export function App() {
               <p className="hero-signature">{c.hero.signature}</p>
               <p className="hero-descriptor-tag">{c.hero.descriptor}</p>
               <h1>
-                De una necesidad concreta <br />
-                a una solución digital <br />
+                {c.hero.headline} <br />
                 <strong>{c.hero.headlineAccent}</strong>
               </h1>
               <p className="hero-discipline">{c.hero.discipline}</p>
@@ -970,7 +969,7 @@ export function App() {
             <p className="eyebrow">DIAGNÓSTICO INICIAL · 1 MINUTO</p>
             <h2>Evalúa tu necesidad en 3 preguntas</h2>
             <p className="section-description">
-              Una primera orientación basada en tus respuestas para identificar dónde puede estar tu principal oportunidad digital y qué conviene resolver primero, sin rodeos técnicos ni falsas promesas.
+              Responde 3 preguntas sobre tu negocio para saber qué conviene revisar primero: tu web, la atención a clientes o las tareas manuales.
             </p>
           </div>
           <Suspense fallback={
@@ -1029,7 +1028,7 @@ export function App() {
         }>
           <EngineeringPhilosophy />
         </Suspense>
-        {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Capacidades que se conectan."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Capacidades</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
+        {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Sitios web, atención y automatización."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Servicios</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
         {view === "servicios" && servicePanel === "servicios" && <details className="approach-details"><summary className="container">Ver el enfoque: del descubrimiento al contacto <span aria-hidden="true">+</span></summary>
         <section className="section container problem-section" hidden={view !== "servicios" || servicePanel !== "servicios"}>
           <p className="eyebrow">{c.problem.label}</p>
