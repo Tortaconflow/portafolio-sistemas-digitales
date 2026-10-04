@@ -1,3 +1,4 @@
+import { CaseEvidence } from "./CaseEvidence";
 import { useEffect } from "react";
 
 const images = {
@@ -125,6 +126,7 @@ export function AltitudCaseStudy() {
         <p className="altitud-intro-copy">ALTITUD es un proyecto conceptual de streetwear construido alrededor del territorio oaxaqueño. Explora cómo paisaje, montaña, arquitectura, niebla y cultura urbana pueden convertirse en un lenguaje visual contemporáneo, lejos de una representación turística convencional. Una identidad pensada para vivir en la prenda, la fotografía y la campaña.</p>
       </section>
 
+      <div className="case-evidence-wrap"><CaseEvidence id="altitud" /></div>
       <section className="altitud-idea" aria-labelledby="altitud-idea-title">
         <div className="altitud-idea-top">
           <h2 id="altitud-idea-title">Raíces<br /><span>en movimiento.</span></h2>

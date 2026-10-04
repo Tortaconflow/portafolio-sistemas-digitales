@@ -16,15 +16,6 @@ export type Project = {
   heroBrief?: string;
   summary?: string;
   gallery?: { src: string; preview?: string; alt: string; category: string }[];
-  caseStudyAnswers?: {
-    problemExisted: string;
-    clientContext: string;
-    decidedToBuild: string;
-    whyBuiltThisWay: string;
-    whatChanged: string;
-    whatCanBeMeasured: string;
-    whatRemainsToImprove: string;
-  };
 };
 export const content = {
   brand: {
@@ -34,9 +25,11 @@ export const content = {
     ascii: "cidiks",
     symbol: "/brand/symbol/cidiks-symbol-color.svg",
     wordmark: "/brand/wordmark/cidiks-wordmark.svg",
-    descriptor: "Soluciones digitales, automatización e ingeniería para negocios",
+    descriptor:
+      "Comprensión y construcción de soluciones digitales para negocios",
     tagline: "Comprender la raíz. Construir con sentido.",
-    commercialProposal: "De una necesidad concreta a una solución digital que puedas usar.",
+    commercialProposal:
+      "De una necesidad concreta a una solución digital que puedas usar.",
   },
   owner: {
     name: "Reily Castro",
@@ -55,9 +48,9 @@ export const content = {
     github: "https://github.com/Tortaconflow",
   },
   seo: {
-    title: "Diseño Web, Automatización e IA para Negocios | Reily Castro",
+    title: "CÍDIKS · Soluciones digitales con diagnóstico | Reily Castro",
     description:
-      "Diseño sitios web rápidos, automatizo procesos y creo soluciones con IA para negocios en Oaxaca y México. Soluciones a medida. Conoce mis proyectos.",
+      "Entendemos qué frena tu negocio antes de construir. Diseño web, identidad y automatización desde Oaxaca, con diagnóstico, evidencia y guías para usar tu solución.",
     image: "/brand/social/og-cidiks-1200x630.png",
     googleSiteVerification: "YwXexq6z7XtunddelCV-31rZvF8qUGq_QmAimSU4owY",
     // Dominio final confirmado por el propietario; habilitar sólo en el build de producción.
@@ -67,14 +60,16 @@ export const content = {
   nav: [
     { id: "casos", label: "Proyectos" },
     { id: "servicios", label: "Servicios" },
-    { id: "sobre-mi", label: "Sobre mí" },
+    { id: "proceso", label: "Método" },
+    { id: "conocimiento", label: "Conocimiento", href: "/conocimiento/" },
+    { id: "sobre-mi", label: "CÍDIKS" },
     { id: "contacto", label: "Contacto" },
   ],
   ui: {
     menu: "Menú",
     closeMenu: "Cerrar menú",
     skip: "Ir al contenido",
-    diagnosis: "Cuéntame qué necesitas resolver",
+    diagnosis: "Quiero un diagnóstico",
     case: "Ver caso",
     close: "Cerrar caso",
     visit: "Ver proyecto funcionando",
@@ -118,29 +113,27 @@ export const content = {
   hero: {
     brandMark: "Cídiks",
     signature: "Cídiks · Reily Castro",
-    descriptor: "Sitios web · Automatización · Inteligencia artificial",
-    headline: "Sitios web, automatización",
-    headlineAccent: "e IA para negocios.",
-    discipline:
-      "Comprender la raíz. Construir con sentido.",
-    body: "Soy Reily Castro. Ayudo a negocios que necesitan mostrar mejor lo que ofrecen, atender consultas sin retrasos o reducir tareas repetitivas. Diseño sitios web, conecto herramientas y aplico inteligencia artificial cuando ayuda a resolver el problema.",
+    descriptor: "Soluciones digitales para negocios · Oaxaca y México",
+    headline: "Entendemos primero.",
+    headlineAccent: "Construimos después.",
+    discipline: "Comprender la raíz. Construir con sentido.",
+    body: "Soy Reily Castro. Diseño y desarrollo soluciones digitales para negocios que necesitan claridad antes de invertir en tecnología: explicar mejor su oferta, atender consultas y reducir trabajo repetido.",
     visualLabel: "Selección de trabajo real para Paraíso Laguna",
     featured: "CASO DESTACADO · TURISMO",
     caseLabel: "Web y consultas por WhatsApp",
     visualNote: "Oaxaca, México · Comprender la raíz, construir con sentido",
-    primary: "Cuéntame qué necesitas resolver",
+    primary: "Quiero un diagnóstico",
     secondary: "Ver proyectos",
     note: "Conversación inicial de 15 minutos para orientarte sin compromiso.",
     indexLabel: "EXPLORA PROYECTOS SELECCIONADOS",
     indexNote: "Turismo / Terrenos / Mayoreo",
   },
   capabilities: [
-    "DIAGNÓSTICO",
-    "SITIOS WEB",
-    "CATÁLOGOS",
-    "AUTOMATIZACIÓN",
-    "IA APLICADA",
-    "CARGA RÁPIDA",
+    "CONTEXTO",
+    "CRITERIO",
+    "SOLUCIÓN",
+    "EVIDENCIA",
+    "APRENDIZAJE",
   ],
   problem: {
     label: "EL PUNTO DE PARTIDA",
@@ -296,22 +289,6 @@ export const content = {
       url: "https://paraisolaguna.com/",
       tone: "laguna",
       evidenceApproved: true,
-      caseStudyAnswers: {
-        problemExisted:
-          "Experiencias ecoturísticas de alto valor en la Costa de Oaxaca que se comunicaban de forma fragmentada en redes, con dudas reiteradas de visitantes y sin un canal ordenado de consulta.",
-        clientContext:
-          "Operador turístico local que recibe visitantes nacionales y extranjeros con conexiones móviles intermitentes y consultas frecuentes sobre horarios, inclusiones y traslados.",
-        decidedToBuild:
-          "Un sistema compuesto por dirección visual editorial unificada, sitio web de experiencias optimizado para carga ultrarrápida en móviles y ruta directa a WhatsApp.",
-        whyBuiltThisWay:
-          "Se priorizó web estática ultraliviana (WebP adaptable, sin JavaScript pesado) para garantizar que abra al instante incluso en cobertura 3G/4G de playa o carretera.",
-        whatChanged:
-          "La información esencial (qué incluye, recomendaciones, ubicación y contacto) quedó centralizada en un solo lugar navegable con un clic hacia WhatsApp.",
-        whatCanBeMeasured:
-          "Objetivo del proyecto: reducción de consultas redundantes por mensaje, tiempo de carga móvil verificado y disponibilidad ininterrumpida de información.",
-        whatRemainsToImprove:
-          "Verificar en campo la recepción real de analítica de eventos en producción, documentar el funcionamiento del asistente de reservas y consolidar la gestión de perfiles locales.",
-      },
       gallery: [
         {
           src: "/projects/paraiso-laguna/aventura-cabalgata-costa-4x5.webp",
@@ -421,22 +398,6 @@ export const content = {
         "Galería de terreno y entorno natural en la costa",
         "Flujo de atención y visita física directo a WhatsApp",
       ],
-      caseStudyAnswers: {
-        problemExisted:
-          "Los prospectos interesados en terrenos comunales tenían dudas recurrentes sobre certeza legal, plazos de financiamiento y precios de lotes individuales, lo que saturaba la atención manual en mensajes sueltos.",
-        clientContext:
-          "Desarrollo campestre en la costa oaxaqueña donde los compradores provienen de diversas ciudades y requieren claridad jurídica y simulación de mensualidades antes de agendar una visita presencial.",
-        decidedToBuild:
-          "Landing page interactiva con calculadora en tiempo real a 42 meses, buscador de lotes por presupuesto, visualización del entorno y enlace directo a asesor por WhatsApp con el lote cotizado prellenado.",
-        whyBuiltThisWay:
-          "La calculadora en el navegador evita que el prospecto espere horas por una cotización básica, filtrando a la conversación de WhatsApp a personas con interés real y capacidad presupuestal alineada.",
-        whatChanged:
-          "El interesado llega a WhatsApp sabiendo cuánto pagaría de enganche y mensualidad por el lote de su interés, eliminando fricción previa.",
-        whatCanBeMeasured:
-          "Resultado observado: prospectos que inician conversación con lote y presupuesto específico ya seleccionado en la calculadora interactiva.",
-        whatRemainsToImprove:
-          "Conectar el plano interactivo con un inventario actualizado en tiempo real conforme se reserven lotes y registrar trazabilidad completa de citas.",
-      },
       image: "/projects/gubidxa-01.jpeg",
       imageAlt:
         "Fraccionamiento Gubidxa: visualización de terrenos y desarrollo inmobiliario en Oaxaca",
@@ -464,22 +425,6 @@ export const content = {
         "Cotización y pedido mediante WhatsApp",
         "Optimización de velocidad y conversión",
       ],
-      caseStudyAnswers: {
-        problemExisted:
-          "Venta de mayoreo gestionada enviando listas de precios en fotos sueltas o documentos PDF pesados que los compradores no podían leer cómodamente en sus celulares.",
-        clientContext:
-          "Negocio comercial con alta rotación de inventario y clientes mayoristas que necesitan armar pedidos rápidos desde el teléfono sin instalar aplicaciones complejas ni crear cuentas obligatorias.",
-        decidedToBuild:
-          "Un catálogo web ágil y ligero con selector de cantidades y un botón final que formatea el pedido completo en un mensaje estructurado de WhatsApp listo para enviar.",
-        whyBuiltThisWay:
-          "Evita la fricción de un ecommerce tradicional (pasarelas complejas, contraseñas, pagos obligados) que frenaba a los compradores de mayoreo acostumbrados al trato directo por mensaje.",
-        whatChanged:
-          "El cliente selecciona los modelos y cantidades en pantalla y envía el pedido ordenado al vendedor en un solo toque, reduciendo errores de captura.",
-        whatCanBeMeasured:
-          "Resultado observado: pedidos recibidos con desglose exacto de producto y cantidad en el primer mensaje de WhatsApp.",
-        whatRemainsToImprove:
-          "Integrar un panel simple de actualización de stock para que los productos agotados se oculten automáticamente sin editar código.",
-      },
       image: "/projects/senor-gallo-og.png",
       imageAlt:
         "Catálogo digital de mayoreo y sistema de pedidos para Señor Gallo VIP",
@@ -507,22 +452,6 @@ export const content = {
         "Laboratorio de toma de decisiones interdisciplinarias",
         "Interfaz inmersiva desarrollada en React y Tailwind CSS",
       ],
-      caseStudyAnswers: {
-        problemExisted:
-          "La discusión pública sobre inteligencia artificial suele ser hiper-técnica o superficial, careciendo de perspectiva histórica profunda y diversidad de tradiciones éticas.",
-        clientContext:
-          "Proyecto de investigación e interlocución humanística que requería navegar 100 marcos de pensamiento de forma interactiva y accesible para estudiantes e investigadores.",
-        decidedToBuild:
-          "Una plataforma enciclopédica interactiva con consultas guiadas, mapas conceptuales y simulación dialógica basada en fuentes históricas primarias y secundarias.",
-        whyBuiltThisWay:
-          "Se estructuró como una base de conocimiento modular en el cliente para permitir navegación inmediata sin latencia de servidor en cada consulta conceptual.",
-        whatChanged:
-          "El usuario puede confrontar un dilema ético contemporáneo con perspectivas de distintas épocas y culturas en una sola interfaz interactiva.",
-        whatCanBeMeasured:
-          "Objetivo del proyecto: arquitectura de 100 perspectivas documentadas, velocidad de respuesta en interacción y rigor de citas conceptuales.",
-        whatRemainsToImprove:
-          "Optimizar el peso inicial de bundles y enriquecer el mapa de grafos interactivo para dispositivos móviles con baja memoria.",
-      },
       image: "/projects/consejo-og.svg",
       imageAlt:
         "Plataforma digital interactiva y archivo cultural El Consejo de las Cien Miradas",
@@ -560,45 +489,42 @@ export const content = {
   ] as Project[],
   method: {
     label: "CÓMO TRABAJO",
-    title: "Comprender la raíz. Construir con sentido.",
-    body: "Cada proyecto sigue una secuencia deliberada para asegurar que la solución digital responda a una necesidad real y puedas usarla en tu día a día.",
+    title: "Un problema claro. Una decisión con sentido.",
+    body: "Partimos de tu negocio, tus clientes y tus recursos. Elegimos qué conviene resolver y qué puede esperar.",
     items: [
       {
         number: "01",
-        title: "Comprender",
-        text: "Describir la situación, las personas involucradas, la necesidad concreta y las limitaciones del negocio.",
+        title: "Observar",
+        text: "Revisar cómo te encuentran, qué preguntan y con qué recursos trabajas.",
       },
       {
         number: "02",
-        title: "Definir",
-        text: "Acordar alcance, prioridades y cómo se reconocerá una mejora real antes de escribir una sola línea de código.",
+        title: "Comprender",
+        text: "Separar lo que pides, lo que observamos y lo que todavía suponemos.",
       },
       {
         number: "03",
-        title: "Construir",
-        text: "Implementar la solución y revisar el avance con ejemplos reales de tu operación.",
+        title: "Diagnosticar",
+        text: "Priorizar la fricción que más importa y acordar cómo reconocer una mejora.",
       },
       {
         number: "04",
-        title: "Entregar",
-        text: "Explicar el funcionamiento, las pautas de mantenimiento y los límites del sistema con claridad.",
-      },
-      {
-        number: "05",
-        title: "Revisar",
-        text: "Recoger evidencia y aprendizajes cuando el alcance del proyecto permita seguimiento.",
+        title: "Resolver",
+        text: "Construir, explicar y revisar la intervención adecuada. A veces conviene empezar por contenido o un proceso, y posponer la tecnología.",
       },
     ],
   },
   services: {
     label: "EN QUÉ PUEDO AYUDARTE",
     title: "Servicios organizados por necesidades.",
-    subtitle: "No necesitas dominar tecnologías para empezar. Partimos de lo que tu negocio necesita resolver.",
+    subtitle:
+      "No necesitas dominar tecnologías para empezar. Partimos de lo que tu negocio necesita resolver.",
     items: [
       {
         icon: "↗",
-        title: "Sitios web y catálogos",
-        subtitle: "Para negocios que necesitan ser encontrados y generar confianza.",
+        title: "No te encuentran",
+        subtitle:
+          "Para negocios que necesitan ser encontrados y generar confianza.",
         text: "Diseño sitios web y catálogos que explican qué vendes, responden las dudas de tus clientes y facilitan el contacto desde el celular.",
         tags: "SITIOS WEB / CONTENIDO / SEO TÉCNICO / PRESENCIA LOCAL",
         deliverables: [
@@ -610,20 +536,21 @@ export const content = {
       },
       {
         icon: "◎",
-        title: "Atención y seguimiento",
-        subtitle: "Para negocios que reciben solicitudes pero pierden oportunidades.",
+        title: "Recibes interés, pero se pierde el seguimiento",
+        subtitle:
+          "Para negocios que reciben solicitudes pero pierden oportunidades.",
         text: "Conecto tu web, WhatsApp y formularios para que tus clientes puedan contactarte y tú puedas organizar las consultas y darles seguimiento.",
         tags: "WHATSAPP / FORMULARIOS / CONEXIONES / CRM",
         deliverables: [
           "Rutas claras y directas hacia WhatsApp desde la web",
-          "Formularios de contacto preparados y sin pérdida de datos",
+          "Formularios con validación y una ruta de contacto explícita",
           "Conexión entre canales de atención y recopilación de prospectos",
           "Estructuración de flujos simples de seguimiento o CRM",
         ],
       },
       {
         icon: "⌘",
-        title: "Automatización e IA aplicada",
+        title: "El trabajo manual te quita tiempo",
         subtitle: "Para procesos manuales y tareas repetitivas.",
         text: "Conecto herramientas para reducir tareas manuales. Revisamos qué conviene automatizar y si la inteligencia artificial ayuda a resolver el problema.",
         tags: "PROCESOS / CONECTIVIDAD / IA APLICADA / REGLAS",
@@ -634,32 +561,67 @@ export const content = {
           "Pautas de uso responsable, límites y documentación",
         ],
       },
+      {
+        icon: "↗",
+        title: "Te encuentran, pero no entienden tu oferta",
+        subtitle:
+          "Para negocios con información dispersa o preguntas repetidas.",
+        text: "Ordenamos servicios, condiciones y contenido para que una persona pueda decidir qué le sirve y cómo pedirlo.",
+        tags: "OFERTA / CONTENIDO / UX / ARQUITECTURA",
+        deliverables: [
+          "Revisión de mensajes y preguntas frecuentes",
+          "Arquitectura de contenidos y recorrido de contacto",
+          "Prototipo para revisar con personas reales",
+        ],
+      },
+      {
+        icon: "◎",
+        title: "Tu marca cambia en cada canal",
+        subtitle:
+          "Para negocios que necesitan una identidad coherente y utilizable.",
+        text: "Definimos criterios visuales y recursos para aplicar tu identidad con consistencia en la web y el contenido.",
+        tags: "IDENTIDAD / SISTEMA VISUAL / GUÍAS",
+        deliverables: [
+          "Contexto y dirección visual acordados",
+          "Sistema de color, tipografía y aplicaciones",
+          "Guía de uso y archivos de entrega",
+        ],
+      },
+      {
+        icon: "⌘",
+        title: "Tienes datos, pero no sabes qué cambiar",
+        subtitle:
+          "Para negocios que quieren aprender de sus consultas y proyectos.",
+        text: "Definimos una pregunta, la evidencia que necesitas y un experimento pequeño antes de sumar herramientas de medición.",
+        tags: "MEDICIÓN / EXPERIMENTOS / APRENDIZAJE",
+        deliverables: [
+          "Mapa de etapas y eventos útiles",
+          "Registro de hipótesis y criterios de éxito",
+          "Revisión de resultados cuando haya datos suficientes",
+        ],
+      },
     ],
   },
   process: {
     label: "FILOSOFÍA DE TRABAJO",
-    title: "Comprender → Definir → Construir → Entregar → Revisar",
+    title: "Observar → Comprender → Diagnosticar → Resolver",
     body: "Primero comprendemos la situación y el recorrido de tus clientes. Priorizamos lo esencial, construimos con ejemplos reales y comprobamos que funcione antes de entregar.",
     items: [
       {
+        title: "Observar",
+        text: "Escuchar y revisar la oferta, los clientes, la competencia, los canales y los recursos disponibles. Entregable: mapa del contexto.",
+      },
+      {
         title: "Comprender",
-        text: "Escuchar la oferta, cómo opera el negocio hoy, quién atiende y qué se necesita resolver.",
+        text: "Distinguir la petición inicial de la fricción observada y de las hipótesis pendientes. Entregable: problema y evidencia disponible.",
       },
       {
-        title: "Definir",
-        text: "Establecer prioridades, límites claros y un alcance verificable sin rodeos técnicos.",
+        title: "Diagnosticar",
+        text: "Comparar impacto, esfuerzo, riesgo y evidencia. Entregable: prioridad, alcance y criterio de mejora; también qué posponer.",
       },
       {
-        title: "Construir",
-        text: "Diseñar y desarrollar la interfaz, el contenido y las conexiones necesarias.",
-      },
-      {
-        title: "Entregar",
-        text: "Probar en dispositivos reales, entregar accesos y capacitar sobre el uso de la herramienta.",
-      },
-      {
-        title: "Revisar",
-        text: "Verificar el funcionamiento continuo y recoger aprendizajes sobre la experiencia.",
+        title: "Resolver",
+        text: "Diseñar, construir por etapas, validar y explicar cómo usarlo. Entregable: solución y guía; seguimiento según el alcance acordado.",
       },
     ],
   },
@@ -732,7 +694,7 @@ export const content = {
     label: "SOBRE MÍ",
     title: "Cídiks · Reily Castro",
     emphasis: "Comprender la raíz. Construir con sentido.",
-    body: "Soy Reily Castro. Trabajo en diseño web, automatización e IA aplicada desde Oaxaca, México. Mi enfoque no consiste en vender herramientas como adornos ni en presentarte jerga técnica innecesaria: me dedico a comprender qué le duele a tu operación o cómo llegan tus clientes para construir una solución digital que realmente puedas usar.",
+    body: "Soy Reily Castro. Mi formación está relacionada con Ciencias de la Educación. Trabajo desde Oaxaca para traducir necesidades del negocio en soluciones que puedas comprender y utilizar. Cada contexto tiene distintos hábitos, conocimientos y recursos: el diseño empieza por conocerlos.",
     stamp: "COMPRENDER LA RAÍZ.\nCONSTRUIR CON SENTIDO.",
     location: "Oaxaca, México · Trabajo presencial y remoto.",
     principles: [
@@ -789,7 +751,7 @@ export const content = {
   },
   contact: {
     label: "CONVERSEMOS",
-    title: "Cuéntame qué quieres conseguir.",
+    title: "Cuéntame qué quieres resolver.",
     body: "Antes de hablar de tecnología, entendemos el problema. Dime qué vendes, cómo te encuentran hoy y qué debería funcionar mejor.",
     direct: "También podemos empezar por aquí",
     email: "Escribirme por correo",
@@ -809,7 +771,7 @@ export const content = {
     whatsappSend: "Enviar por WhatsApp",
     messengerSend: "Abrir Messenger",
     messengerNote: "Copia el mensaje y pégalo en la conversación de Messenger.",
-    subject: "Diagnóstico de sistema digital",
+    subject: "Solicitud de diagnóstico · CÍDIKS",
     interest: "Me interesa",
     preview: "Mensaje preparado",
     fields: {
@@ -822,7 +784,7 @@ export const content = {
       currentChannels: "¿Por dónde llegan hoy tus clientes?",
       website: "Sitio web actual (opcional)",
       social: "Red social principal (opcional)",
-      problem: "¿Qué está frenando ese objetivo?",
+      problem: "¿Qué quieres resolver?",
       channel: "Canal de contacto",
       budget: "Presupuesto aproximado",
     },

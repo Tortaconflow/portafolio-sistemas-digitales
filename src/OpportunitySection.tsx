@@ -44,7 +44,7 @@ export const OPPORTUNITY_SCENARIOS: OpportunityScenario[] = [
     letter: "C",
     scenario: "Recibes preguntas repetidas todos los días.",
     briefDiagnosis: {
-      situation: "Pasas 1 a 2 horas diarias respondiendo lo mismo por WhatsApp o llamadas: precios, horarios, envíos o ubicación.",
+      situation: "Una parte de tu tiempo se va en responder lo mismo por WhatsApp o llamadas: precios, horarios, envíos o ubicación.",
       friction: "El tiempo del negocio se consume en atención informativa en lugar de cerrar pedidos o dar el servicio.",
       possibleSolution: "Estructura de respuestas frecuentes visible y botones de WhatsApp con mensaje estructurado.",
       priority: "Alta",
@@ -122,7 +122,7 @@ export function OpportunitySection({
   return (
     <section id="oportunidad" className="section container opportunity-section" aria-labelledby="opportunity-title">
       <div className="opportunity-intro">
-        <p className="eyebrow">DIAGNÓSTICO RÁPIDO · SIN COMPROMISO</p>
+        <p className="eyebrow">ESCENARIOS ILUSTRATIVOS</p>
         <h2 id="opportunity-title">¿Dónde estás perdiendo oportunidades?</h2>
         <p className="section-description">
           Antes de invertir en una web o comprar herramientas, identifica qué dificulta que te encuentren, te contacten o hagan un pedido. Elige la situación que mejor describa tu negocio:
@@ -146,7 +146,7 @@ export function OpportunitySection({
               </div>
               <p className="opportunity-text">"{sc.scenario}"</p>
               <span className="opportunity-click-hint">
-                {isCurrent ? "Ocultar diagnóstico ↑" : "Ver diagnóstico breve ↓"}
+                {isCurrent ? "Ocultar posibilidad ↑" : "Ver una posibilidad ↓"}
               </span>
             </button>
           );
@@ -156,7 +156,7 @@ export function OpportunitySection({
       {selected && (
         <div className="opportunity-result-box surface-glass surface-glass--strong" tabIndex={-1}>
           <div className="result-header">
-            <span className="eyebrow">DIAGNÓSTICO BREVE · ESCENARIO {selected.letter}</span>
+            <span className="eyebrow">ORIENTACIÓN POR REVISAR · ESCENARIO {selected.letter}</span>
             <h3>{selected.scenario}</h3>
           </div>
 
@@ -198,7 +198,7 @@ export function OpportunitySection({
                 className="button button-light"
                 onClick={onOpenFullDiagnostic}
               >
-                Hacer diagnóstico completo de 3 pasos
+                Volver a las 3 preguntas
               </button>
             )}
           </div>

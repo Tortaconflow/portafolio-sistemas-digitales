@@ -1,3 +1,4 @@
+import { CaseEvidence } from "./CaseEvidence";
 import { content as c } from "./content";
 import { useEffect, useRef, useState } from "react";
 
@@ -73,6 +74,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <div><strong>PENDIENTES</strong><span>Publicación social, operación e impacto comercial.</span></div>
         </div>
 
+      <div className="case-evidence-wrap"><CaseEvidence id="paraiso-laguna" /></div>
         <figure className="featured-hero-image surface-glass surface-glass--strong">
           <img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Captura de la página pública de Paraíso Laguna en escritorio" width="1600" height="1000" loading="lazy" decoding="async" />
           <figcaption className="featured-image-caption"><span>Referencia visual del sitio público · correspondencia exacta con la copia local pendiente.</span><a href={c.projects[0].url} target="_blank" rel="noreferrer">Visitar sitio público ↗</a></figcaption>

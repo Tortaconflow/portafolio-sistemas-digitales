@@ -6,7 +6,14 @@ export interface EducationArticle {
   slug: string;
   title: string;
   tagline: string;
-  category: "Presencia" | "Conversión" | "Operación" | "Estrategia";
+  category:
+    | "Presencia"
+    | "Conversión"
+    | "Operación"
+    | "Estrategia"
+    | "Seguridad"
+    | "Identidad"
+    | "Aprendizaje";
   readTime: string;
   concept: string;
   whyItMatters: string;
@@ -29,10 +36,129 @@ export interface EducationArticle {
 
 export const EDUCATION_ARTICLES: EducationArticle[] = [
   {
+    id: "seguridad-entrega",
+    slug: "seguridad-en-la-entrega-digital",
+    title: "¿Qué preguntas hacer antes de recibir una solución digital?",
+    category: "Seguridad",
+    readTime: "3 min de lectura",
+    tagline:
+      "Accesos, datos y recuperación: una entrega que puedes revisar sin promesas de seguridad absoluta.",
+    concept:
+      "Una entrega responsable explica quién controla los accesos, qué información guarda el sistema y cómo se recupera ante un error. Las prácticas deben corresponder al alcance y al riesgo de tu proyecto.",
+    whyItMatters:
+      "Una solución puede verse terminada y seguir dependiendo de una cuenta ajena o de un secreto expuesto. Conocer los límites permite acordar mantenimiento y responsabilidades.",
+    practicalExample:
+      "Ejemplo hipotético: un sitio informativo prepara un mensaje localmente y no guarda consultas. Un CRM sí almacena datos y necesita permisos, respaldos y un procedimiento de recuperación. Sus controles deben ser diferentes.",
+    whatToCheck: [
+      "¿El dominio y las cuentas quedan bajo tu control?",
+      "¿Las credenciales se gestionan fuera del código público y con permisos mínimos?",
+      "¿Qué datos se guardan, quién puede verlos y durante cuánto tiempo?",
+      "Si se guardan datos: ¿hay respaldo y se ha probado cómo recuperarlo?",
+      "¿Quién revisa las acciones sensibles y las actualizaciones?",
+    ],
+    frequentMistakes: [
+      "Confundir una lista de prácticas con una certificación formal.",
+      "Pedir que todas las personas compartan una cuenta con acceso total.",
+      "Aceptar '100% seguro' sin alcance, evidencia ni límites.",
+    ],
+    toolOrResource: {
+      name: "Lista de entrega",
+      description:
+        "Usa estas preguntas para acordar accesos, responsabilidades y límites por escrito.",
+    },
+    suggestedStep:
+      "Pide un inventario de cuentas, datos y dependencias antes de dar la entrega por terminada.",
+    sources: [
+      {
+        title: "Secrets Management Cheat Sheet",
+        organization: "OWASP",
+        url: "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+        type: "técnica",
+      },
+    ],
+  },
+  {
+    id: "identidad-decisiones",
+    slug: "elegir-colores-con-criterio",
+    title: "Elegir colores también es aprender a decidir",
+    category: "Identidad",
+    readTime: "3 min de lectura",
+    tagline:
+      "Una paleta debe ayudarte a comunicar y permitir leer, además de gustarte.",
+    concept:
+      "Elegir una identidad visual implica acordar qué quieres comunicar, dónde se verá y cómo funcionará. Las asociaciones del color dependen del contexto; no son una receta universal para vender.",
+    whyItMatters:
+      "Comprender los criterios de una paleta permite aplicarla de forma consistente y revisar si el texto, los botones y la información se leen bien.",
+    practicalExample:
+      "Experiencia relatada por el fundador: ante la necesidad de definir una identidad visual, desarrolló una herramienta educativa sobre color para que la clienta participara en la decisión. Aquí se describe el enfoque, sin publicar datos de la clienta ni atribuir resultados comerciales.",
+    whatToCheck: [
+      "¿La paleta corresponde al contexto, contenido y aplicaciones del negocio?",
+      "¿El texto normal alcanza una relación de contraste de al menos 4.5:1?",
+      "¿El texto grande alcanza al menos 3:1?",
+      "¿Los estados también se entienden con texto o símbolos, sin depender sólo del color?",
+    ],
+    frequentMistakes: [
+      "Tratar la psicología del color como una garantía de conducta o ventas.",
+      "Elegir una combinación para una imagen y asumir que funcionará igual en todos los botones y textos.",
+    ],
+    toolOrResource: {
+      name: "Criterios de contraste de WCAG",
+      description:
+        "La referencia explica qué se considera texto grande y las excepciones del criterio; revisar un color no demuestra conformidad completa.",
+      officialUrl:
+        "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+    },
+    suggestedStep:
+      "Prueba la paleta en un párrafo, un botón y una ficha de producto. Revisa legibilidad y coherencia antes de aprobarla.",
+    sources: [
+      {
+        title: "Understanding SC 1.4.3: Contrast (Minimum)",
+        organization: "W3C WAI",
+        url: "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html",
+        type: "técnica",
+      },
+    ],
+  },
+  {
+    id: "aprender-proyectos",
+    slug: "aprender-de-cada-proyecto",
+    title: "Cada proyecto puede ayudar a decidir mejor el siguiente",
+    category: "Aprendizaje",
+    readTime: "3 min de lectura",
+    tagline:
+      "Registrar hipótesis, decisiones, horas y errores para aprender con evidencia.",
+    concept:
+      "Un registro útil distingue qué esperabas, qué hiciste, qué ocurrió y qué información todavía falta. Aprender requiere comparar; una impresión aislada no prueba que un cambio funcionó.",
+    whyItMatters:
+      "Cerrar más clientes importa junto con el margen, las horas humanas, la entrega y el retrabajo. Crecer sin revisar estos datos puede aumentar el esfuerzo más rápido que el ingreso.",
+    practicalExample:
+      "Ejemplo hipotético: crees que un resumen previo hará más claras las consultas. Registra consultas antes y después, qué dudas aparecen y el tiempo de atención. Revisa también diferencias de canal o temporada antes de atribuir el cambio a la web.",
+    whatToCheck: [
+      "¿La hipótesis tiene una señal observable y un periodo de revisión?",
+      "¿Registras horas, costos y cambios de alcance por proyecto?",
+      "¿Separas apertura de WhatsApp, mensaje recibido y cliente cerrado?",
+      "¿Documentas errores y condiciones para evitar repetirlos?",
+    ],
+    frequentMistakes: [
+      "Convertir clics en supuestas ventas.",
+      "Usar porcentajes con muestras pequeñas sin mostrar su tamaño.",
+      "Automatizar un proceso sin conocer su frecuencia ni su costo de errores.",
+    ],
+    toolOrResource: {
+      name: "Registro de aprendizaje",
+      description:
+        "Problema → evidencia → hipótesis → decisión → resultado → siguiente revisión. Pauta editorial propia de CÍDIKS.",
+    },
+    suggestedStep:
+      "Elige una pregunta de negocio y registra su línea base durante una semana antes de cambiar el proceso.",
+    sources: [],
+  },
+  {
     id: "google-maps-perfil-negocio",
     slug: "google-maps-perfil-de-negocio",
     title: "¿Para qué sirve realmente Google Maps para un negocio?",
-    tagline: "Diferencia entre solo aparecer en el mapa y presentar información que permita a un cliente visitarte o contactarte.",
+    tagline:
+      "Diferencia entre solo aparecer en el mapa y presentar información que permita a un cliente visitarte o contactarte.",
     category: "Presencia",
     readTime: "4 min de lectura",
     concept:
@@ -55,7 +181,8 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Google Business Profile Manager",
-      description: "Plataforma oficial gratuita de Google para verificar y gestionar la información de tu negocio en Maps y el Buscador.",
+      description:
+        "Plataforma oficial gratuita de Google para verificar y gestionar la información de tu negocio en Maps y el Buscador.",
       officialUrl: "https://support.google.com/business/answer/3038063",
     },
     suggestedStep:
@@ -91,7 +218,8 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     id: "paginas-web-necesidad-real",
     slug: "necesito-realmente-una-pagina-web",
     title: "¿Necesito realmente una página web para mi negocio?",
-    tagline: "Cuándo una web resuelve un problema real y cuándo es preferible empezar optimizando canales más simples.",
+    tagline:
+      "Cuándo una web resuelve un problema real y cuándo es preferible empezar optimizando canales más simples.",
     category: "Presencia",
     readTime: "4 min de lectura",
     concept:
@@ -113,7 +241,8 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "PageSpeed Insights (Google)",
-      description: "Herramienta de Google que presenta datos de laboratorio y, cuando están disponibles, datos de campo para evaluar el rendimiento móvil y de escritorio.",
+      description:
+        "Herramienta de Google que presenta datos de laboratorio y, cuando están disponibles, datos de campo para evaluar el rendimiento móvil y de escritorio.",
       officialUrl: "https://pagespeed.web.dev/",
     },
     suggestedStep:
@@ -136,8 +265,10 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
   {
     id: "whatsapp-y-seguimiento",
     slug: "whatsapp-y-seguimiento-de-clientes",
-    title: "¿Qué diferencia hay entre atender por WhatsApp y tener un flujo de seguimiento?",
-    tagline: "Cómo evitar que las conversaciones con prospectos se enfríen o se pierdan en el desorden de chats.",
+    title:
+      "¿Qué diferencia hay entre atender por WhatsApp y tener un flujo de seguimiento?",
+    tagline:
+      "Cómo evitar que las conversaciones con prospectos se enfríen o se pierdan en el desorden de chats.",
     category: "Conversión",
     readTime: "3 min de lectura",
     concept:
@@ -157,8 +288,10 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Funciones de la aplicación WhatsApp Business",
-      description: "Página oficial de la aplicación con perfil de empresa, horario, etiquetas y respuestas rápidas.",
-      officialUrl: "https://whatsappbusiness.com/es-la/products/business-app-features/",
+      description:
+        "Página oficial de la aplicación con perfil de empresa, horario, etiquetas y respuestas rápidas.",
+      officialUrl:
+        "https://whatsappbusiness.com/es-la/products/business-app-features/",
     },
     suggestedStep:
       "Si aún utilizas WhatsApp personal para tu negocio, evalúa usar la aplicación WhatsApp Business. Configura tu horario de atención y crea 3 respuestas rápidas para tus dudas más frecuentes.",
@@ -175,7 +308,8 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     id: "automatizacion-ia-aplicada",
     slug: "cuando-vale-la-pena-automatizar-e-ia",
     title: "¿Cuándo vale la pena automatizar o usar IA en un negocio?",
-    tagline: "Cómo distinguir entre resolver un cuello de botella real y añadir tecnología costosa que nadie va a utilizar.",
+    tagline:
+      "Cómo distinguir entre resolver un cuello de botella real y añadir tecnología costosa que nadie va a utilizar.",
     category: "Operación",
     readTime: "4 min de lectura",
     concept:
@@ -195,7 +329,8 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Marco de gestión de riesgos de IA (NIST AI RMF)",
-      description: "Marco voluntario para gestionar riesgos de sistemas de IA; no define ni prescribe cuándo automatizar una tarea común.",
+      description:
+        "Marco voluntario para gestionar riesgos de sistemas de IA; no define ni prescribe cuándo automatizar una tarea común.",
       officialUrl: "https://www.nist.gov/itl/ai-risk-management-framework",
     },
     suggestedStep:
@@ -212,8 +347,9 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
   {
     id: "caso-textil-likes-vs-ventas",
     slug: "caso-textil-por-que-los-likes-no-son-ventas",
-    title: "Caso real textil: ¿Por qué tener likes en Facebook no significa vender?",
-    tagline: "El recorrido completo desde el descubrimiento artesanal hasta la confianza y el pedido.",
+    title: "Ejemplo textil: ¿por qué los likes no son ventas?",
+    tagline:
+      "El recorrido completo desde el descubrimiento artesanal hasta la confianza y el pedido.",
     category: "Estrategia",
     readTime: "4 min de lectura",
     concept:
@@ -221,7 +357,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     whyItMatters:
       "Una artesana textil puede publicar piezas hermosas en Facebook y recibir decenas de 'me gusta'. Sin embargo, si el interesado no sabe qué medidas tiene el huipil, qué técnica de telar se utilizó, cuánto cuesta el envío o cómo pagar con seguridad, la venta nunca ocurre. El problema no es que Facebook no funcione, sino que falta el sistema de conversión.",
     practicalExample:
-      "Una tejedora de los Valles Centrales recibía elogios en fotos pero pocas ventas foráneas. Al implementar una ficha digital limpia con la historia de cada pieza, medidas exactas, fotos del reverso del bordado, políticas de envío asegurado y un botón directo a WhatsApp con el modelo pre-seleccionado, las personas que preguntaban ya lo hacían con intención real de compra.",
+      "Ejemplo hipotético, no un caso de cliente: un taller textil recibe preguntas sobre medidas y envíos. Una ficha con disponibilidad, fotos, condiciones y contacto podría ayudar a que el comprador consulte con más contexto. El efecto en pedidos tendría que medirse.",
     whatToCheck: [
       "¿El interesado puede conocer precios, medidas y disponibilidad sin tener que esperar horas a que respondas un mensaje privado?",
       "¿Explicas con transparencia la historia, el tiempo de elaboración y el origen de los materiales para sustentar el valor?",
@@ -233,23 +369,20 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Guía de comercio para artesanías y talleres",
-      description: "Buenas prácticas de documentación visual y comunicación directa para productos con valor cultural y técnico.",
+      description:
+        "Buenas prácticas de documentación visual y comunicación directa para productos con valor cultural y técnico.",
     },
     suggestedStep:
       "Revisa tu última publicación con más likes. Pregúntate: si una persona de otra ciudad quisiera comprar esa pieza en este instante, ¿sabe exactamente cuánto cuesta, cómo se envía y a dónde escribir?",
-    sources: [
-      {
-        title: "Comercio justo y comercialización artesanal",
-        organization: "Fondo Nacional para el Fomento de las Artesanías (FONART)",
-        type: "institucional",
-      },
-    ],
+    sources: [],
   },
   {
     id: "presencia-vs-sistema-digital",
     slug: "diferencia-entre-presencia-digital-y-sistema-digital",
-    title: "¿Qué diferencia hay entre tener presencia digital y tener un sistema digital?",
-    tagline: "Tener un perfil abierto es solo existir; un sistema trabaja para ahorrar tiempo y captar oportunidades.",
+    title:
+      "¿Qué diferencia hay entre tener presencia digital y tener un sistema digital?",
+    tagline:
+      "Tener un perfil abierto es solo existir; un sistema trabaja para ahorrar tiempo y captar oportunidades.",
     category: "Estrategia",
     readTime: "3 min de lectura",
     concept:
@@ -269,23 +402,19 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Mapeo de recorrido del cliente",
-      description: "Metodología para identificar en qué punto exacto se detienen las personas antes de contratar o comprar.",
+      description:
+        "Metodología para identificar en qué punto exacto se detienen las personas antes de contratar o comprar.",
     },
     suggestedStep:
       "Haz el ejercicio como si fueras un cliente nuevo: búscate en Google, intenta entender qué vendes en 30 segundos y fíjate qué tan fácil es hacerte una pregunta concreta.",
-    sources: [
-      {
-        title: "Fundamentos de experiencia de usuario y arquitectura de información",
-        organization: "Interaction Design Foundation",
-        type: "técnica",
-      },
-    ],
+    sources: [],
   },
   {
     id: "como-saber-si-funciona",
     slug: "como-saber-si-una-herramienta-digital-esta-funcionando",
     title: "¿Cómo saber si una herramienta digital realmente está funcionando?",
-    tagline: "Métricas humanas vs. métricas de vanidad: cómo evaluar la utilidad real en tu día a día.",
+    tagline:
+      "Métricas humanas vs. métricas de vanidad: cómo evaluar la utilidad real en tu día a día.",
     category: "Conversión",
     readTime: "3 min de lectura",
     concept:
@@ -293,7 +422,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     whyItMatters:
       "Muchos dueños de negocio pagan mensualidades por herramientas que nadie utiliza o se frustran porque 'su web no vende'. Al definir métricas observables desde el principio, sabes con certeza si la inversión valió la pena.",
     practicalExample:
-      "En lugar de medir 'cuántas visitas tuvo la página', mide: '¿cuántas personas llegaron a WhatsApp ya sabiendo el precio y las condiciones?', o '¿cuántas horas a la semana me ahorré de mandar cotizaciones manuales?'. Si antes tardabas 2 horas al día respondiendo lo mismo y ahora tardas 20 minutos, la herramienta ya pagó su valor.",
+      "En lugar de medir 'cuántas visitas tuvo la página', mide: '¿cuántas personas llegaron a WhatsApp ya sabiendo el precio y las condiciones?', o '¿cuántas horas a la semana me ahorré de mandar cotizaciones manuales?'. Si el tiempo disminuye, compara el ahorro real con el costo de implementar, operar y mantener la herramienta; eso permite evaluar su valor.",
     whatToCheck: [
       "¿Redujo el tiempo que dedicas a tareas repetitivas?",
       "¿Los prospectos que te contactan entienden mejor lo que ofreces antes de hablar contigo?",
@@ -305,16 +434,11 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     toolOrResource: {
       name: "Evaluación de fricciones operativas",
-      description: "Pauta de diagnóstico para comparar el tiempo dedicado a atención antes y después de una solución digital.",
+      description:
+        "Pauta de diagnóstico para comparar el tiempo dedicado a atención antes y después de una solución digital.",
     },
     suggestedStep:
-      "Anota durante tres días cuántas veces respondes la misma duda a clientes distintos. Si son más de 5 veces, tienes un indicador claro que una solución digital puede resolver de inmediato.",
-    sources: [
-      {
-        title: "Medición de valor y analítica con propósito",
-        organization: "W3C Web Analytics Best Practices",
-        type: "técnica",
-      },
-    ],
+      "Anota durante una semana cuántas veces respondes la misma duda y cuánto tiempo te toma. Prueba una mejora pequeña y compara; la frecuencia por sí sola no demuestra que debas construir una herramienta.",
+    sources: [],
   },
 ];

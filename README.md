@@ -4,7 +4,11 @@ Web en español de México, con React, TypeScript y Vite. Sitio estático sin ba
 
 ## Navegación del portafolio
 
-La interfaz ofrece vistas compactas por hash: `#inicio`, `#casos`, `#paraiso-laguna`, `#altitud`, `#servicios`, `#proceso`, `#precios`, `#sobre-mi` y `#contacto`. El índice abre Paraíso Laguna como caso de estudio y ALTITUD como caso conceptual editorial. Los demás proyectos se consultan en diálogos. Al usar hashes, el sitio estático no necesita reglas de fallback de servidor. Los enlaces directos y los botones atrás/adelante del navegador conservan la vista.
+La home presenta problema, método, soluciones, demo ilustrativa, casos, educación, origen y contacto. La interfaz ofrece vistas compactas por hash: `#inicio`, `#casos`, `#paraiso-laguna`, `#altitud`, `#servicios`, `#proceso`, `#precios`, `#sobre-mi`, `#diagnostico` y `#contacto`. El índice abre Paraíso Laguna como caso de estudio y ALTITUD como caso conceptual editorial. Los demás proyectos se consultan en diálogos. Al usar hashes, el sitio estático no necesita reglas de fallback de servidor. Los enlaces directos y los botones atrás/adelante del navegador conservan la vista.
+
+El área `/conocimiento/` y sus diez guías se generan como HTML en el build, con canonical, metadatos y datos estructurados propios. Funcionan sin React en el navegador; un módulo pequeño reutiliza la analítica existente. La home incluye contenido HTML previo a JavaScript. No hay CMS ni nuevas suscripciones.
+
+Documentación de esta evolución: [auditoría y decisiones](docs/cidiks-evolution.md), [medición y backlog](docs/cidiks-learning.md), [verificación](docs/cidiks-validation.md).
 
 ## Uso local
 
@@ -24,7 +28,7 @@ npm run preview
 
 ## Editar el contenido
 
-Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Los casos editoriales están en `src/ParaisoCaseStudy.tsx` y `src/AltitudCaseStudy.tsx`. Los metadatos del dominio se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
+El recorrido vive en `src/HomeHero.tsx` y `src/HomeJourney.tsx`; el contacto en `src/Contact.tsx`, los registros de casos en `src/CaseEvidence.tsx`, y las guías en `src/education.ts` y `src/KnowledgePage.tsx`. Los previews en `src/guide-previews.ts` se comprueban contra las guías completas. Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Los casos editoriales están en `src/ParaisoCaseStudy.tsx` y `src/AltitudCaseStudy.tsx`. Los metadatos del dominio se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
 
 - `owner`: nombre público y nombre corto.
 - `links`: correo, Messenger, WhatsApp opcional, dominio y redes. Usa URLs HTTPS completas. Los marcadores no generan enlaces rotos.
@@ -42,7 +46,7 @@ Guarda imágenes autorizadas, preferentemente WebP o AVIF, en `public/projects/`
 
 ## Contacto y privacidad
 
-El formulario valida los campos, prepara un texto, permite revisarlo y copiarlo, y abre un `mailto:` con asunto y cuerpo codificados. El usuario debe completar el envío en su aplicación de correo. Messenger abre la URL configurada; se copia y pega el mensaje manualmente porque no todos los enlaces de Messenger aceptan texto precargado. No hay envíos automáticos ni base de datos. Los datos se mantienen en memoria hasta recargar o cerrar la página.
+El formulario requiere nombre, negocio y problema, ofrece contexto adicional opcional y valida los campos, prepara un texto, permite revisarlo y copiarlo, y abre un `mailto:` con asunto y cuerpo codificados. El usuario debe completar el envío en su aplicación de correo. Messenger abre la URL configurada; se copia y pega el mensaje manualmente porque no todos los enlaces de Messenger aceptan texto precargado. No hay envíos automáticos ni base de datos. Los datos se mantienen en memoria hasta recargar o cerrar la página.
 
 WhatsApp tiene una URL configurada en `src/content.ts`; su recepción real debe probarse con el propietario. No se instaló analítica sin un identificador del propietario; el servicio puede incluir su configuración una vez elegida la herramienta.
 
@@ -52,9 +56,10 @@ Consulta `PENDIENTES.md` y ejecuta:
 
 ```sh
 npm run check:release
+npm run check:evolution
 ```
 
-Este control comprueba los campos que implementa `scripts/check-release.ts`; pasó con el dominio final y los datos configurados. No sustituye la verificación externa de permisos, enlaces ni recepción de canales de contacto. `content.seo.allowIndexing` está activo para el dominio final; el build emite `index, follow`, `robots.txt` permite rastreo y se genera `sitemap.xml` con la URL canónica del dominio. La versión publicada se verificó contra los hashes del build el 29 de septiembre de 2026. La indexación efectiva en buscadores requiere seguimiento por separado.
+Este control comprueba los campos que implementa `scripts/check-release.ts`; pasó con el dominio final y los datos configurados. No sustituye la verificación externa de permisos, enlaces ni recepción de canales de contacto. `content.seo.allowIndexing` está activo para el dominio final; el build emite `index, follow`, `robots.txt` permite rastreo y se genera `sitemap.xml` con el dominio y las once URLs editoriales. La versión publicada se verificó contra los hashes del build el 29 de septiembre de 2026. La indexación efectiva en buscadores requiere seguimiento por separado.
 
 ## Publicación en Hostinger
 

@@ -77,46 +77,20 @@ export function AstraAgent({ onSelectCta }: AstraAgentProps) {
         {/* Encabezado e identidad de ASTRA */}
         <div className="astra-identity-header">
           <div className="astra-avatar-wrap">
-            <svg
-              className="astra-avatar-svg"
-              viewBox="0 0 64 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-label="Símbolo de ASTRA inspirado estilísticamente en la observación y memoria mesoamericana"
-              role="img"
-            >
-              <rect width="64" height="64" rx="16" fill="var(--action)" />
-              {/* Rasgo escultórico estilizado contemporáneo: observación, memoria, sabiduría */}
-              <circle cx="32" cy="28" r="16" stroke="#DCE5DA" strokeWidth="2.5" />
-              <path
-                d="M24 30C24 30 28 34 32 34C36 34 40 30 40 30"
-                stroke="#DCE5DA"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <line x1="26" y1="24" x2="30" y2="24" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-              <line x1="34" y1="24" x2="38" y2="24" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-              <path
-                d="M20 48C20 43 25 41 32 41C39 41 44 43 44 48"
-                stroke="#DCE5DA"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-              <circle cx="32" cy="18" r="2" fill="#FFFFFF" />
-            </svg>
+            <span className="mono astra-structural-mark" aria-hidden="true">01 / 02 / 03</span>
             <div>
               <div className="astra-badge-row">
-                <span className="mono astra-tag">AGENTE CONSULTIVO EXPERIMENTAL</span>
-                <span className="astra-pill">ASTRA 1.0</span>
+                <span className="mono astra-tag">PREGUNTAS DE CONTEXTO</span>
+                <span className="astra-pill">ORIENTACIÓN</span>
               </div>
-              <h2 id="astra-title">Diagnóstico consultivo guiado</h2>
+              <h2 id="astra-title">Comprender tu situación</h2>
             </div>
           </div>
           <p className="astra-manifesto">
             "Quiero entender cómo funciona tu negocio antes de recomendarte algo. No todo problema se resuelve con una página web: diagnosticamos primero para encontrar la solución más útil y ligera para tus condiciones."
           </p>
           <p className="astra-identity-disclaimer mono">
-            Identidad contemporánea inspirada visualmente en el rigor, la memoria y la observación de las esculturas monumentales mesoamericanas. No realiza afirmaciones históricas ni inventa vocabulario.
+            La orientación se calcula con reglas locales. No hay una IA conversando ni un análisis automático de tu negocio; la recomendación necesita revisión contigo.
           </p>
         </div>
 
@@ -222,7 +196,7 @@ export function AstraAgent({ onSelectCta }: AstraAgentProps) {
         {result && (
           <div className="astra-result-panel" ref={resultRef} tabIndex={-1}>
             <div className="result-header">
-              <span className="eyebrow">DIAGNÓSTICO GENERADO POR ASTRA</span>
+              <span className="eyebrow">ORIENTACIÓN POR REVISAR CONTIGO</span>
               <h3>Evaluación consultiva del negocio</h3>
               {!result.recommendsWebImmediately && (
                 <div className="astra-honest-alert">

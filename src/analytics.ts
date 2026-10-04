@@ -21,7 +21,14 @@ export type AnalyticsEventName =
   | "case_study_opened"
   | "education_opened"
   | "agent_started"
-  | "agent_completed";
+  | "agent_completed"
+  | "hero_cta_click"
+  | "demo_view"
+  | "demo_select"
+  | "case_view"
+  | "methodology_view"
+  | "contact_start"
+  | "contact_submit";
 
 export type AbstractNeedCategory =
   | "presencia"
@@ -39,7 +46,14 @@ export type AbstractNeedCategory =
 
 export interface AnalyticsPayloads {
   page_view: {
-    view: "inicio" | "proyectos" | "servicios" | "sobre-mi" | "contacto";
+    view:
+      | "inicio"
+      | "proyectos"
+      | "servicios"
+      | "sobre-mi"
+      | "contacto"
+      | "diagnostico"
+      | "conocimiento";
   };
   diagnostic_start: {
     source?: "hero" | "nav" | "direct" | "education";
@@ -52,7 +66,14 @@ export interface AnalyticsPayloads {
   };
   education_view: {
     article_id: "google-maps" | "web" | "whatsapp" | "automation-ai" | string;
-    category: "presencia" | "conversion" | "operacion" | "estrategia";
+    category:
+      | "presencia"
+      | "conversion"
+      | "operacion"
+      | "estrategia"
+      | "seguridad"
+      | "identidad"
+      | "aprendizaje";
   };
   education_cta: {
     article_id: string;
@@ -60,7 +81,14 @@ export interface AnalyticsPayloads {
   };
   contact_click: {
     channel: "whatsapp" | "correo" | "messenger" | "formulario";
-    origin?: "hero" | "nav" | "footer" | "diagnostic" | "education" | "direct" | "agent";
+    origin?:
+      | "hero"
+      | "nav"
+      | "footer"
+      | "diagnostic"
+      | "education"
+      | "direct"
+      | "agent";
   };
   form_start: {
     channel_selected: "whatsapp" | "correo" | "messenger";
@@ -78,7 +106,8 @@ export interface AnalyticsPayloads {
 
   // Nuevos eventos semánticos de evolución del portafolio
   diagnostic_started: {
-    source?: "hero" | "nav" | "direct" | "education" | "opportunity_section" | "astra";
+    source?:
+      "hero" | "nav" | "direct" | "education" | "opportunity_section" | "astra";
   };
   diagnostic_question_answered: {
     question_id: string;
@@ -111,6 +140,21 @@ export interface AnalyticsPayloads {
     classified_need: string;
     recommended_solution: string;
   };
+  hero_cta_click: { target: "contacto" | "casos" };
+  demo_view: { demo_id: string; kind: "illustration" };
+  demo_select: { demo_id: "oferta" | "seguimiento" };
+  case_view: { case_id: string };
+  methodology_view: { location: "home" | "method" };
+  contact_start: {
+    origin: "form" | "direct";
+    channel?: "whatsapp" | "correo" | "messenger";
+  };
+  // Aquí submit significa apertura del canal con mensaje preparado, nunca recepción.
+  // Una futura confirmación de backend debe usar stage=received y un id abstracto, sin PII.
+  contact_submit: {
+    channel: "whatsapp" | "correo" | "messenger";
+    stage: "channel_opened" | "received";
+  };
 }
 
 // Lista negra estricta de claves que NUNCA deben enviarse
@@ -138,7 +182,9 @@ const FORBIDDEN_KEYS = new Set([
   "problema",
 ]);
 
-function sanitizePayload(payload: Record<string, unknown>): Record<string, unknown> {
+function sanitizePayload(
+  payload: Record<string, unknown>,
+): Record<string, unknown> {
   const sanitized: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(payload)) {
     if (FORBIDDEN_KEYS.has(key.toLowerCase())) {
@@ -161,7 +207,11 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
-    cidiksAnalyticsBuffer?: Array<{ event: string; data: Record<string, unknown>; timestamp: number }>;
+    cidiksAnalyticsBuffer?: Array<{
+      event: string;
+      data: Record<string, unknown>;
+      timestamp: number;
+    }>;
   }
 }
 
@@ -172,10 +222,12 @@ declare global {
  */
 export function track<E extends AnalyticsEventName>(
   event: E,
-  payload: AnalyticsPayloads[E]
+  payload: AnalyticsPayloads[E],
 ): void {
   try {
-    const cleanData = sanitizePayload(payload as unknown as Record<string, unknown>);
+    const cleanData = sanitizePayload(
+      payload as unknown as Record<string, unknown>,
+    );
 
     // Si existe Google Tag / Google Analytics
     if (typeof window !== "undefined" && typeof window.gtag === "function") {
@@ -203,7 +255,7 @@ export function track<E extends AnalyticsEventName>(
     }
   } catch (err) {
     // Modo fallback silencioso: la analítica nunca debe romper la experiencia de usuario
-    if (process.env.NODE_ENV !== "production") {
+    if (import.meta.env?.DEV) {
       console.warn("[Cídiks Analytics Fallback]", err);
     }
   }

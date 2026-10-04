@@ -1,35 +1,41 @@
 import { track } from "./analytics";
+import { HomeJourney, OriginSection } from "./HomeJourney";
+import { CaseEvidence } from "./CaseEvidence";
+import { Contact } from "./Contact";
+import { HomeHero } from "./HomeHero";
+import { useSectionEvent } from "./section-events";
 import {
   lazy,
   Suspense,
   useEffect,
   useRef,
   useState,
-  type FormEvent,
   type ReactNode,
 } from "react";
 
 // Lazy load below-the-fold modules to minimize initial hero bundle
 const ParaisoCaseStudy = lazy(() =>
-  import("./ParaisoCaseStudy").then((m) => ({ default: m.ParaisoCaseStudy }))
+  import("./ParaisoCaseStudy").then((m) => ({ default: m.ParaisoCaseStudy })),
 );
 const AltitudCaseStudy = lazy(() =>
-  import("./AltitudCaseStudy").then((m) => ({ default: m.AltitudCaseStudy }))
+  import("./AltitudCaseStudy").then((m) => ({ default: m.AltitudCaseStudy })),
 );
 const DiagnosticTool = lazy(() =>
-  import("./DiagnosticTool").then((m) => ({ default: m.DiagnosticTool }))
+  import("./DiagnosticTool").then((m) => ({ default: m.DiagnosticTool })),
 );
-const EducationSection = lazy(() =>
-  import("./EducationSection").then((m) => ({ default: m.EducationSection }))
-);
+
 const OpportunitySection = lazy(() =>
-  import("./OpportunitySection").then((m) => ({ default: m.OpportunitySection }))
+  import("./OpportunitySection").then((m) => ({
+    default: m.OpportunitySection,
+  })),
 );
 const AstraAgent = lazy(() =>
-  import("./AstraAgent").then((m) => ({ default: m.AstraAgent }))
+  import("./AstraAgent").then((m) => ({ default: m.AstraAgent })),
 );
 const EngineeringPhilosophy = lazy(() =>
-  import("./EngineeringPhilosophy").then((m) => ({ default: m.EngineeringPhilosophy }))
+  import("./EngineeringPhilosophy").then((m) => ({
+    default: m.EngineeringPhilosophy,
+  })),
 );
 import {
   content as c,
@@ -40,11 +46,14 @@ import {
 } from "./content";
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
-type View = "inicio" | "proyectos" | "servicios" | "perfil";
+type View = "inicio" | "proyectos" | "servicios" | "perfil" | "diagnostico";
 function viewForHash(hash: string): View {
-  if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash)) return "proyectos";
+  if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash))
+    return "proyectos";
   if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
   if (["#sobre-mi", "#contacto"].includes(hash)) return "perfil";
+  if (["#diagnostico", "#oportunidad", "#agente-astra"].includes(hash))
+    return "diagnostico";
   return "inicio";
 }
 function ButtonLink({
@@ -98,7 +107,9 @@ function ProjectImage({
   compact?: boolean;
 }) {
   return project.image ? (
-    <div className={`project-image ${project.id === "altitud" ? "project-image--portrait" : ""}`}>
+    <div
+      className={`project-image ${project.id === "altitud" ? "project-image--portrait" : ""}`}
+    >
       {project.id === "altitud" ? (
         <picture>
           <source
@@ -106,10 +117,24 @@ function ProjectImage({
             srcSet="/projects/altitud/altitud-001-campaign-480.webp 480w, /projects/altitud/altitud-001-campaign-900.webp 900w, /projects/altitud/altitud-001-campaign-1122.webp 1122w"
             sizes="(max-width: 520px) 100vw, (max-width: 768px) 50vw, 33vw"
           />
-          <img src={project.image} alt={project.imageAlt} width={1122} height={1402} loading="lazy" decoding="async" />
+          <img
+            src={project.image}
+            alt={project.imageAlt}
+            width={1122}
+            height={1402}
+            loading="lazy"
+            decoding="async"
+          />
         </picture>
       ) : (
-        <img src={project.image} alt={project.imageAlt} width={1200} height={750} loading="lazy" decoding="async" />
+        <img
+          src={project.image}
+          alt={project.imageAlt}
+          width={1200}
+          height={750}
+          loading="lazy"
+          decoding="async"
+        />
       )}
     </div>
   ) : (
@@ -308,7 +333,7 @@ function CaseDialog({
             {project.status}
           </p>
           {isWebUrl(project.url) && (
-            <ButtonLink href={project.url}>{c.ui.visit}</ButtonLink>
+            <ButtonLink href={project.url}>{project.url.startsWith("https://github.com/") ? "Ver código y documentación" : c.ui.visit}</ButtonLink>
           )}
           <ProjectImage project={project} compact />
           {!project.image && <p className="small muted">{c.ui.imageNote}</p>}
@@ -322,39 +347,7 @@ function CaseDialog({
               <li key={x}>{x}</li>
             ))}
           </ul>
-          {project.caseStudyAnswers && (
-            <div className="case-study-seven-answers">
-              <span className="eyebrow">ESTUDIO DE CASO · PREGUNTAS Y EVIDENCIA</span>
-              <div className="case-answer-block">
-                <strong>1. ¿Qué problema existía?</strong>
-                <p>{project.caseStudyAnswers.problemExisted}</p>
-              </div>
-              <div className="case-answer-block">
-                <strong>2. ¿Qué contexto tenía el cliente?</strong>
-                <p>{project.caseStudyAnswers.clientContext}</p>
-              </div>
-              <div className="case-answer-block">
-                <strong>3. ¿Qué se decidió construir?</strong>
-                <p>{project.caseStudyAnswers.decidedToBuild}</p>
-              </div>
-              <div className="case-answer-block">
-                <strong>4. ¿Por qué se construyó así?</strong>
-                <p>{project.caseStudyAnswers.whyBuiltThisWay}</p>
-              </div>
-              <div className="case-answer-block">
-                <strong>5. ¿Qué cambió?</strong>
-                <p>{project.caseStudyAnswers.whatChanged}</p>
-              </div>
-              <div className="case-answer-block highlight-observed">
-                <strong>6. ¿Qué puede medirse?</strong>
-                <p>{project.caseStudyAnswers.whatCanBeMeasured}</p>
-              </div>
-              <div className="case-answer-block">
-                <strong>7. ¿Qué queda por mejorar?</strong>
-                <p>{project.caseStudyAnswers.whatRemainsToImprove}</p>
-              </div>
-            </div>
-          )}
+          <CaseEvidence key={project.id} id={project.id} />
           {project.gallery?.length ? (
             <ProjectGallery key={project.id} items={project.gallery} />
           ) : null}
@@ -363,335 +356,28 @@ function CaseDialog({
     </dialog>
   );
 }
-function Contact({ interest }: { interest: string }) {
-  const [message, setMessage] = useState("");
-  const [channel, setChannel] = useState("WhatsApp");
-  const [feedback, setFeedback] = useState("");
-  const [hasStartedForm, setHasStartedForm] = useState(false);
-  const resultRef = useRef<HTMLDivElement>(null);
-  const emailReady = isEmail(c.links.email),
-    messengerReady = isWebUrl(c.links.messenger),
-    whatsappReady = isWebUrl(c.links.whatsapp);
-
-  function handleFormInteraction() {
-    if (!hasStartedForm) {
-      setHasStartedForm(true);
-      track("contact_started", { origin: "direct" });
-      track("form_start", {
-        channel_selected: (channel.toLowerCase() === "correo" ? "correo" : channel.toLowerCase() === "messenger" ? "messenger" : "whatsapp"),
-      });
-    }
-  }
-
-  function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const fields = c.contact.fields;
-    setMessage(
-      `${c.contact.subject}\n${interest ? `${c.contact.interest}: ${interest}\n` : ""}\n${Object.entries(
-        fields,
-      )
-        .map(([key, label]) => `${label}: ${data.get(key) || "—"}`)
-        .join("\n")}`,
-    );
-    setFeedback("");
-    const selectedChan = (channel.toLowerCase() === "correo" ? "correo" : channel.toLowerCase() === "messenger" ? "messenger" : "whatsapp") as "whatsapp" | "correo" | "messenger";
-    track("form_prepare", {
-      channel_selected: selectedChan,
-      has_interest: Boolean(interest),
-    });
-    track("contact_submitted", {
-      channel: selectedChan,
-    });
-    window.setTimeout(() => resultRef.current?.focus(), 0);
-  }
-  useEffect(() => {
-    setMessage("");
-    setFeedback("");
-  }, [interest]);
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(message);
-      setFeedback(c.contact.copied);
-    } catch {
-      setFeedback(c.contact.copyError);
-    }
-  }
-  return (
-    <section id="contacto" className="contact-section section">
-      <div className="container contact-grid">
-        <div>
-          <Heading
-            label={c.contact.label}
-            title={c.contact.title}
-            body={c.contact.body}
-          />
-          <div className="contact-direct">
-            <p className="eyebrow">{c.contact.direct}</p>
-            {messengerReady && (
-              <a
-                href={c.links.messenger}
-                onClick={() =>
-                  track("contact_click", {
-                    channel: "messenger",
-                    origin: "direct",
-                  })
-                }
-              >
-                {c.contact.messenger} <Arrow />
-              </a>
-            )}
-            {emailReady && (
-              <a
-                href={`mailto:${c.links.email}`}
-                onClick={() =>
-                  track("contact_click", {
-                    channel: "correo",
-                    origin: "direct",
-                  })
-                }
-              >
-                {c.contact.email} <Arrow />
-              </a>
-            )}
-            {isWebUrl(c.links.whatsapp) && (
-              <a
-                href={c.links.whatsapp}
-                onClick={() =>
-                  track("contact_click", {
-                    channel: "whatsapp",
-                    origin: "direct",
-                  })
-                }
-              >
-                {c.contact.whatsapp} <Arrow />
-              </a>
-            )}
-            {!emailReady && !messengerReady && (
-              <p className="small">{c.contact.missing}</p>
-            )}
-          </div>
-        </div>
-        <form
-          className="contact-form surface-glass surface-glass--strong"
-          onSubmit={submit}
-          onFocus={handleFormInteraction}
-          onChange={() => {
-            handleFormInteraction();
-            setMessage("");
-            setFeedback("");
-          }}
-        >
-          <div className="form-grid">
-            <label>
-              {c.contact.fields.name}
-              <input
-                name="name"
-                autoComplete="name"
-                required
-                maxLength={100}
-                placeholder={c.contact.placeholders.name}
-              />
-            </label>
-            <label>
-              {c.contact.fields.business}
-              <input
-                name="business"
-                autoComplete="organization"
-                required
-                maxLength={150}
-                placeholder={c.contact.placeholders.business}
-              />
-            </label>
-            <label>
-              {c.contact.fields.sector}
-              <select name="sector" required defaultValue="">
-                <option value="" disabled>
-                  {c.contact.choose}
-                </option>
-                {c.contact.sectors.map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              {c.contact.fields.city}
-              <input
-                name="city"
-                autoComplete="address-level2"
-                required
-                maxLength={100}
-                placeholder={c.contact.placeholders.city}
-              />
-            </label>
-            <label className="full">
-              {c.contact.fields.offer}
-              <input
-                name="offer"
-                required
-                maxLength={250}
-                placeholder={c.contact.placeholders.offer}
-              />
-            </label>
-            <label className="full">
-              {c.contact.fields.goal}
-              <input
-                name="goal"
-                required
-                maxLength={250}
-                placeholder={c.contact.placeholders.goal}
-              />
-            </label>
-            <label className="full">
-              {c.contact.fields.currentChannels}
-              <input
-                name="currentChannels"
-                required
-                maxLength={250}
-                placeholder={c.contact.placeholders.currentChannels}
-              />
-            </label>
-            <label>
-              {c.contact.fields.website}
-              <input
-                name="website"
-                type="url"
-                maxLength={300}
-                placeholder={c.contact.placeholders.website}
-              />
-            </label>
-            <label>
-              {c.contact.fields.social}
-              <input
-                name="social"
-                type="url"
-                maxLength={300}
-                placeholder={c.contact.placeholders.social}
-              />
-            </label>
-            <label className="full">
-              {c.contact.fields.problem}
-              <textarea
-                name="problem"
-                required
-                rows={4}
-                maxLength={1500}
-                placeholder={c.contact.placeholders.problem}
-              />
-            </label>
-            <label>
-              {c.contact.fields.channel}
-              <select
-                name="channel"
-                value={channel}
-                onChange={(e) => setChannel(e.target.value)}
-              >
-                {c.contact.channels.map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              {c.contact.fields.budget}
-              <select name="budget" required defaultValue="">
-                <option value="" disabled>
-                  {c.contact.choose}
-                </option>
-                {c.contact.budgets.map((x) => (
-                  <option key={x}>{x}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <p className="privacy">{c.contact.privacy}</p>
-          <button className="button" type="submit">
-            {c.contact.submit}
-            <Arrow />
-          </button>
-          {message && (
-            <div className="message-result" ref={resultRef} tabIndex={-1}>
-              <h3>{c.contact.prepared}</h3>
-              <label>
-                {c.contact.preview}
-                <textarea readOnly value={message} rows={10} />
-              </label>
-              <div className="result-actions">
-                <button
-                  type="button"
-                  className="button button-light"
-                  onClick={copy}
-                >
-                  {c.contact.copy}
-                </button>
-                {channel === "WhatsApp" && whatsappReady && (
-                  <a
-                    className="button"
-                    href={`${c.links.whatsapp}?text=${encodeURIComponent(message)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() =>
-                      track("contact_click", {
-                        channel: "whatsapp",
-                        origin: "direct",
-                      })
-                    }
-                  >
-                    {c.contact.whatsappSend}
-                    <Arrow />
-                  </a>
-                )}
-                {channel === "Correo" && emailReady && (
-                  <a
-                    className="button"
-                    href={`mailto:${c.links.email}?subject=${encodeURIComponent(c.contact.subject)}&body=${encodeURIComponent(message)}`}
-                    onClick={() =>
-                      track("contact_click", {
-                        channel: "correo",
-                        origin: "direct",
-                      })
-                    }
-                  >
-                    {c.contact.mail}
-                    <Arrow />
-                  </a>
-                )}
-                {channel === "Messenger" && messengerReady && (
-                  <a
-                    className="button"
-                    href={c.links.messenger}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() =>
-                      track("contact_click", {
-                        channel: "messenger",
-                        origin: "direct",
-                      })
-                    }
-                  >
-                    {c.contact.messengerSend}
-                    <Arrow />
-                  </a>
-                )}
-              </div>
-              {channel === "Messenger" && messengerReady && (
-                <p className="small">{c.contact.messengerNote}</p>
-              )}
-              <p role="status" className="small">
-                {feedback}
-              </p>
-            </div>
-          )}
-        </form>
-      </div>
-    </section>
-  );
-}
 export function App() {
-  const [view, setView] = useState<View>(() => viewForHash(window.location.hash));
-  const [caseOpen, setCaseOpen] = useState(() => window.location.hash === "#paraiso-laguna");
-  const [altitudOpen, setAltitudOpen] = useState(() => window.location.hash === "#altitud");
-  const [servicePanel, setServicePanel] = useState(() => window.location.hash === "#precios" ? "precios" : window.location.hash === "#proceso" ? "proceso" : "servicios");
-  const [profilePanel, setProfilePanel] = useState(() => window.location.hash === "#contacto" ? "contacto" : "perfil");
+  const lastTrackedRoute = useRef<string | null>(null);
+  const methodRef = useSectionEvent("methodology_view", { location: "method" });
+  const [view, setView] = useState<View>(() =>
+    viewForHash(window.location.hash),
+  );
+  const [caseOpen, setCaseOpen] = useState(
+    () => window.location.hash === "#paraiso-laguna",
+  );
+  const [altitudOpen, setAltitudOpen] = useState(
+    () => window.location.hash === "#altitud",
+  );
+  const [servicePanel, setServicePanel] = useState(() =>
+    window.location.hash === "#precios"
+      ? "precios"
+      : window.location.hash === "#proceso"
+        ? "proceso"
+        : "servicios",
+  );
+  const [profilePanel, setProfilePanel] = useState(() =>
+    window.location.hash === "#contacto" ? "contacto" : "perfil",
+  );
   const [menu, setMenu] = useState(false),
     [project, setProject] = useState<Project | null>(null),
     [planIndex, setPlanIndex] = useState(0),
@@ -699,6 +385,12 @@ export function App() {
   const [sector, setSector] = useState(c.ui.all);
   const [quickContact, setQuickContact] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showScenarios, setShowScenarios] = useState(
+    window.location.hash === "#oportunidad",
+  );
+  const [showContext, setShowContext] = useState(
+    window.location.hash === "#agente-astra",
+  );
   const secondaryProjects = c.projects.slice(1);
   const projectSectors = [
     c.ui.all,
@@ -708,37 +400,68 @@ export function App() {
     (p) => sector === c.ui.all || p.sector === sector,
   );
   useEffect(() => {
-    function mapHashToAnalyticsView(hash: string): "inicio" | "proyectos" | "servicios" | "sobre-mi" | "contacto" {
+    function mapHashToAnalyticsView(
+      hash: string,
+    ):
+      | "inicio"
+      | "proyectos"
+      | "servicios"
+      | "sobre-mi"
+      | "contacto"
+      | "diagnostico" {
       if (hash === "#contacto") return "contacto";
       if (hash === "#sobre-mi") return "sobre-mi";
-      if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash)) return "proyectos";
-      if (["#servicios", "#proceso", "#precios"].includes(hash)) return "servicios";
+      if (["#casos", "#paraiso-laguna", "#altitud"].includes(hash))
+        return "proyectos";
+      if (["#servicios", "#proceso", "#precios"].includes(hash))
+        return "servicios";
+      if (["#diagnostico", "#oportunidad", "#agente-astra"].includes(hash))
+        return "diagnostico";
       return "inicio";
     }
 
+    const trackPage = (hash: string) => {
+      if (lastTrackedRoute.current === hash) return;
+      lastTrackedRoute.current = hash;
+      track("page_view", { view: mapHashToAnalyticsView(hash) });
+    };
     const syncRoute = () => {
+      setProject(null);
       const hash = window.location.hash;
       const nextView = viewForHash(hash);
       setView(nextView);
       setCaseOpen(hash === "#paraiso-laguna");
       setAltitudOpen(hash === "#altitud");
-      setServicePanel(hash === "#precios" ? "precios" : hash === "#proceso" ? "proceso" : "servicios");
+      setServicePanel(
+        hash === "#precios"
+          ? "precios"
+          : hash === "#proceso"
+            ? "proceso"
+            : "servicios",
+      );
       setProfilePanel(hash === "#contacto" ? "contacto" : "perfil");
       setMenu(false);
-      track("page_view", {
-        view: mapHashToAnalyticsView(hash),
-      });
+      if (hash === "#oportunidad") setShowScenarios(true);
+      if (hash === "#agente-astra") setShowContext(true);
+      trackPage(hash);
       window.requestAnimationFrame(() => {
-        if (hash && hash !== "#main") document.getElementById(hash.slice(1))?.scrollIntoView();
+        if (hash && hash !== "#main")
+          document.getElementById(hash.slice(1))?.scrollIntoView();
         else window.scrollTo(0, 0);
       });
     };
     // Track initial page view
-    track("page_view", {
-      view: mapHashToAnalyticsView(window.location.hash),
-    });
+    trackPage(window.location.hash);
     const followInternalLink = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
       const target = event.target;
       if (!(target instanceof Element)) return;
       const link = target.closest<HTMLAnchorElement>('a[href^="#"]');
@@ -746,7 +469,8 @@ export function App() {
       const hash = link.getAttribute("href") || "#inicio";
       if (hash === "#main") return;
       event.preventDefault();
-      if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+      if (window.location.hash !== hash)
+        window.history.pushState(null, "", hash);
       syncRoute();
     };
     document.addEventListener("click", followInternalLink);
@@ -761,13 +485,27 @@ export function App() {
   useEffect(() => {
     const updateScroll = () => {
       setScrolled(window.scrollY > 24);
-      setQuickContact(window.scrollY > 600 && view !== "perfil");
+      setQuickContact(window.scrollY > 600 && view === "inicio");
     };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
     return () => window.removeEventListener("scroll", updateScroll);
   }, [view]);
   useEffect(() => {
+    const titles: Record<string, string> = {
+      "#casos": "Proyectos y evidencia",
+      "#paraiso-laguna": "Paraíso Laguna · Caso de estudio",
+      "#altitud": "ALTITUD · Caso conceptual",
+      "#servicios": "Soluciones digitales",
+      "#proceso": "Método CÍDIKS",
+      "#precios": "Alcances e inversión",
+      "#sobre-mi": "Sobre CÍDIKS y Reily Castro",
+      "#contacto": "Diagnóstico y contacto",
+      "#diagnostico": "Orientación inicial",
+    };
+    document.title = titles[window.location.hash]
+      ? titles[window.location.hash] + " | CÍDIKS"
+      : c.seo.title;
     window.requestAnimationFrame(() => {
       const id = window.location.hash.slice(1);
       if (id && id !== "main") document.getElementById(id)?.scrollIntoView();
@@ -797,9 +535,23 @@ export function App() {
             href="#inicio"
             aria-label={`${c.brand.fullName} · ${c.brand.descriptor} · ${c.ui.backTop}`}
           >
-            <img className="cidiks-symbol" src={c.brand.symbol} width="40" height="40" alt="" aria-hidden="true" />
+            <img
+              className="cidiks-symbol"
+              src={c.brand.symbol}
+              width="40"
+              height="40"
+              alt=""
+              aria-hidden="true"
+            />
             <span>
-              <img className="cidiks-wordmark" src={c.brand.wordmark} width="96" height="40" alt="" aria-hidden="true" />
+              <img
+                className="cidiks-wordmark"
+                src={c.brand.wordmark}
+                width="96"
+                height="40"
+                alt=""
+                aria-hidden="true"
+              />
               <small>{c.brand.creator}</small>
             </span>
           </a>
@@ -820,8 +572,12 @@ export function App() {
             {c.nav.map((n) => (
               <a
                 key={n.id}
-                href={`#${n.id}`}
-                aria-current={viewForHash(`#${n.id}`) === view ? "page" : undefined}
+                href={n.href || `#${n.id}`}
+                aria-current={
+                  (window.location.hash || "#inicio") === `#${n.id}`
+                    ? "page"
+                    : undefined
+                }
                 onClick={() => {
                   setMenu(false);
                 }}
@@ -844,99 +600,19 @@ export function App() {
         </div>
       </header>
       <main id="main">
-        <section id="inicio" className="hero container" hidden={view !== "inicio"}>
-          <div className="hero-top">
-            <p className="eyebrow">
-              <span className="live-dot" />
-              {c.brand.fullName}
-            </p>
-            <span className="hero-coordinate" aria-hidden="true">
-              OAX. / MX
-            </span>
-          </div>
-          <div className="hero-grid">
-            <div className="hero-copy">
-              <p className="hero-signature">{c.hero.signature}</p>
-              <p className="hero-descriptor-tag">{c.hero.descriptor}</p>
-              <h1>
-                {c.hero.headline} <br />
-                <strong>{c.hero.headlineAccent}</strong>
-              </h1>
-              <p className="hero-discipline">{c.hero.discipline}</p>
-              <p className="hero-description">{c.hero.body}</p>
-              <div className="hero-actions">
-                <ButtonLink href="#contacto" onClick={() => setInterest(c.hero.primary)}>
-                  {c.hero.primary}
-                </ButtonLink>
-                <a className="inline-link" href="#casos">
-                  {c.hero.secondary}
-                  <span aria-hidden="true">↓</span>
-                </a>
-              </div>
-              <p className="hero-note">
-                <span aria-hidden="true">↳</span> {c.hero.note}
-              </p>
-            </div>
-            <aside className="visual-stage" aria-label={c.hero.visualLabel}>
-              <div className="glass-ribbon" aria-hidden="true" />
-              <span className="stage-star" aria-hidden="true">
-                ✧
-              </span>
-              <div className="artwork-stack">
-                {[
-                  c.projects[0].gallery![9],
-                  c.projects[0].gallery![13],
-                  c.projects[0].gallery![0],
-                ].map((item, i) => (
-                  <div className={`artwork-sheet sheet-${i}`} key={item.src}>
-                    <img
-                      src={item.preview || item.src}
-                      alt={item.alt}
-                      width="900"
-                      height="1125"
-                      fetchPriority={i === 1 ? "high" : "auto"}
-                      decoding="async"
-                    />
-                  </div>
-                ))}
-              </div>
-              <a
-                className="stage-caption surface-glass surface-glass--medium"
-                href="#paraiso-laguna"
-              >
-                <span>
-                  <small>{c.hero.featured} · {c.hero.caseLabel}</small>
-                  <strong>{c.projects[0].title}</strong>
-                </span>
-                <span className="stage-caption-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-              <span className="stage-note">{c.hero.visualNote}</span>
-            </aside>
-          </div>
-          <div className="hero-index surface-glass surface-glass--subtle">
-            <div>
-              <span className="eyebrow">{c.hero.indexLabel}</span>
-              <p>{c.hero.indexNote}</p>
-            </div>
-            <div className="index-cases">
-              {c.projects.slice(0, 3).map((p, i) => (
-                <button key={p.id} onClick={() => {
-                  window.location.hash = i === 0 ? "#paraiso-laguna" : "#casos";
-                  if (i > 0) setProject(p);
-                }}>
-                  <span className="mono">0{i + 1}</span>
-                  <span className="index-case-title">
-                    <strong>{p.title}</strong>
-                    {p.heroBrief && <small>{p.heroBrief}</small>}
-                  </span>
-                  <Arrow />
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
+        {view === "inicio" && (
+          <HomeHero
+            onInterest={setInterest}
+            onSelectProject={(p, i) => {
+              if (i === 0) window.location.hash = "#paraiso-laguna";
+              else {
+                window.history.pushState(null, "", "#casos");
+                window.dispatchEvent(new PopStateEvent("popstate"));
+                setProject(p);
+              }
+            }}
+          />
+        )}
         <div className="capabilities" hidden={view !== "inicio"}>
           <div className="container">
             {c.capabilities.map((x) => (
@@ -947,157 +623,216 @@ export function App() {
             ))}
           </div>
         </div>
-        <Suspense fallback={
-          <div className="container lazy-placeholder placeholder-opportunity surface-glass surface-glass--subtle" aria-hidden="true">
-            <div className="lazy-placeholder-indicator" />
-            <span>Cargando escenarios...</span>
+        {view === "inicio" && <HomeJourney onInterest={setInterest} />}
+        {view === "diagnostico" && (
+          <>
+            <section
+              id="diagnostico"
+              className="section container diagnostic-section"
+            >
+              <div className="diagnostic-intro">
+                <p className="eyebrow">ORIENTACIÓN INICIAL · 3 PREGUNTAS</p>
+                <h1>¿Por dónde conviene empezar?</h1>
+                <p className="section-description">
+                  Esta herramienta usa reglas sencillas para sugerir qué
+                  revisar. No audita tu negocio ni sustituye una conversación
+                  sobre su contexto.
+                </p>
+              </div>
+              <Suspense fallback={<p role="status">Preparando orientación…</p>}>
+                <DiagnosticTool
+                  onSelectCta={(areaTitle) => {
+                    setInterest("Orientación inicial: " + areaTitle);
+                    window.location.hash = "#contacto";
+                  }}
+                />
+              </Suspense>
+            </section>
+            <details
+              className="container diagnosis-extra"
+              open={showScenarios}
+              onToggle={(event) => setShowScenarios(event.currentTarget.open)}
+            >
+              <summary>Explorar situaciones habituales</summary>
+              {showScenarios && (
+                <Suspense fallback={<p role="status">Cargando escenarios…</p>}>
+                  <OpportunitySection
+                    onSelectOpportunity={(scenario, solution) => {
+                      setInterest(
+                        scenario + " · Propuesta por revisar: " + solution,
+                      );
+                      window.location.hash = "#contacto";
+                    }}
+                    onOpenFullDiagnostic={() => {
+                      window.location.hash = "#diagnostico";
+                    }}
+                  />
+                </Suspense>
+              )}
+            </details>
+            <details
+              className="container diagnosis-extra"
+              open={showContext}
+              onToggle={(event) => setShowContext(event.currentTarget.open)}
+            >
+              <summary>Añadir contexto con preguntas guiadas</summary>
+              {showContext && (
+                <Suspense fallback={<p role="status">Preparando preguntas…</p>}>
+                  <AstraAgent
+                    onSelectCta={(summary) => {
+                      setInterest(summary);
+                      window.location.hash = "#contacto";
+                    }}
+                  />
+                </Suspense>
+              )}
+            </details>
+          </>
+        )}
+        {view === "servicios" && (
+          <div className="container view-title">
+            <p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p>
+            <h1>
+              {servicePanel === "proceso"
+                ? "Un proceso claro."
+                : servicePanel === "precios"
+                  ? "Opciones de inversión."
+                  : "Soluciones según tu necesidad."}
+            </h1>
+            <nav
+              id="servicios"
+              className="view-switcher"
+              aria-label="Explorar servicios"
+            >
+              <a
+                href="#servicios"
+                aria-current={servicePanel === "servicios" ? "page" : undefined}
+              >
+                Servicios
+              </a>
+              <a
+                href="#proceso"
+                aria-current={servicePanel === "proceso" ? "page" : undefined}
+              >
+                Proceso
+              </a>
+              <a
+                href="#precios"
+                aria-current={servicePanel === "precios" ? "page" : undefined}
+              >
+                Precios
+              </a>
+            </nav>
           </div>
-        }>
-          <OpportunitySection
-            onSelectOpportunity={(scenarioText, solution) => {
-              setInterest(`Escenario reconocido: "${scenarioText}" → Solución: ${solution}`);
-              document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            onOpenFullDiagnostic={() => {
-              document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
-            }}
-          />
-        </Suspense>
-
-        <section id="diagnostico" className="section container diagnostic-section" hidden={view !== "inicio"}>
-          <div className="diagnostic-intro">
-            <p className="eyebrow">DIAGNÓSTICO INICIAL · 1 MINUTO</p>
-            <h2>Evalúa tu necesidad en 3 preguntas</h2>
-            <p className="section-description">
-              Responde 3 preguntas sobre tu negocio para saber qué conviene revisar primero: tu web, la atención a clientes o las tareas manuales.
-            </p>
-          </div>
-          <Suspense fallback={
-            <div className="diagnostic-widget surface-glass surface-glass--strong lazy-placeholder placeholder-diagnostic" aria-hidden="true">
-              <div className="lazy-placeholder-indicator" />
-              <span>Preparando orientación inicial...</span>
-            </div>
-          }>
-            <DiagnosticTool
-              onSelectCta={(areaTitle) => {
-                setInterest(`Diagnóstico: ${areaTitle}`);
-                document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-          </Suspense>
-        </section>
-
-        <Suspense fallback={
-          <div className="container astra-section lazy-placeholder surface-glass surface-glass--subtle" style={{ minHeight: "220px" }} aria-hidden="true">
-            <div className="lazy-placeholder-indicator" />
-            <span>Iniciando entorno consultivo ASTRA...</span>
-          </div>
-        }>
-          <AstraAgent
-            onSelectCta={(diagnosisSummary) => {
-              setInterest(diagnosisSummary);
-              document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
-            }}
-          />
-        </Suspense>
-
-        <div hidden={view !== "inicio"}>
-          <Suspense fallback={
-            <div className="container lazy-placeholder placeholder-education surface-glass surface-glass--subtle" aria-hidden="true">
-              <div className="lazy-placeholder-indicator" />
-              <span>Cargando recursos educativos...</span>
-            </div>
-          }>
-            <EducationSection
-              onGoToDiagnostic={() => {
-                document.getElementById("diagnostico")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              onSelectTopic={(topicTitle) => {
-                setInterest(`Consulta educativa: ${topicTitle}`);
-                document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-          </Suspense>
-        </div>
-
-        <Suspense fallback={
-          <div className="container lazy-placeholder placeholder-philosophy surface-glass surface-glass--subtle" aria-hidden="true">
-            <div className="lazy-placeholder-indicator" />
-            <span>Cargando principios de ingeniería...</span>
-          </div>
-        }>
-          <EngineeringPhilosophy />
-        </Suspense>
-        {view === "servicios" && <div className="container view-title"><p className="eyebrow">SERVICIOS Y FORMA DE TRABAJO</p><h1>{servicePanel === "proceso" ? "Un proceso claro." : servicePanel === "precios" ? "Opciones de inversión." : "Sitios web, atención y automatización."}</h1><nav id="servicios" className="view-switcher" aria-label="Explorar servicios"><a href="#servicios" aria-current={servicePanel === "servicios" ? "page" : undefined}>Servicios</a><a href="#proceso" aria-current={servicePanel === "proceso" ? "page" : undefined}>Proceso</a><a href="#precios" aria-current={servicePanel === "precios" ? "page" : undefined}>Precios</a></nav></div>}
-        {view === "servicios" && servicePanel === "servicios" && <details className="approach-details"><summary className="container">Ver el enfoque: del descubrimiento al contacto <span aria-hidden="true">+</span></summary>
-        <section className="section container problem-section" hidden={view !== "servicios" || servicePanel !== "servicios"}>
-          <p className="eyebrow">{c.problem.label}</p>
-          <div className="two-col">
-            <h2>
-              {c.problem.title}
-              <span className="muted"> {c.problem.emphasis}</span>
-            </h2>
-            <div>
-              <p>{c.problem.body}</p>
-              <p>{c.problem.end}</p>
-              <ul className="plain-list">
-                {c.problem.pieces.map((x, i) => (
-                  <li key={x}>
-                    <span className="mono">0{i + 1}</span>
-                    {x}
-                    <Arrow />
+        )}
+        {view === "servicios" && servicePanel === "servicios" && (
+          <details className="approach-details">
+            <summary className="container">
+              Ver el enfoque: del descubrimiento al contacto{" "}
+              <span aria-hidden="true">+</span>
+            </summary>
+            <section
+              className="section container problem-section"
+              hidden={view !== "servicios" || servicePanel !== "servicios"}
+            >
+              <p className="eyebrow">{c.problem.label}</p>
+              <div className="two-col">
+                <h2>
+                  {c.problem.title}
+                  <span className="muted"> {c.problem.emphasis}</span>
+                </h2>
+                <div>
+                  <p>{c.problem.body}</p>
+                  <p>{c.problem.end}</p>
+                  <ul className="plain-list">
+                    {c.problem.pieces.map((x, i) => (
+                      <li key={x}>
+                        <span className="mono">0{i + 1}</span>
+                        {x}
+                        <Arrow />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section
+              className="ecosystem-section container"
+              aria-labelledby="ecosystem-title"
+              hidden={view !== "servicios" || servicePanel !== "servicios"}
+            >
+              <p className="eyebrow">{c.ecosystem.label}</p>
+              <h2 id="ecosystem-title">
+                Del primer encuentro a la siguiente conversación.
+              </h2>
+              <ol className="ecosystem-list">
+                {c.ecosystem.items.map((item, index) => (
+                  <li
+                    className="surface-glass surface-glass--subtle"
+                    key={item.title}
+                  >
+                    <span className="mono">0{index + 1}</span>
+                    <h3>{item.title}</h3>
+                    <p>{item.detail}</p>
                   </li>
                 ))}
-              </ul>
-            </div>
-          </div>
-        </section>
+              </ol>
+            </section>
+          </details>
+        )}
+        {view === "proyectos" && caseOpen && (
+          <>
+            <nav
+              className="container view-return"
+              aria-label="Volver al índice"
+            >
+              <a href="#casos">← Todos los proyectos</a>
+            </nav>
+            <Suspense
+              fallback={
+                <div
+                  className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong"
+                  aria-hidden="true"
+                >
+                  <div className="lazy-placeholder-indicator" />
+                  <span>Cargando caso de estudio y evidencia...</span>
+                </div>
+              }
+            >
+              <ParaisoCaseStudy
+                onOpenGallery={() => setProject(c.projects[0])}
+              />
+            </Suspense>
+          </>
+        )}
+        {view === "proyectos" && altitudOpen && (
+          <>
+            <nav
+              className="container view-return"
+              aria-label="Volver al índice"
+            >
+              <a href="#casos">← Todos los proyectos</a>
+            </nav>
+            <Suspense
+              fallback={
+                <div
+                  className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong"
+                  aria-hidden="true"
+                >
+                  <div className="lazy-placeholder-indicator" />
+                  <span>Cargando caso conceptual ALTITUD...</span>
+                </div>
+              }
+            >
+              <AltitudCaseStudy />
+            </Suspense>
+          </>
+        )}
         <section
-          className="ecosystem-section container"
-          aria-labelledby="ecosystem-title"
-          hidden={view !== "servicios" || servicePanel !== "servicios"}
+          id="casos"
+          className="section cases-section"
+          hidden={view !== "proyectos" || caseOpen || altitudOpen}
         >
-          <p className="eyebrow">{c.ecosystem.label}</p>
-          <h2 id="ecosystem-title">
-            Del primer encuentro a la siguiente conversación.
-          </h2>
-          <ol className="ecosystem-list">
-            {c.ecosystem.items.map((item, index) => (
-              <li
-                className="surface-glass surface-glass--subtle"
-                key={item.title}
-              >
-                <span className="mono">0{index + 1}</span>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-        </details>}
-        {view === "proyectos" && caseOpen && <>
-          <nav className="container view-return" aria-label="Volver al índice"><a href="#casos">← Todos los proyectos</a></nav>
-          <Suspense fallback={
-            <div className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong" aria-hidden="true">
-              <div className="lazy-placeholder-indicator" />
-              <span>Cargando caso de estudio y evidencia...</span>
-            </div>
-          }>
-            <ParaisoCaseStudy onOpenGallery={() => setProject(c.projects[0])} />
-          </Suspense>
-        </>}
-        {view === "proyectos" && altitudOpen && <>
-          <nav className="container view-return" aria-label="Volver al índice"><a href="#casos">← Todos los proyectos</a></nav>
-          <Suspense fallback={
-            <div className="container lazy-placeholder placeholder-case surface-glass surface-glass--strong" aria-hidden="true">
-              <div className="lazy-placeholder-indicator" />
-              <span>Cargando caso conceptual ALTITUD...</span>
-            </div>
-          }>
-            <AltitudCaseStudy />
-          </Suspense>
-        </>}
-        <section id="casos" className="section cases-section" hidden={view !== "proyectos" || caseOpen || altitudOpen}>
           <div className="container">
             <Heading
               label={c.cases.label}
@@ -1106,15 +841,54 @@ export function App() {
               level={1}
             />
             <article className="featured-project-card surface-glass surface-glass--medium">
-              <div className="featured-project-visuals"><img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Referencia visual del sitio público de Paraíso Laguna" width="1600" height="1000" loading="lazy" decoding="async" /><div className="featured-project-designs" aria-label="Muestra de diseños creados para Paraíso Laguna">{[0, 9, 13].map((index) => { const item = c.projects[0].gallery![index]; return <img key={item.src} src={item.preview || item.src} alt={item.alt} width="900" height="1125" loading="lazy" decoding="async" />; })}</div><p className="featured-project-visual-note">Diseños creados · publicación en redes no verificada</p></div>
+              <div className="featured-project-visuals">
+                <img
+                  src="/projects/paraiso-laguna/sitio-real-desktop.webp"
+                  alt="Referencia visual del sitio público de Paraíso Laguna"
+                  width="1600"
+                  height="1000"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div
+                  className="featured-project-designs"
+                  aria-label="Muestra de diseños creados para Paraíso Laguna"
+                >
+                  {[0, 9, 13].map((index) => {
+                    const item = c.projects[0].gallery![index];
+                    return (
+                      <img
+                        key={item.src}
+                        src={item.preview || item.src}
+                        alt={item.alt}
+                        width="900"
+                        height="1125"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    );
+                  })}
+                </div>
+                <p className="featured-project-visual-note">
+                  Diseños creados · publicación en redes no verificada
+                </p>
+              </div>
               <div>
                 <p className="eyebrow">CASO DESTACADO · TURISMO</p>
                 <h3>Paraíso Laguna</h3>
                 <p className="featured-project-summary">
-                  <strong>Operador ecoturístico en la Costa de Oaxaca:</strong> sitio web ágil para consultar experiencias en móvil, dirección de contenido visual y canal directo a WhatsApp para resolver dudas y agendar.
+                  <strong>Operador ecoturístico en la Costa de Oaxaca:</strong>{" "}
+                  sitio web ágil para consultar experiencias en móvil, dirección
+                  de contenido visual y canal directo a WhatsApp para resolver
+                  dudas y agendar.
                 </p>
-                <p className="small muted">Trabajo construido: sitio público, dirección visual y ruta de contacto.</p>
-                <a className="button" href="#paraiso-laguna">Explorar caso y evidencia <Arrow /></a>
+                <p className="small muted">
+                  Trabajo construido: sitio público, dirección visual y ruta de
+                  contacto.
+                </p>
+                <a className="button" href="#paraiso-laguna">
+                  Explorar caso y evidencia <Arrow />
+                </a>
               </div>
             </article>
             <div className="project-explorer">
@@ -1167,7 +941,11 @@ export function App() {
                       </span>
                       <button
                         className="text-button"
-                        onClick={() => p.id === "altitud" ? (window.location.hash = "#altitud") : setProject(p)}
+                        onClick={() =>
+                          p.id === "altitud"
+                            ? (window.location.hash = "#altitud")
+                            : setProject(p)
+                        }
                         aria-label={`${c.ui.case}: ${p.title}`}
                       >
                         {c.ui.case}
@@ -1204,7 +982,11 @@ export function App() {
             ))}
           </div>
         </section>
-        <section id="capacidades" className="section container" hidden={view !== "servicios" || servicePanel !== "servicios"}>
+        <section
+          id="capacidades"
+          className="section container"
+          hidden={view !== "servicios" || servicePanel !== "servicios"}
+        >
           <Heading label={c.services.label} title={c.services.title} />
           <div className="service-grid">
             {c.services.items.map((s, i) => (
@@ -1245,7 +1027,12 @@ export function App() {
             ))}
           </div>
         </section>
-        <section id="proceso" className="section process-section" hidden={view !== "servicios" || servicePanel !== "proceso"}>
+        <section
+          ref={methodRef}
+          id="proceso"
+          className="section process-section"
+          hidden={view !== "servicios" || servicePanel !== "proceso"}
+        >
           <div className="container">
             <div className="process-header">
               <Heading label={c.process.label} title={c.process.title} />
@@ -1265,7 +1052,11 @@ export function App() {
             </div>
           </div>
         </section>
-        <section id="precios" className="section container pricing-section" hidden={view !== "servicios" || servicePanel !== "precios"}>
+        <section
+          id="precios"
+          className="section container pricing-section"
+          hidden={view !== "servicios" || servicePanel !== "precios"}
+        >
           <Heading
             label={c.pricing.label}
             title={c.pricing.title}
@@ -1361,8 +1152,40 @@ export function App() {
             </a>
           </div>
         </section>
-        {view === "perfil" && <div className="container view-title"><p className="eyebrow">PERFIL Y CONTACTO</p><h1>{profilePanel === "contacto" ? "Hablemos de tu proyecto." : "Reily Castro."}</h1><nav className="view-switcher" aria-label="Perfil y contacto"><a href="#sobre-mi" aria-current={profilePanel === "perfil" ? "page" : undefined}>Perfil</a><a href="#contacto" aria-current={profilePanel === "contacto" ? "page" : undefined}>Contacto</a></nav></div>}
-        <section id="sobre-mi" className="section about-section" hidden={view !== "perfil" || profilePanel !== "perfil"}>
+        {view === "servicios" && servicePanel === "proceso" && (
+          <Suspense fallback={<p role="status">Cargando prácticas…</p>}>
+            <EngineeringPhilosophy />
+          </Suspense>
+        )}
+        {view === "perfil" && (
+          <div className="container view-title">
+            <p className="eyebrow">PERFIL Y CONTACTO</p>
+            <h1>
+              {profilePanel === "contacto"
+                ? "Analicemos tu negocio."
+                : "Reily Castro."}
+            </h1>
+            <nav className="view-switcher" aria-label="Perfil y contacto">
+              <a
+                href="#sobre-mi"
+                aria-current={profilePanel === "perfil" ? "page" : undefined}
+              >
+                Perfil
+              </a>
+              <a
+                href="#contacto"
+                aria-current={profilePanel === "contacto" ? "page" : undefined}
+              >
+                Contacto
+              </a>
+            </nav>
+          </div>
+        )}
+        <section
+          id="sobre-mi"
+          className="section about-section"
+          hidden={view !== "perfil" || profilePanel !== "perfil"}
+        >
           <div className="container about-grid">
             <div className="about-art surface-glass surface-glass--medium">
               <span className="eyebrow">{c.owner.location}</span>
@@ -1387,7 +1210,13 @@ export function App() {
             </div>
           </div>
         </section>
-        <section className="section container faq-section" hidden={view !== "perfil" || profilePanel !== "perfil"}>
+        {view === "perfil" && profilePanel === "perfil" && (
+          <OriginSection detailed />
+        )}
+        <section
+          className="section container faq-section"
+          hidden={view !== "perfil" || profilePanel !== "perfil"}
+        >
           <Heading label={c.faq.label} title={c.faq.title} />
           <div>
             {c.faq.items.map(([q, a]) => (
@@ -1401,7 +1230,9 @@ export function App() {
             ))}
           </div>
         </section>
-        {view === "perfil" && profilePanel === "contacto" && <Contact interest={interest} />}
+        {view === "perfil" && profilePanel === "contacto" && (
+          <Contact interest={interest} />
+        )}
         {view === "perfil" && pending.length > 0 && (
           <aside className="container pending-section">
             <details>
@@ -1430,10 +1261,19 @@ export function App() {
       <footer className="container">
         <div>
           <a href="#inicio" className="footer-name">
-            <img className="cidiks-footer-symbol" src={c.brand.symbol} width="40" height="40" alt="" aria-hidden="true" />
+            <img
+              className="cidiks-footer-symbol"
+              src={c.brand.symbol}
+              width="40"
+              height="40"
+              alt=""
+              aria-hidden="true"
+            />
             {c.brand.fullName}
           </a>
-          <p>{c.brand.descriptor} · {c.brand.tagline}</p>
+          <p>
+            {c.brand.descriptor} · {c.brand.tagline}
+          </p>
         </div>
         <div className="footer-links">
           {(["facebook", "linkedin", "instagram", "github"] as const)
@@ -1487,7 +1327,9 @@ export function App() {
             }
           >
             <span className="quick-contact-text">{c.ui.quickContact}</span>
-            <span className="quick-contact-text-mobile" aria-hidden="true">WhatsApp</span>
+            <span className="quick-contact-text-mobile" aria-hidden="true">
+              WhatsApp
+            </span>
             <Arrow />
           </a>
         </aside>

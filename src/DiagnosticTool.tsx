@@ -19,13 +19,21 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
   const [step, setStep] = useState<number>(0);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLHeadingElement>(null);
+  const moveFocus = useRef(false);
+  useEffect(() => {
+    if (!moveFocus.current) return;
+    moveFocus.current = false;
+    (questionRef.current || resultRef.current)?.focus({ preventScroll: true });
+  }, [step]);
 
   // Determinar pregunta actual
   const step0 = INITIAL_QUESTION;
   const step0Option = step0.options.find((o) => o.id === selectedOptions[0]);
 
   const step1: DiagnosticQuestion =
-    step0Option?.contextQuestionKey && CONTEXT_QUESTIONS[step0Option.contextQuestionKey]
+    step0Option?.contextQuestionKey &&
+    CONTEXT_QUESTIONS[step0Option.contextQuestionKey]
       ? CONTEXT_QUESTIONS[step0Option.contextQuestionKey]
       : CONTEXT_QUESTIONS["q_presencia_actual"];
 
@@ -41,6 +49,7 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
     : null;
 
   const handleSelectOption = (optionId: string) => {
+    moveFocus.current = true;
     if (!hasStarted) {
       setHasStarted(true);
       track("diagnostic_start", { source: "direct" });
@@ -55,29 +64,43 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
       setStep(totalSteps);
       const res = classifyDiagnostic(updated);
       track("diagnostic_complete", { steps_completed: totalSteps });
-      track("diagnostic_completed", { steps_completed: totalSteps, primary_area: res.primaryArea });
+      track("diagnostic_completed", {
+        steps_completed: totalSteps,
+        primary_area: res.primaryArea,
+      });
       track("need_detected", { need: res.primaryArea });
-      track("solution_recommended", { solution_type: res.possibleSolution, priority: res.priority });
+      track("solution_recommended", {
+        solution_type: res.possibleSolution,
+        priority: res.priority,
+      });
       window.setTimeout(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        resultRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }, 50);
     }
   };
 
   const handleBack = () => {
+    moveFocus.current = true;
     if (step > 0) {
       setStep(step - 1);
     }
   };
 
   const handleRestart = () => {
+    moveFocus.current = true;
     setSelectedOptions([]);
     setStep(0);
     setHasStarted(false);
   };
 
   return (
-    <div className="diagnostic-widget surface-glass surface-glass--strong" aria-live="polite">
+    <div
+      className="diagnostic-widget surface-glass surface-glass--strong"
+      aria-live="polite"
+    >
       {!isFinished ? (
         <div className="diagnostic-step">
           <div className="diagnostic-progress">
@@ -87,6 +110,7 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
             <div
               className="progress-bar-bg"
               role="progressbar"
+              aria-label="Progreso de la orientación"
               aria-valuenow={step + 1}
               aria-valuemin={1}
               aria-valuemax={totalSteps}
@@ -109,21 +133,25 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
           </div>
 
           <div className="diagnostic-question-header">
-            <h3>{currentQuestion.title}</h3>
+            <h3 ref={questionRef} tabIndex={-1}>
+              {currentQuestion.title}
+            </h3>
             {currentQuestion.subtitle && (
               <p className="diagnostic-subtitle">{currentQuestion.subtitle}</p>
             )}
           </div>
 
-          <div className="diagnostic-options-list" role="radiogroup" aria-label={currentQuestion.title}>
+          <div
+            className="diagnostic-options-list"
+            role="group"
+            aria-label={currentQuestion.title}
+          >
             {currentQuestion.options.map((opt) => {
               const isSelected = selectedOptions[step] === opt.id;
               return (
                 <button
                   key={opt.id}
                   type="button"
-                  role="radio"
-                  aria-checked={isSelected}
                   className={`diagnostic-option-btn ${isSelected ? "is-selected" : ""}`}
                   onClick={() => {
                     track("diagnostic_question_answered", {
@@ -143,7 +171,7 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
       ) : result ? (
         <div className="diagnostic-result" ref={resultRef} tabIndex={-1}>
           <div className="result-header">
-            <span className="eyebrow">DIAGNÓSTICO ESTRUCTURADO</span>
+            <span className="eyebrow">ORIENTACIÓN INICIAL · POR COMPROBAR</span>
             <h3>Área principal a revisar: {result.areaTitle}</h3>
             <p className="result-area-sub">{result.areaSubtitle}</p>
           </div>
@@ -151,17 +179,17 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
           <div className="result-body">
             <div className="diagnostic-card-grid">
               <div className="diagnostic-card-item">
-                <span className="card-item-label">Situación actual</span>
+                <span className="card-item-label">Posible situación</span>
                 <p>{result.currentSituation}</p>
               </div>
 
               <div className="diagnostic-card-item">
-                <span className="card-item-label">Principal oportunidad</span>
+                <span className="card-item-label">Oportunidad por evaluar</span>
                 <p>{result.mainOpportunity}</p>
               </div>
 
               <div className="diagnostic-card-item">
-                <span className="card-item-label">Fricción detectada</span>
+                <span className="card-item-label">Fricción por comprobar</span>
                 <p>{result.detectedFriction}</p>
               </div>
 
@@ -171,22 +199,29 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
               </div>
 
               <div className="diagnostic-card-item">
-                <span className="card-item-label">Prioridad recomendada</span>
+                <span className="card-item-label">Prioridad orientativa</span>
                 <p>
-                  <span className={`priority-badge priority-${result.priority.toLowerCase()}`}>
+                  <span
+                    className={`priority-badge priority-${result.priority.toLowerCase()}`}
+                  >
                     {result.priority}
                   </span>
                 </p>
               </div>
 
               <div className="diagnostic-card-item highlight-step">
-                <span className="card-item-label">Siguiente paso recomendado</span>
+                <span className="card-item-label">
+                  Siguiente paso recomendado
+                </span>
                 <p>{result.recommendedNextStep}</p>
               </div>
             </div>
 
             <p className="result-disclaimer mono">
-              Nota: Una primera orientación basada en tus respuestas para identificar qué tipo de solución se adapta mejor a tu momento actual. No promete resultados comerciales mágicos: busca darte claridad y un punto de partida concreto.
+              Estas posibilidades se calculan con reglas a partir de tus
+              respuestas. No son hechos observados en tu negocio. Antes de
+              proponer una solución, revisamos contigo el contexto y la
+              evidencia.
             </p>
 
             <div className="result-actions">
@@ -196,11 +231,14 @@ export function DiagnosticTool({ onSelectCta }: DiagnosticProps) {
                 onClick={() => {
                   track("contact_started", { origin: "diagnostic" });
                   if (onSelectCta) {
-                    onSelectCta(`Diagnóstico (${result.areaTitle}): ${result.possibleSolution}`);
+                    onSelectCta(
+                      `Diagnóstico (${result.areaTitle}): ${result.possibleSolution}`,
+                    );
                   }
                 }}
               >
-                Quiero hablar sobre mi proyecto <span aria-hidden="true">↗</span>
+                Quiero hablar sobre mi proyecto{" "}
+                <span aria-hidden="true">↗</span>
               </a>
               <button
                 type="button"

@@ -9,9 +9,13 @@ import "./visual-system.css";
 import "./paraiso-evidence.css";
 import "./navigation.css";
 import "./altitud-case-study.css";
+import "./journey.css";
 import { App } from "./App";
+import { SiteErrorBoundary } from "./SiteErrorBoundary";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <SiteErrorBoundary>
+      <App />
+    </SiteErrorBoundary>
   </React.StrictMode>,
 );

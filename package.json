@@ -7,7 +7,8 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check:release": "node --experimental-strip-types scripts/check-release.ts"
+    "check:release": "node --experimental-strip-types scripts/check-release.ts",
+    "check:evolution": "node --experimental-strip-types scripts/check-evolution.ts"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
