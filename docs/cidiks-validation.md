@@ -42,4 +42,13 @@ Comprensión en 10 segundos, recepción real del canal, calidad del diagnóstico
 
 ## Publicación
 
-La comprobación del dominio, hashes del build y páginas editoriales se registra después del despliegue. No basta con un commit o un push para confirmar lo que sirve Hostinger.
+Publicación comprobada el 4 de octubre de 2026 en **https://reilycastro.com/**. Commit de implementación: `eeb0e293fa815d8708c5b71994caf5b71678c7d0`. El [despliegue de GitHub Actions](https://github.com/Tortaconflow/portafolio-sistemas-digitales/actions/runs/37225084583) terminó con estado `completed` y conclusión `success`.
+
+- El HTML público referencia `index-C0WBELBw.js` y `index-GQom4xgz.css`, los mismos artefactos del build revisado.
+- Se descargó el JS servido por el dominio y su SHA-256 coincide con el archivo local: `9A631B08D0BF67AF52DEC0B1B8D087EBDB931957FBF650A2E318F45F3C3A4393`.
+- GET público de las 12 URLs: HTTP 200 y canonical correcto en home, índice y las diez guías.
+- El sitemap público coincide con el generado. `robots.txt` permite el sitio y señala `https://reilycastro.com/sitemap.xml`.
+- Navegador en producción: portada actualizada, ALTITUD con contenido propio e índice con diez guías. Sin errores ni advertencias capturados en la consola de esa revisión.
+- Portada pública a 390×844: sin desbordamiento horizontal; captura guardada. También se guardó la portada de escritorio a 1440×900. Los demás recorridos responsive y funcionales se revisaron en la vista previa, según la tabla anterior.
+
+Se comprobó el contenido que sirve Hostinger, además del resultado del workflow. La publicación no demuestra indexación, conversiones, recepción de mensajes ni velocidad de campo.
