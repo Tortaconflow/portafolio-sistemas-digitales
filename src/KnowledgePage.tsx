@@ -139,7 +139,7 @@ export function KnowledgePage({ article }: { article?: EducationArticle }) {
                     rel="noreferrer"
                     target="_blank"
                   >
-                    Consultar recurso oficial ↗
+                    Consultar {article.toolOrResource.name} ↗
                   </a>
                 )}
               </section>

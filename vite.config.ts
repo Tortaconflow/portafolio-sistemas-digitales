@@ -131,41 +131,107 @@ export default defineConfig({
             article,
           })),
         ];
+        const lastmod = "2026-10-04";
         for (const page of pages) {
           const title = page.article
             ? `${page.article.title} | CÍDIKS`
-            : "Conocimiento CÍDIKS · Aprende antes de decidir";
+            : "Guías y Criterios sobre Soluciones Digitales | CÍDIKS";
           const description =
             page.article?.tagline ||
             "Guías sobre digitalización, desarrollo web, automatización, identidad y seguridad para tomar decisiones con criterio.";
           const url = domain + page.path;
+          const breadcrumbs = page.article
+            ? {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Inicio",
+                    item: `${domain}/`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Conocimiento",
+                    item: `${domain}/conocimiento/`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: page.article.title,
+                    item: url,
+                  },
+                ],
+              }
+            : {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Inicio",
+                    item: `${domain}/`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Conocimiento",
+                    item: url,
+                  },
+                ],
+              };
           const schema = page.article
             ? {
                 "@context": "https://schema.org",
-                "@type": "Article",
-                headline: page.article.title,
-                description,
-                url,
-                inLanguage: "es-MX",
-                author: {
-                  "@type": "Person",
-                  name: content.owner.name,
-                  url: domain + "/#sobre-mi",
-                },
-                mainEntityOfPage: url,
+                "@graph": [
+                  {
+                    "@type": "Article",
+                    "@id": `${url}#article`,
+                    headline: page.article.title,
+                    description,
+                    url,
+                    inLanguage: "es-MX",
+                    datePublished: "2026-10-04T12:00:00Z",
+                    dateModified: "2026-10-04T12:00:00Z",
+                    image: domain + content.seo.image,
+                    author: {
+                      "@type": "Person",
+                      name: content.owner.name,
+                      url: domain + "/#sobre-mi",
+                    },
+                    publisher: {
+                      "@type": "Organization",
+                      name: "CÍDIKS",
+                      url: domain,
+                      logo: {
+                        "@type": "ImageObject",
+                        url: domain + content.brand.symbol,
+                      },
+                    },
+                    mainEntityOfPage: url,
+                  },
+                  breadcrumbs,
+                ],
               }
             : {
                 "@context": "https://schema.org",
-                "@type": "CollectionPage",
-                name: title,
-                description,
-                url,
-                inLanguage: "es-MX",
+                "@graph": [
+                  {
+                    "@type": "CollectionPage",
+                    "@id": `${url}#collection`,
+                    name: title,
+                    description,
+                    url,
+                    inLanguage: "es-MX",
+                  },
+                  breadcrumbs,
+                ],
               };
           this.emitFile({
             type: "asset",
             fileName: page.path.slice(1) + "index.html",
-            source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(url)}"><link rel="icon" href="/favicon.svg"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(url)}"><meta property="og:type" content="${page.article ? "article" : "website"}"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image">${cssFiles.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script><script type="module" src="/${editorialScript.fileName}"></script></head><body class="knowledge-page">${renderToStaticMarkup(createElement(KnowledgePage, { article: page.article }))}</body></html>`,
+            source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(url)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="48x48" href="/brand/favicon/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(url)}"><meta property="og:type" content="${page.article ? "article" : "website"}"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image">${cssFiles.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script><script type="module" src="/${editorialScript.fileName}"></script></head><body class="knowledge-page">${renderToStaticMarkup(createElement(KnowledgePage, { article: page.article }))}</body></html>`,
           });
         }
         this.emitFile({
@@ -177,7 +243,7 @@ export default defineConfig({
           this.emitFile({
             type: "asset",
             fileName: "sitemap.xml",
-            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path)].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc></url>`).join("")}</urlset>`,
+            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path)].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc><lastmod>${lastmod}</lastmod></url>`).join("")}</urlset>`,
           });
       },
     },

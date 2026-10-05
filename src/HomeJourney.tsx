@@ -366,7 +366,7 @@ export function HomeJourney({
             usarlo y qué puedes cambiar después.
           </p>
           <a className="inline-link" href="/conocimiento/">
-            Aprende antes de decidir <span aria-hidden="true">↗</span>
+            Explorar biblioteca de guías prácticas <span aria-hidden="true">↗</span>
           </a>
         </div>
         <ol>
