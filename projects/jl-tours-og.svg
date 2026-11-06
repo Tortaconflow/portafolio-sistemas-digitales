@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0C1512"/>
+  
+  <!-- Subtle ambient glow background -->
+  <circle cx="600" cy="240" r="380" fill="url(#teal_glow)" opacity="0.3"/>
+  <circle cx="1000" cy="500" r="280" fill="url(#gold_glow)" opacity="0.15"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="teal_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(600 240) rotate(90) scale(380)">
+      <stop stop-color="#244C3B"/>
+      <stop offset="1" stop-color="#0C1512" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gold_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1000 500) rotate(90) scale(280)">
+      <stop stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#0C1512" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Border Frame -->
+  <rect x="40" y="40" width="1120" height="550" rx="32" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" fill="none"/>
+  
+  <!-- Central Icon Badge -->
+  <g transform="translate(560, 110)">
+    <rect width="80" height="80" rx="24" fill="#244C3B" opacity="0.4" stroke="#4E876F" stroke-width="1.5"/>
+    <circle cx="40" cy="40" r="22" stroke="#79B99E" stroke-width="2" fill="none"/>
+    <path d="M30 40l7 7 14-14" stroke="#79B99E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Title & Typography -->
+  <text x="600" y="260" text-anchor="middle" fill="#79B99E" font-family="sans-serif" font-size="16" font-weight="bold" letter-spacing="6">DISTRIBUCIÓN TURÍSTICA GLOBAL</text>
+  <text x="600" y="340" text-anchor="middle" fill="#F5F5F4" font-family="sans-serif" font-size="52" font-weight="bold" letter-spacing="1">JL TOURS</text>
+  <text x="600" y="405" text-anchor="middle" fill="#D6D3D1" font-family="sans-serif" font-size="24">Integración y Ventas en TripAdvisor &amp; Viator</text>
+
+  <!-- Badges / Pillars at bottom -->
+  <g transform="translate(180, 470)">
+    <rect width="250" height="48" rx="16" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="125" y="30" text-anchor="middle" fill="#A8A29E" font-family="sans-serif" font-size="14" font-weight="600">TripAdvisor Experiences</text>
+  </g>
+
+  <g transform="translate(470, 470)">
+    <rect width="250" height="48" rx="16" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="125" y="30" text-anchor="middle" fill="#A8A29E" font-family="sans-serif" font-size="14" font-weight="600">Catálogo Global Viator</text>
+  </g>
+
+  <g transform="translate(760, 470)">
+    <rect width="250" height="48" rx="16" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="125" y="30" text-anchor="middle" fill="#A8A29E" font-family="sans-serif" font-size="14" font-weight="600">Ventas en Moneda Extranjera</text>
+  </g>
+</svg>
