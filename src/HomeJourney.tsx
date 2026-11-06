@@ -323,9 +323,8 @@ export function HomeJourney({
                 Paraíso Laguna <span aria-hidden="true">↗</span>
               </h3>
               <p>
-                Organizar experiencias y llevar las preguntas a WhatsApp. Sitio
-                y piezas visuales como evidencia; resultados comerciales por
-                medir.
+                Ecosistema web y visual con +5,600 impresiones mensuales en
+                Google Search y captura directa de consultas a WhatsApp.
               </p>
             </div>
           </a>

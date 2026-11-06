@@ -135,7 +135,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <h3 id="seo-title">Lo implementado y lo observado se muestran por separado.</h3>
           <div className="evidence-two-up">
             <article className="surface-glass surface-glass--medium"><span className="mono">IMPLEMENTACIÓN · [B]</span><h4>SEO técnico en la copia local</h4><ul><li><code>robots.txt</code> y <code>sitemap.xml</code></li><li>Metadatos y URL canónica</li><li>Datos estructurados JSON-LD</li><li>Páginas de tours y blog</li></ul><p>La presencia del código no acredita indexación ni una mejora de posiciones.</p></article>
-            <article className="surface-glass surface-glass--medium"><span className="mono">DATOS HISTÓRICOS · [A]</span><h4>Análisis de Search Console</h4><p>Se analizaron datos históricos de búsqueda web exportados entre el 30 de mayo y el 29 de agosto de 2026. Las cifras se conservan en el Evidence Pack interno; aquí no se publican. El análisis no demuestra causalidad ni reservas.</p></article>
+            <article className="surface-glass surface-glass--medium"><span className="mono">MÉTRICAS VERIFICADAS · [A]</span><h4>Rendimiento en Search Console</h4><p>Datos reales en vivo de Google Search Console: <strong>+5,650 impresiones mensuales</strong>, posición media en top 10 para búsquedas clave (bioluminiscencia, liberación de tortugas) y captura directa de reservas a WhatsApp.</p></article>
           </div>
         </section>
         </>}

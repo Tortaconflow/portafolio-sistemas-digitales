@@ -485,7 +485,7 @@ export function App() {
   useEffect(() => {
     const updateScroll = () => {
       setScrolled(window.scrollY > 24);
-      setQuickContact(window.scrollY > 600 && view === "inicio");
+      setQuickContact(window.scrollY > 300);
     };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
