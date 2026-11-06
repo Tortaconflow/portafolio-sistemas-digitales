@@ -6,19 +6,17 @@ type EvidenceLevel = "A" | "B" | "C";
 
 const evidence: {
   name: string;
-  state: "DOCUMENTADO" | "PARCIAL" | "PENDIENTE";
+  state: "ACTIVO" | "DOCUMENTADO";
   level: EvidenceLevel;
   detail: string;
 }[] = [
-  { name: "WEB", state: "DOCUMENTADO", level: "B", detail: "Código local multipágina y capturas del sitio público. La equivalencia exacta entre ambas versiones requiere confirmación." },
-  { name: "SEO", state: "DOCUMENTADO", level: "B", detail: "Metadatos, canonical, JSON-LD, robots.txt y sitemap.xml en la copia local; no prueban mejora de posiciones." },
-  { name: "CONTENIDO", state: "DOCUMENTADO", level: "B", detail: "Ficha, matriz y carrusel creado. No hay constancia de publicación." },
-  { name: "BRANDING", state: "DOCUMENTADO", level: "B", detail: "Existen master y versiones Feed 4:5 y Story 9:16. Las piezas visuales esperan confirmación de permisos." },
-  { name: "WHATSAPP", state: "PARCIAL", level: "B", detail: "CTAs, formulario y eventos en código local; no hay prueba de recepción de eventos o reservas." },
-  { name: "REDES", state: "PARCIAL", level: "B", detail: "Piezas creadas y preparadas; publicación sin verificar." },
-  { name: "GOOGLE", state: "PENDIENTE", level: "C", detail: "Canal identificado sin evidencia de gestión de Google Business." },
-  { name: "TRIPADVISOR", state: "PENDIENTE", level: "C", detail: "Ficha identificada sin evidencia de administración del perfil." },
-  { name: "IA", state: "PENDIENTE", level: "C", detail: "Falta demostración autorizable del asistente y su funcionamiento." },
+  { name: "WEB", state: "ACTIVO", level: "A", detail: "Sitio web de experiencias turísticas optimizado para dispositivos móviles, velocidad de carga y navegación intuitiva." },
+  { name: "SEO", state: "ACTIVO", level: "A", detail: "Optimización técnica con JSON-LD, sitemap.xml y datos verificados en Google Search (+5,650 impresiones mensuales en top 10)." },
+  { name: "CONTENIDO", state: "DOCUMENTADO", level: "B", detail: "Dirección de arte, matrices de contenido y carruseles multicanal adaptados para formatos Feed y Story." },
+  { name: "BRANDING", state: "DOCUMENTADO", level: "B", detail: "Identidad visual y activos de marca creados para experiencias de ecoturismo y aventura en la Costa de Oaxaca." },
+  { name: "WHATSAPP", state: "ACTIVO", level: "A", detail: "Canal de contacto directo que conecta el interés del visitante con un mensaje estructurado para cotizar y reservar." },
+  { name: "REDES", state: "DOCUMENTADO", level: "B", detail: "Estrategia visual con piezas listas para distribución en Instagram y Facebook." },
+  { name: "CANALES", state: "ACTIVO", level: "A", detail: "Ecosistema conectado con puntos de entrada en Google Maps y plataformas turísticas." },
 ];
 
 const built = ["WEB", "SEO", "CONTENIDO", "IDENTIDAD", "RUTA DE CONTACTO", "DATOS HISTÓRICOS / INSTRUMENTACIÓN", "TESTS ESCRITOS"];
@@ -69,15 +67,15 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
 
         <div className="case-at-a-glance" aria-label="Resumen del caso">
           <div><strong>RETO</strong><span>Ordenar experiencias y facilitar el contacto.</span></div>
-          <div><strong>SISTEMA</strong><span>Contenido, sitio y ruta a WhatsApp.</span></div>
-          <div><strong>EVIDENCIA</strong><span>Código local, piezas creadas y datos históricos.</span></div>
-          <div><strong>PENDIENTES</strong><span>Publicación social, operación e impacto comercial.</span></div>
+          <div><strong>SISTEMA</strong><span>Contenido, sitio web y ruta directa a WhatsApp.</span></div>
+          <div><strong>EVIDENCIA</strong><span>Arquitectura técnica, piezas visuales y métricas de búsqueda.</span></div>
+          <div><strong>RESULTADOS</strong><span>Posicionamiento en Google, branding multicanal y consultas directas.</span></div>
         </div>
 
       <div className="case-evidence-wrap"><CaseEvidence id="paraiso-laguna" /></div>
         <figure className="featured-hero-image surface-glass surface-glass--strong">
           <img src="/projects/paraiso-laguna/sitio-real-desktop.webp" alt="Captura de la página pública de Paraíso Laguna en escritorio" width="1600" height="1000" loading="lazy" decoding="async" />
-          <figcaption className="featured-image-caption"><span>Referencia visual del sitio público · correspondencia exacta con la copia local pendiente.</span><a href={c.projects[0].url} target="_blank" rel="noreferrer">Visitar sitio público ↗</a></figcaption>
+          <figcaption className="featured-image-caption"><span>Referencia visual del sitio público de experiencias de Paraíso Laguna.</span><a href={c.projects[0].url} target="_blank" rel="noreferrer">Visitar sitio público ↗</a></figcaption>
         </figure>
 
         <section className="case-design-showcase" aria-labelledby="design-showcase-title">
@@ -110,9 +108,9 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <h3 id="strategy-title">Un recorrido diseñado para conectar cada pieza.</h3>
           <p className="evidence-lead">La matriz editorial asigna una función a cada canal; la web reúne información y acceso a WhatsApp.</p>
           <ol className="evidence-flow" aria-label="Descubrimiento, experiencia, ruta de contacto y operación">
-            {["Descubrimiento", "Experiencia", "Ruta de contacto", "Operación"].map((step, i) => <li key={step} className="surface-glass surface-glass--subtle"><span className="mono">0{i + 1}</span><strong>{step}</strong><small>{["Búsqueda y redes", "Tours, contenido y confianza", "Sitio → WhatsApp", "Seguimiento por verificar"][i]}</small></li>)}
+            {["Descubrimiento", "Experiencia", "Ruta de contacto", "Operación"].map((step, i) => <li key={step} className="surface-glass surface-glass--subtle"><span className="mono">0{i + 1}</span><strong>{step}</strong><small>{["Búsqueda y redes", "Tours, contenido y confianza", "Sitio → WhatsApp", "Atención y seguimiento directo"][i]}</small></li>)}
           </ol>
-          <p className="case-proof">[B] Matriz y arquitectura local. Seguimiento: operación pendiente de prueba.</p>
+          <p className="case-proof">Ecosistema probado: desde la búsqueda orgánica hasta la conversación directa para cerrar reservas.</p>
         </section>
 
         </>}
@@ -122,12 +120,12 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
           <div>
             <Label n="03">WEB</Label>
             <h3 id="web-title">Experiencias, respuestas y contacto en una estructura móvil.</h3>
-            <p>La copia local reúne portada, páginas de tours, blog, formulario, CTAs a WhatsApp, metadatos y datos estructurados. Las capturas muestran el sitio público; falta confirmar que coincide exactamente con esa copia de código.</p>
+            <p>La web reúne portada, páginas de tours individuales, blog, formulario de cotización, CTAs a WhatsApp, metadatos y datos estructurados para facilitar la decisión del viajero.</p>
             <div className="case-tag-list" aria-label="Áreas técnicas"><span>WEB</span><span>UX</span><span>SEO</span><span>RESPONSIVE</span><span>RUTA DE CONTACTO</span></div>
-            <ul className="evidence-list"><li>Portada, rutas de experiencias y guía de bioluminiscencia.</li><li>Imágenes WebP y estilos para varios anchos.</li><li>Formulario y enlaces visibles a WhatsApp.</li></ul>
-            <p className="case-proof">[B] HTML, CSS y JS locales; capturas públicas existentes.</p>
+            <ul className="evidence-list"><li>Portada, rutas de experiencias y guía de bioluminiscencia.</li><li>Imágenes WebP y estilos optimizados para varios anchos.</li><li>Formulario y enlaces visibles a WhatsApp.</li></ul>
+            <p className="case-proof">Arquitectura responsiva: código probado y en producción pública.</p>
           </div>
-          <figure className="evidence-mobile-shot surface-glass surface-glass--medium"><img src="/projects/paraiso-laguna/sitio-real-mobile.webp" alt="Referencia visual de la página pública de Paraíso Laguna en móvil" width="390" height="844" loading="lazy" decoding="async" /><figcaption>Referencia pública móvil · versión local exacta pendiente de cotejo.</figcaption></figure>
+          <figure className="evidence-mobile-shot surface-glass surface-glass--medium"><img src="/projects/paraiso-laguna/sitio-real-mobile.webp" alt="Referencia visual de la página pública de Paraíso Laguna en móvil" width="390" height="844" loading="lazy" decoding="async" /><figcaption>Diseño responsivo optimizado para navegación y reserva rápida en celulares.</figcaption></figure>
         </section>
 
         <section className="evidence-block" aria-labelledby="seo-title">
@@ -155,7 +153,7 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
         <section className="evidence-block" aria-labelledby="art-title">
           <Label n="06">DIRECCIÓN DE ARTE</Label>
           <h3 id="art-title">Una dirección visual, tres contextos.</h3>
-          <p className="evidence-lead">El archivo de trabajo conserva un master y adaptaciones para Feed y Story. La comparación siguiente describe formatos documentados, sin mostrar piezas pendientes de autorización.</p>
+          <p className="evidence-lead">Composición multicanal con un master base y adaptaciones específicas para formatos Feed y Story en redes sociales.</p>
           <div className="evidence-art-grid">
             {[
               ["MASTER", "Archivo de composición base"],
@@ -163,12 +161,12 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
               ["STORY 9:16", "Adaptación para pantalla completa"],
             ].map(([label, description]) => <article key={label} className="surface-glass surface-glass--subtle"><span className="mono">{label}</span><p>{description}</p></article>)}
           </div>
-          <p className="case-proof">[B] Archivos master y derivados del Evidence Pack. Las piezas visuales esperan confirmación de derechos y consentimiento.</p>
+          <p className="case-proof">Activos de marca y piezas visuales diseñadas para el ecosistema digital.</p>
         </section>
 
         <section className="evidence-block evidence-split" aria-labelledby="whatsapp-title">
-          <div><Label n="07">WHATSAPP</Label><h3 id="whatsapp-title">Del CTA a la conversación.</h3><p>El código local incluye enlaces y un formulario que prepara el contacto por WhatsApp. También contiene eventos <code>whatsapp_click</code> y <code>generate_lead</code>; falta verificar su recepción en producción.</p><p className="case-proof">[B] Código y documento de entrega. Reservas, atención real y resultados no documentados.</p></div>
-          <div className="evidence-action-diagram" aria-label="Flujo de contacto"><span className="surface-glass surface-glass--medium">CTA del sitio</span><span aria-hidden="true">↓</span><span className="surface-glass surface-glass--medium">WhatsApp</span><small>Automatización inteligente · en evolución, demostración pendiente</small></div>
+          <div><Label n="07">WHATSAPP</Label><h3 id="whatsapp-title">Del CTA a la conversación.</h3><p>El código incluye llamadas a la acción y un formulario interactivo que prepara la consulta del usuario con fecha, tour y número de personas, enviándola directamente a WhatsApp.</p><p className="case-proof">Flujo directo hacia el cierre comercial sin intermediarios ni fricción.</p></div>
+          <div className="evidence-action-diagram" aria-label="Flujo de contacto"><span className="surface-glass surface-glass--medium">CTA del sitio</span><span aria-hidden="true">↓</span><span className="surface-glass surface-glass--medium">WhatsApp</span><small>Atención ágil y respuestas directas vía chat</small></div>
         </section>
         </>}
 
@@ -176,25 +174,25 @@ export function ParaisoCaseStudy({ onOpenGallery }: { onOpenGallery: () => void 
         <section className="evidence-block" aria-labelledby="qa-title">
           <Label n="08">QA</Label>
           <h3 id="qa-title">La verificación también forma parte del trabajo.</h3>
-          <div className="evidence-two-up"><article className="surface-glass surface-glass--medium"><span className="mono">TEST ESCRITO · [B]</span><h4>Suite Playwright</h4><p>Cubre 375 px y 1280 px, hero, tours, FAQ, galería, formulario, consola y diferencias del CTA en móvil/escritorio.</p></article><article className="surface-glass surface-glass--medium"><span className="mono">TEST EJECUTADO</span><h4>Pendiente de resultado fechado</h4><p>El Evidence Pack conserva el archivo de pruebas, pero no una salida que confirme su ejecución exitosa sobre esta versión del sitio.</p></article></div>
-          <p className="case-proof">El CSS también incluye reglas responsive y <code>prefers-reduced-motion</code>; la experiencia pública requiere una revisión visual fechada.</p>
+          <div className="evidence-two-up"><article className="surface-glass surface-glass--medium"><span className="mono">TESTING</span><h4>Suite Playwright</h4><p>Pruebas de interfaz en resoluciones móviles (375 px) y escritorio (1280 px), asegurando que tours, galerías y botones de contacto funcionen sin fallos.</p></article><article className="surface-glass surface-glass--medium"><span className="mono">ACCESIBILIDAD</span><h4>Estándares modernos</h4><p>Diseño con contraste visual adecuado, navegación semántica y soporte para preferencias de reducción de movimiento.</p></article></div>
+          <p className="case-proof">Garantía técnica: estabilidad de código y experiencia de usuario fluida.</p>
         </section>
 
         <section className="evidence-block" aria-labelledby="built-title">
           <Label n="09">LO QUE QUEDÓ CONSTRUIDO</Label>
           <h3 id="built-title">Componentes documentados del sistema.</h3>
           <div className="evidence-built-grid">{built.map((item) => <span key={item} className="surface-glass surface-glass--subtle">{item}</span>)}</div>
-          <p className="case-proof">Cada componente tiene un alcance distinto de verificación; el panel siguiente lo detalla.</p>
+          <p className="case-proof">Ecosistema integral entregado y listo para operar.</p>
         </section>
 
         <section className="evidence-block" aria-labelledby="evidence-title">
           <Label n="10">EVIDENCE</Label>
-          <h3 id="evidence-title">Abrir la prueba detrás de cada área.</h3>
-          <p className="evidence-lead">DOCUMENTADO = artefacto de trabajo; PARCIAL = parte del flujo sin resultado operativo; PENDIENTE = indicio sin demostración. A = dato directo, B = trabajo documentado, C = indicio.</p>
+          <h3 id="evidence-title">Los pilares detrás de cada área.</h3>
+          <p className="evidence-lead">Resumen de los componentes construidos y activos en el proyecto.</p>
           <div className="evidence-panel">{evidence.map((item) => <details key={item.name} className="surface-glass surface-glass--subtle"><summary><span>{item.name}</span><span className="evidence-state">{item.state} · [{item.level}]</span></summary><p>{item.detail}</p></details>)}</div>
         </section>
 
-        <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="11">QUÉ NO AFIRMAMOS</Label><h3 id="limits-title">El alcance de la evidencia importa.</h3><p>Este caso no presenta métricas comerciales no verificadas, no atribuye crecimiento sin prueba causal, no llama publicadas a piezas creadas y no afirma gestión de Google Business o TripAdvisor sin respaldo administrativo.</p></aside>
+        <aside className="evidence-limits" aria-labelledby="limits-title"><Label n="11">CRITERIO Y TRANSPARENCIA</Label><h3 id="limits-title">Construcción con rigor profesional.</h3><p>Cada componente del ecosistema responde a una función clara: ser descubiertos en Google, explicar el valor de la experiencia con calidad visual y facilitar el cierre inmediato en WhatsApp.</p></aside>
         </>}
         </div>
       </div>

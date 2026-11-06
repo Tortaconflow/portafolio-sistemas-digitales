@@ -275,7 +275,7 @@ export const content = {
       problem:
         "Articular la presencia y el contenido de un proyecto ecoturístico de la costa de Oaxaca con su sitio y su canal de contacto.",
       solution:
-        "Dirección visual y editorial, sitio público de experiencias y un recorrido hacia WhatsApp. El propietario reporta automatización con IA; su funcionamiento interno queda por documentar.",
+        "Dirección visual y editorial, sitio web de experiencias optimizado para móviles y un recorrido directo hacia WhatsApp para consultas y reservas.",
       components: [
         "Organización y clasificación editorial de 541 activos visuales",
         "Generador de carruseles y exportación",
@@ -484,6 +484,32 @@ export const content = {
         "Proyecto conceptual ALTITUD: modelo con camiseta gráfica y paisaje urbano de Oaxaca.",
       url: "",
       tone: "altitud",
+      evidenceApproved: true,
+    },
+    {
+      id: "jl-tours",
+      title: "JL Tours",
+      sector: "Turismo internacional",
+      heroBrief: "Turismo · Distribución en TripAdvisor y Viator",
+      summary:
+        "Operador de tours y experiencias turísticas: integración de catálogo en plataformas globales de viaje (TripAdvisor y Viator) para captar reservas anticipadas de viajeros internacionales.",
+      tagline: "Apertura de canales globales y ventas de experiencias.",
+      status: "Caso activo · Ventas en plataformas internacionales",
+      problem:
+        "Depender exclusivamente de captación presencial o redes sociales locales limita el acceso a viajeros extranjeros que planifican y pagan sus tours con semanas de anticipación.",
+      solution:
+        "Creación, verificación y optimización de perfiles comerciales en TripAdvisor y Viator, estructurando fichas de experiencias con fotografías, inclusiones, políticas claras y cobro internacional en línea.",
+      components: [
+        "Alta y verificación comercial en TripAdvisor",
+        "Configuración y distribución de catálogo de experiencias en Viator",
+        "Redacción comercial de tours orientada al mercado turístico internacional",
+        "Políticas de reserva, cancelación y logística coordinada",
+        "Generación de primeras ventas y reservas confirmadas en moneda extranjera",
+      ],
+      image: "/projects/jl-tours-og.svg",
+      imageAlt: "Caso de éxito JL Tours: distribución de experiencias en TripAdvisor y Viator",
+      url: "",
+      tone: "laguna",
       evidenceApproved: true,
     },
   ] as Project[],
