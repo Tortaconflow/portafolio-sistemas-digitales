@@ -4,6 +4,8 @@ DirectoryIndex index.html
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   <FilesMatch "\.html$">
+    # The hashes authorize the existing GA4 bootstrap on the home and knowledge pages.
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-Z50z0pmtHM22/ozkWFlSqf5nI+cmCpDE9qLbe7b1cYg=' 'sha256-JrCilgFsZ7iJdeShkG40g60H/b8yMYWiMKbMPnimB1w='; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; upgrade-insecure-requests"
     Header set Cache-Control "no-cache"
   </FilesMatch>
   <FilesMatch "\.(woff2?|css|js)$">
