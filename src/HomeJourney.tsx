@@ -429,6 +429,11 @@ export function HomeJourney({
             Prefiero explorar primero en 3 preguntas{" "}
             <span aria-hidden="true">↗</span>
           </a>
+          <p>
+            <a className="inline-link" href="/asesor-ia/">
+              Crear un brief con CÍDIKIS IA <span aria-hidden="true">↗</span>
+            </a>
+          </p>
         </div>
       </section>
     </div>

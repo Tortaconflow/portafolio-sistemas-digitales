@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { KnowledgePage, StaticHome } from "./src/KnowledgePage.tsx";
 import { EDUCATION_ARTICLES } from "./src/education.ts";
 import { content, isWebUrl, releaseIssues } from "./src/content.ts";
+import { AdvisorPage } from "./src/advisor/AdvisorPage.tsx";
 const escapeHtml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -20,6 +21,11 @@ export default defineConfig({
     {
       name: "content-seo",
       buildStart() {
+        this.emitFile({
+          type: "chunk",
+          id: fileURLToPath(new URL("./src/advisor/entry.tsx", import.meta.url)),
+          name: "advisor",
+        });
         this.emitFile({
           type: "chunk",
           id: fileURLToPath(
@@ -116,12 +122,37 @@ export default defineConfig({
           ? new URL(content.links.domain).origin
           : "";
         const ready = content.seo.allowIndexing && !releaseIssues().length;
-        const cssFiles = Object.values(bundle).filter(
-          (item) => item.type === "asset" && item.fileName.endsWith(".css"),
+        // CSS dependencies precede each entry's own styles. Loading every emitted
+        // stylesheet can reorder the global cascade and change existing pages.
+        const stylesFor = (entryFile: string) => {
+          const visited = new Set<string>();
+          const styles = new Set<string>();
+          const visit = (file: string) => {
+            if (visited.has(file)) return;
+            visited.add(file);
+            const chunk = bundle[file];
+            if (!chunk || chunk.type !== "chunk") return;
+            chunk.imports.forEach(visit);
+            const metadata = (chunk as typeof chunk & {
+              viteMetadata?: { importedCss: Set<string> };
+            }).viteMetadata;
+            metadata?.importedCss.forEach((css) => styles.add(css));
+          };
+          visit(entryFile);
+          return [...styles].map((fileName) => ({ fileName }));
+        };
+        const homeScript = Object.values(bundle).find(
+          (item) => item.type === "chunk" && item.isEntry && item.name === "index",
         );
+        const cssFiles = homeScript ? stylesFor(homeScript.fileName) : [];
         const editorialScript = Object.values(bundle).find(
           (item) => item.type === "chunk" && item.name === "editorial",
         );
+        const advisorScript = Object.values(bundle).find(
+          (item) => item.type === "chunk" && item.name === "advisor",
+        );
+        if (!advisorScript) throw new Error("Advisor assets missing");
+        const advisorCss = stylesFor(advisorScript.fileName);
         if (!editorialScript || !cssFiles.length)
           throw new Error("Editorial assets missing");
         const pages = [
@@ -234,6 +265,20 @@ export default defineConfig({
             source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(url)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="48x48" href="/brand/favicon/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(url)}"><meta property="og:type" content="${page.article ? "article" : "website"}"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image">${cssFiles.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-LEJB4DR0KC"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-LEJB4DR0KC');</script><script type="module" src="/${editorialScript.fileName}"></script></head><body class="knowledge-page">${renderToStaticMarkup(createElement(KnowledgePage, { article: page.article }))}</body></html>`,
           });
         }
+        const advisorUrl = domain + content.advisor.path;
+        const advisorSchema = {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: content.advisor.name,
+          description: content.advisor.description,
+          url: advisorUrl,
+          inLanguage: "es-MX",
+        };
+        this.emitFile({
+          type: "asset",
+          fileName: content.advisor.path.slice(1) + "index.html",
+          source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(content.advisor.title)}</title><meta name="description" content="${escapeHtml(content.advisor.description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(advisorUrl)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(content.advisor.title)}"><meta property="og:description" content="${escapeHtml(content.advisor.description)}"><meta property="og:url" content="${escapeHtml(advisorUrl)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(content.advisor.title)}"><meta name="twitter:description" content="${escapeHtml(content.advisor.description)}"><meta name="twitter:image" content="${escapeHtml(domain + content.seo.image)}">${advisorCss.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(advisorSchema).replace(/</g, "\\u003c")}</script><script type="module" src="/${advisorScript.fileName}"></script></head><body class="knowledge-page advisor-page">${renderToStaticMarkup(createElement(AdvisorPage))}</body></html>`,
+        });
         this.emitFile({
           type: "asset",
           fileName: "robots.txt",
@@ -243,7 +288,7 @@ export default defineConfig({
           this.emitFile({
             type: "asset",
             fileName: "sitemap.xml",
-            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path)].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc><lastmod>${lastmod}</lastmod></url>`).join("")}</urlset>`,
+            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path), content.advisor.path].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc><lastmod>${path === content.advisor.path ? "2026-10-10" : lastmod}</lastmod></url>`).join("")}</urlset>`,
           });
       },
     },

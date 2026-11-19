@@ -26,6 +26,15 @@ export interface EducationArticle {
     officialUrl?: string;
   };
   suggestedStep: string;
+  mobileGuide?: {
+    eligibility?: string[];
+    steps: string[];
+    note?: string;
+    templates?: {
+      label: string;
+      text: string;
+    }[];
+  };
   sources: {
     title: string;
     organization: string;
@@ -187,6 +196,19 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     },
     suggestedStep:
       "Antes de contratar publicidad local o herramientas complejas, verifica tu perfil oficial en Google, actualiza tus horarios reales y sube 5 fotografías nítidas tomadas con luz natural.",
+    mobileGuide: {
+      eligibility: [
+        "Apto: negocios con local físico abierto al público (tienda, restaurante, taller) o con área de servicio que acuden en persona al cliente.",
+        "No apto: negocios estrictamente en línea sin atención presencial, propiedades en renta o venta, clases en locales ajenos sin representación legal o apartados postales.",
+      ],
+      steps: [
+        "Confirma que tu negocio cumple las directrices de elegibilidad (atención presencial en local o en el domicilio del cliente).",
+        "Inicia sesión con tu cuenta de Google en Google Perfil de Negocio e introduce el nombre exacto de tu negocio, sin palabras clave extra.",
+        "Selecciona tu categoría principal e indica tu dirección física (si atiendes en local) o tu área de servicio (si vas con el cliente).",
+        "Agrega teléfono o enlace de contacto y completa el método de verificación que Google asigne (frecuentemente grabación de vídeo continuo desde el celular, SMS o correo).",
+      ],
+      note: "Google decide el método de verificación disponible según la categoría y ubicación; la revisión puede tomar algunos días hábiles.",
+    },
     sources: [
       {
         title: "Directrices para representar a tu empresa en Google",
@@ -247,6 +269,15 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     },
     suggestedStep:
       "Anota en una hoja las 5 preguntas que más te hacen tus prospectos. Si tus respuestas actuales son confusas o están dispersas, ese es el contenido base con el que debe iniciar tu primera página web.",
+    mobileGuide: {
+      steps: [
+        "Si todavía no necesitas una página web completa, puedes empezar gratis con un catálogo básico en WhatsApp Business: abre la app y entra a la pestaña Herramientas > Catálogo.",
+        "Toca Añadir un artículo nuevo (+) y selecciona Añadir fotos y videos para subir fotos claras desde tu celular.",
+        "Escribe el Nombre del producto o servicio, selecciona el País de origen si la app lo solicita, y agrega opcionalmente Precio y una Descripción breve.",
+        "Toca Guardar y repite con tus 3 a 5 productos o servicios más pedidos; cuando alguien te pregunte, comparte el enlace directo del catálogo desde el chat.",
+      ],
+      note: "Los artículos del catálogo pasan por una revisión automática de WhatsApp Business para comprobar que cumplen sus políticas antes de mostrarse a los clientes.",
+    },
     sources: [
       {
         title: "Guía básica sobre el funcionamiento de los motores de búsqueda",
@@ -295,6 +326,28 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     },
     suggestedStep:
       "Si aún utilizas WhatsApp personal para tu negocio, evalúa usar la aplicación WhatsApp Business. Configura tu horario de atención y crea 3 respuestas rápidas para tus dudas más frecuentes.",
+    mobileGuide: {
+      steps: [
+        "Abre WhatsApp Business en tu celular y entra a la pestaña Herramientas (en algunos dispositivos: Ajustes > Herramientas para la empresa).",
+        "Toca Respuestas rápidas y pulsa el botón + (Añadir).",
+        "Escribe tu mensaje frecuente, asigna un Acceso directo corto (por ejemplo /bienvenida, /horario o /seguimiento) y toca Guardar.",
+        "En cualquier chat con un cliente, escribe / para elegir y enviar la respuesta al instante; complementa usando Etiquetas para marcar consultas pendientes.",
+      ],
+      templates: [
+        {
+          label: "Atajo sugerido: /bienvenida",
+          text: "Hola, gracias por escribir a [Nombre de tu negocio]. Con gusto te ayudamos. ¿Qué producto o servicio estás buscando hoy?",
+        },
+        {
+          label: "Atajo sugerido: /horario",
+          text: "Nuestro horario de atención es de [días y horas]. Nos ubicamos en [dirección o zona de entrega]. Si gustas, dinos qué necesitas y te confirmamos disponibilidad.",
+        },
+        {
+          label: "Atajo sugerido: /seguimiento",
+          text: "Hola [Nombre], te escribo solo para saber si pudiste revisar la información que te enviamos o si tienes alguna duda. Quedamos al pendiente sin compromiso.",
+        },
+      ],
+    },
     sources: [
       {
         title: "Funciones de la aplicación WhatsApp Business",
