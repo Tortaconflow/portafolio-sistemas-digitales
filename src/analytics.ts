@@ -28,7 +28,13 @@ export type AnalyticsEventName =
   | "case_view"
   | "methodology_view"
   | "contact_start"
-  | "contact_submit";
+  | "contact_submit"
+  | "advisor_start"
+  | "advisor_step_completed"
+  | "advisor_reference_added"
+  | "advisor_brief_generated"
+  | "advisor_contact_opened"
+  | "advisor_validation_error";
 
 export type AbstractNeedCategory =
   | "presencia"
@@ -155,6 +161,42 @@ export interface AnalyticsPayloads {
     channel: "whatsapp" | "correo" | "messenger";
     stage: "channel_opened" | "received";
   };
+  advisor_start: { mode: "deterministic" };
+  advisor_step_completed: { step: number };
+  advisor_reference_added: { source: "curated" | "visitor"; count: number };
+  advisor_brief_generated: {
+    mode: "deterministic";
+    area: "presencia" | "conversion" | "operacion";
+    revision: number;
+  };
+  advisor_contact_opened: { channel: "whatsapp"; stage: "channel_opened" };
+  advisor_validation_error: { step: number };
+}
+
+// Advisor events accept only fixed categories and bounded numbers, never free text.
+const ADVISOR_FIELDS: Record<string, Record<string, readonly string[] | number>> = {
+  advisor_start: { mode: ["deterministic"] },
+  advisor_step_completed: { step: 5 },
+  advisor_reference_added: { source: ["curated", "visitor"], count: 5 },
+  advisor_brief_generated: {
+    mode: ["deterministic"], area: ["presencia", "conversion", "operacion"], revision: 10000,
+  },
+  advisor_contact_opened: { channel: ["whatsapp"], stage: ["channel_opened"] },
+  advisor_validation_error: { step: 5 },
+};
+
+export function sanitizeAdvisorPayload(event: string, payload: Record<string, unknown>) {
+  const schema = ADVISOR_FIELDS[event];
+  const clean: Record<string, string | number> = {};
+  if (!schema) return clean;
+  for (const [key, allowed] of Object.entries(schema)) {
+    const value = payload[key];
+    if (typeof allowed === "number") {
+      if (typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= allowed)
+        clean[key] = value;
+    } else if (typeof value === "string" && allowed.includes(value)) clean[key] = value;
+  }
+  return clean;
 }
 
 // Lista negra estricta de claves que NUNCA deben enviarse
@@ -225,9 +267,10 @@ export function track<E extends AnalyticsEventName>(
   payload: AnalyticsPayloads[E],
 ): void {
   try {
-    const cleanData = sanitizePayload(
-      payload as unknown as Record<string, unknown>,
-    );
+    const raw = payload as unknown as Record<string, unknown>;
+    const cleanData = event.startsWith("advisor_")
+      ? sanitizeAdvisorPayload(event, raw)
+      : sanitizePayload(raw);
 
     // Si existe Google Tag / Google Analytics
     if (typeof window !== "undefined" && typeof window.gtag === "function") {

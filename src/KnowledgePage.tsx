@@ -16,7 +16,7 @@ export function StaticHome() {
   );
 }
 
-function SiteHeader() {
+export function SiteHeader() {
   return (
     <>
       <a className="skip-link" href="#main">
@@ -54,7 +54,7 @@ function SiteHeader() {
     </>
   );
 }
-function SiteFooter() {
+export function SiteFooter() {
   return (
     <footer className="editorial-footer container">
       <a href="/#inicio">Cídiks · Reily Castro</a>
@@ -143,6 +143,48 @@ export function KnowledgePage({ article }: { article?: EducationArticle }) {
                   </a>
                 )}
               </section>
+              {article.mobileGuide && (
+                <section aria-labelledby="mobile-guide-title">
+                  <h2 id="mobile-guide-title">Empieza hoy desde tu celular</h2>
+                  {article.mobileGuide.eligibility && (
+                    <>
+                      <h3>Antes de empezar: ¿aplica para tu negocio?</h3>
+                      <ul>
+                        {article.mobileGuide.eligibility.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  <ol>
+                    {article.mobileGuide.steps.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                  {article.mobileGuide.note && <p>{article.mobileGuide.note}</p>}
+                  {article.mobileGuide.templates && (
+                    <>
+                      <h3>Plantillas listas para copiar y adaptar</h3>
+                      {article.mobileGuide.templates.map((tpl) => (
+                        <div key={tpl.label} data-copy-template="">
+                          <p><strong>{tpl.label}</strong></p>
+                          <pre data-copy-source="" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{tpl.text}</pre>
+                          <button
+                            type="button"
+                            className="button button-light"
+                            data-copy-button=""
+                            hidden
+                            aria-label={`Copiar plantilla (${tpl.label})`}
+                          >
+                            Copiar
+                          </button>
+                          <p role="status" aria-live="polite" data-copy-status=""></p>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </section>
+              )}
               <section className="editorial-next">
                 <h2>Tu siguiente paso</h2>
                 <p>{article.suggestedStep}</p>

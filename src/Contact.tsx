@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { content as c, isEmail, isWebUrl } from "./content";
 import { track } from "./analytics";
+import { buildWhatsAppUrl } from "./contact-utils";
 
 type Channel = "WhatsApp" | "Correo" | "Messenger";
 const channelId = (channel: Channel) =>
@@ -90,7 +91,7 @@ export function Contact({ interest }: { interest: string }) {
   ].filter((link) => link.href);
   const readyUrl =
     channel === "WhatsApp" && isWebUrl(c.links.whatsapp)
-      ? `${c.links.whatsapp}?text=${encodeURIComponent(message)}`
+      ? buildWhatsAppUrl(message, c.links.whatsapp)
       : channel === "Correo" && isEmail(c.links.email)
         ? `mailto:${c.links.email}?subject=${encodeURIComponent(c.contact.subject)}&body=${encodeURIComponent(message)}`
         : channel === "Messenger" && isWebUrl(c.links.messenger)

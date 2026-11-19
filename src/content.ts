@@ -57,6 +57,13 @@ export const content = {
     allowIndexing: true,
   },
   release: { approved: true },
+  advisor: {
+    name: "CÍDIKIS IA",
+    path: "/asesor-ia/",
+    title: "CÍDIKIS IA · Diagnóstico y brief de tu negocio | CÍDIKS",
+    description:
+      "Explora qué necesita tu negocio, compara referencias y prepara un brief editable para conversar con CÍDIKS. Recorrido gratuito por reglas, sin enviar datos a una IA.",
+  },
   nav: [
     { id: "casos", label: "Proyectos" },
     { id: "servicios", label: "Servicios" },
