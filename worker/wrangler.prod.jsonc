@@ -1,0 +1,27 @@
+{
+  "name": "cidiks-ia-advisor",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-30",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "AI_ENABLED": "false",
+    "LOCAL_SIMULATION": "false",
+    "ALLOWED_ORIGIN": "https://reilycastro.com",
+    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast"
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "LEDGER", "class_name": "BudgetLedger" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1-prod", "new_sqlite_classes": ["BudgetLedger"] }
+  ],
+  "observability": {
+    "enabled": false
+  }
+}
