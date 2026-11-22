@@ -45,20 +45,25 @@ async function getTurnstileToken(): Promise<string> {
     });
   }
   const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.bottom = '0';
-  container.style.right = '0';
-  container.style.width = '1px';
-  container.style.height = '1px';
-  container.style.overflow = 'hidden';
+  container.setAttribute('role', 'dialog');
+  container.setAttribute('aria-label', 'Verificación de seguridad');
+  // Invisible por defecto; Turnstile solo se muestra si exige interacción.
+  container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;display:none;padding:12px;background:#111;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5)';
   document.body.appendChild(container);
   let widgetId: string | undefined;
   try {
     return await new Promise<string>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('turnstile_timeout')), 10000);
+      let timer = setTimeout(() => reject(new Error('turnstile_timeout')), 12000);
       widgetId = window.turnstile!.render(container, {
         sitekey: TURNSTILE_SITE_KEY,
         action: 'cidikis_pilot',
+        appearance: 'interaction-only',
+        'before-interactive-callback': () => {
+          container.style.display = 'block';
+          clearTimeout(timer);
+          timer = setTimeout(() => reject(new Error('turnstile_timeout')), 60000);
+        },
+        'after-interactive-callback': () => { container.style.display = 'none'; },
         callback: (token: string) => { clearTimeout(timer); resolve(token); },
         'error-callback': () => { clearTimeout(timer); reject(new Error('turnstile_error')); },
         'expired-callback': () => { clearTimeout(timer); reject(new Error('turnstile_expired')); },
