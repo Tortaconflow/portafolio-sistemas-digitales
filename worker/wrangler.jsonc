@@ -1,0 +1,11 @@
+{
+  "name": "cidikis-ia-v02-local-only",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-30",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": { "AI_ENABLED": "false", "LOCAL_SIMULATION": "true", "ALLOWED_ORIGIN": "http://127.0.0.1:4174" },
+  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "BudgetLedger" }] },
+  "migrations": [{ "tag": "v2-local", "new_sqlite_classes": ["BudgetLedger"] }],
+  "observability": { "enabled": false }
+}
