@@ -50,6 +50,7 @@
 
 .cidiks-chat-head {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1rem;
@@ -108,6 +109,12 @@
   max-height: 18rem;
 }
 
+.cidiks-chat-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .cidiks-chat-msg {
   padding: 0.65rem 0.8rem;
   border-radius: 0.85rem;
@@ -132,6 +139,7 @@
 }
 
 .cidiks-chat-typing {
+  margin: 0;
   color: #b7b2a7;
   font-style: italic;
 }
@@ -146,7 +154,19 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  padding: 0 0.9rem 0.75rem;
+}
+
+.cidiks-chat-guided {
+  padding: 0.7rem;
+  background: #1d1d1d;
+  border-radius: 0.65rem;
+}
+
+.cidiks-chat-guided h3,
+.cidiks-chat-guided p {
+  margin: 0 0 0.55rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
 }
 
 .cidiks-chat-chip {
@@ -164,15 +184,24 @@
 }
 
 .cidiks-chat-form {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  flex-shrink: 0;
   gap: 0.45rem;
   padding: 0.7rem 0.85rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: #161616;
 }
 
+.cidiks-chat-privacy {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #cfc8b8;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
 .cidiks-chat-form input {
-  flex: 1;
   min-width: 0;
   background: #0d0d0d;
   color: #f3f1ec;
@@ -200,6 +229,7 @@
 
 .cidiks-chat-foot {
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.55rem 0.9rem;
@@ -208,12 +238,22 @@
   font-size: 0.75rem;
 }
 
-.cidiks-chat-foot a {
+.cidiks-chat-foot a,
+.cidiks-chat-foot button {
   color: #cfc8b8;
   text-decoration: none;
 }
 
-.cidiks-chat-foot a:hover {
+.cidiks-chat-foot button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cidiks-chat-foot a:hover,
+.cidiks-chat-foot button:hover {
   color: #ffffff;
   text-decoration: underline;
 }
@@ -246,7 +286,7 @@
 }
 .cidiks-chat-body {
   flex: 1 1 auto;
-  min-height: 6rem;
+  min-height: 0;
   max-height: none;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -279,10 +319,17 @@
 .cidiks-chat-foot {
   flex-wrap: wrap;
 }
-.cidiks-chat-foot a {
+.cidiks-chat-foot a,
+.cidiks-chat-foot button {
   display: inline-flex;
   align-items: center;
   min-height: 2.25rem;
+}
+
+.cidiks-chat-panel[data-keyboard="open"] {
+  position: fixed;
+  bottom: calc(var(--chat-keyboard-gap) + 0.5rem);
+  max-height: calc(var(--chat-visible-height) - 1rem);
 }
 
 /* Teléfono: panel como hoja inferior que ocupa el ancho disponible. */
