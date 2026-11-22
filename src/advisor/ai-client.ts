@@ -107,3 +107,46 @@ export async function requestLocalStatus(request: TurnRequest): Promise<string> 
   const data = await result.json() as { status?: string };
   return ['success', 'failed', 'pending', 'uncertain'].includes(data.status ?? '') ? data.status! : 'unknown';
 }
+
+export interface FloatingChatMessage {
+  role: 'user' | 'assistant';
+  text: string;
+}
+
+export async function requestFloatingChat(
+  sessionToken: string,
+  message: string,
+  history: FloatingChatMessage[],
+): Promise<{ reply: string; remaining?: number }> {
+  const endpoint = activeWorkerEndpoint();
+  if (!endpoint) {
+    await new Promise(resolve => setTimeout(resolve, 180));
+    return {
+      reply: 'Estoy en vista local. En reilycastro.com respondo con IA en vivo; mientras tanto puedes probar el diagnóstico rápido de 3 preguntas en /asesor-ia/ o escribir por WhatsApp.',
+    };
+  }
+  const result = await fetch(`${endpoint}/v2/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      version: '2.0',
+      sessionToken,
+      requestId: crypto.randomUUID(),
+      message,
+      history: history.slice(-6),
+    }),
+    signal: AbortSignal.timeout(14000),
+  });
+  if (!result.ok) {
+    throw new Error(
+      result.status === 429
+        ? 'Alcanzaste el límite de mensajes por ahora. Puedes usar el diagnóstico rápido (3 preguntas) o escribir por WhatsApp.'
+        : 'No pude responder en este momento. Puedes intentar de nuevo o abrir el diagnóstico rápido.',
+    );
+  }
+  const data = await result.json() as { reply?: unknown; remaining?: number };
+  if (typeof data.reply !== 'string' || !data.reply.trim()) {
+    throw new Error('Recibí una respuesta vacía. Intenta de nuevo o usa el diagnóstico rápido.');
+  }
+  return { reply: data.reply.trim(), remaining: data.remaining };
+}
