@@ -1,6 +1,7 @@
 import { AI_POLICY, utf8Size } from '../../shared/cidikis-ai-policy.ts';
 import { validTurnResponse, type TurnRequest, type TurnResponse } from '../../shared/cidikis-ai-contract.ts';
 import { simulateTurn } from '../../shared/simulated-provider.ts';
+import type { FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
 
 const LOCAL_ENDPOINT = import.meta.env.VITE_LOCAL_AI_ENDPOINT as string | undefined;
 const PROD_AI_ENDPOINT = (import.meta.env.VITE_AI_ENDPOINT as string | undefined) ?? 'https://cidiks-ia-advisor.reilyvica.workers.dev';
@@ -29,21 +30,50 @@ export function activeWorkerEndpoint(): string | null {
   return localWorkerEndpoint() ?? remoteWorkerEndpoint();
 }
 
+let turnstileLoad: Promise<NonNullable<Window['turnstile']>> | undefined;
+
+function loadTurnstile(): Promise<NonNullable<Window['turnstile']>> {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+
+  turnstileLoad ??= new Promise<NonNullable<Window['turnstile']>>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async = true;
+    const timer = window.setTimeout(failed, 8_000);
+
+    function cleanup() {
+      window.clearTimeout(timer);
+      script.onload = null;
+      script.onerror = null;
+    }
+
+    function failed() {
+      cleanup();
+      script.remove();
+      reject(new Error('turnstile_load'));
+    }
+
+    script.onerror = failed;
+    script.onload = () => {
+      const api = window.turnstile;
+      if (!api) {
+        failed();
+        return;
+      }
+      cleanup();
+      resolve(api);
+    };
+    document.head.appendChild(script);
+  }).catch((error: unknown) => {
+    turnstileLoad = undefined;
+    throw error;
+  });
+
+  return turnstileLoad;
+}
+
 async function getTurnstileToken(): Promise<string> {
-  if (!window.turnstile) {
-    await new Promise<void>((resolve, reject) => {
-      const existing = document.querySelector<HTMLScriptElement>('script[data-cidiks-turnstile="1"]');
-      if (existing) { existing.addEventListener('load', () => resolve(), { once: true }); existing.addEventListener('error', () => reject(new Error('turnstile_load')), { once: true }); return; }
-      const script = document.createElement('script');
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      script.async = true;
-      script.defer = true;
-      script.dataset.cidiksTurnstile = '1';
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('turnstile_load'));
-      document.head.appendChild(script);
-    });
-  }
+  const api = await loadTurnstile();
   const container = document.createElement('div');
   container.setAttribute('role', 'dialog');
   container.setAttribute('aria-label', 'Verificación de seguridad');
@@ -51,36 +81,45 @@ async function getTurnstileToken(): Promise<string> {
   container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;display:none;padding:12px;background:#111;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5)';
   document.body.appendChild(container);
   let widgetId: string | undefined;
+  let timer: number | undefined;
   try {
     return await new Promise<string>((resolve, reject) => {
-      let timer = setTimeout(() => reject(new Error('turnstile_timeout')), 12000);
-      widgetId = window.turnstile!.render(container, {
+      const expire = () => reject(new Error('turnstile_timeout'));
+      timer = window.setTimeout(expire, 12_000);
+      widgetId = api.render(container, {
         sitekey: TURNSTILE_SITE_KEY,
         action: 'cidikis_pilot',
         appearance: 'interaction-only',
+        size: document.documentElement.clientWidth < 360 ? 'compact' : 'normal',
         'before-interactive-callback': () => {
           container.style.display = 'block';
-          clearTimeout(timer);
-          timer = setTimeout(() => reject(new Error('turnstile_timeout')), 60000);
+          window.clearTimeout(timer);
+          timer = window.setTimeout(expire, 60_000);
         },
         'after-interactive-callback': () => { container.style.display = 'none'; },
-        callback: (token: string) => { clearTimeout(timer); resolve(token); },
-        'error-callback': () => { clearTimeout(timer); reject(new Error('turnstile_error')); },
-        'expired-callback': () => { clearTimeout(timer); reject(new Error('turnstile_expired')); },
+        callback: resolve,
+        'error-callback': () => reject(new Error('turnstile_error')),
+        'expired-callback': () => reject(new Error('turnstile_expired')),
       });
     });
   } finally {
-    if (widgetId && window.turnstile) window.turnstile.remove(widgetId);
-    container.remove();
+    window.clearTimeout(timer);
+    try {
+      if (widgetId) api.remove(widgetId);
+    } finally {
+      container.remove();
+    }
   }
 }
 
 export async function bootstrapLocalSession(): Promise<string> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) return 'browser-simulation';
-  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await getTurnstileToken();
+  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await getTurnstileToken().catch(() => {
+    throw new FloatingChatError('No pude completar la verificación de seguridad. Puedes reintentar o seguir con la guía.');
+  });
   const response = await fetch(`${endpoint}/v2/session`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version: '2.0', challenge }), signal: AbortSignal.timeout(10000) });
-  if (!response.ok) throw new Error('No pudimos iniciar la sesión del asesor. Puedes usar el diagnóstico guiado.');
+  if (!response.ok) throw new FloatingChatError('No pude iniciar la sesión. Puedes reintentar o seguir con la guía.');
   const body = await response.json() as { sessionToken?: string };
   if (!body.sessionToken) throw new Error('La sesión del asesor no es válida.');
   return body.sessionToken;
@@ -113,15 +152,21 @@ export async function requestLocalStatus(request: TurnRequest): Promise<string> 
   return ['success', 'failed', 'pending', 'uncertain'].includes(data.status ?? '') ? data.status! : 'unknown';
 }
 
-export interface FloatingChatMessage {
-  role: 'user' | 'assistant';
-  text: string;
+export class FloatingChatError extends Error {
+  constructor(message: string, readonly options: {
+    refreshSession?: boolean;
+    retryWithNewId?: boolean;
+    alreadyAnswered?: boolean;
+  } = {}) {
+    super(message);
+  }
 }
 
 export async function requestFloatingChat(
   sessionToken: string,
   message: string,
   history: FloatingChatMessage[],
+  requestId: string,
 ): Promise<{ reply: string; remaining?: number }> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) {
@@ -136,22 +181,30 @@ export async function requestFloatingChat(
     body: JSON.stringify({
       version: '2.0',
       sessionToken,
-      requestId: crypto.randomUUID(),
+      requestId,
       message,
       history: history.slice(-6),
     }),
     signal: AbortSignal.timeout(14000),
   });
   if (!result.ok) {
-    throw new Error(
-      result.status === 429
-        ? 'Alcanzaste el límite de mensajes por ahora. Puedes usar el diagnóstico rápido (3 preguntas) o escribir por WhatsApp.'
-        : 'No pude responder en este momento. Puedes intentar de nuevo o abrir el diagnóstico rápido.',
-    );
+    const data = await result.json().catch(() => null) as { code?: string; status?: string } | null;
+    if (result.status === 401) {
+      throw new FloatingChatError('La sesión caducó. Puedes reintentar o seguir con la guía.', { refreshSession: true });
+    }
+    if (result.status === 429) {
+      throw new FloatingChatError('El chat está ocupado o alcanzó su límite. Puedes seguir con la guía.');
+    }
+    if ((data?.code === 'duplicate' && data.status === 'success') || data?.code === 'unchanged_context') {
+      throw new FloatingChatError('La respuesta se generó y se perdió en el camino. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
+    }
+    throw new FloatingChatError('No pude responder en este momento. Puedes reintentar o seguir con la guía.', {
+      retryWithNewId: data?.code === 'provider_failure' || (data?.code === 'duplicate' && data.status === 'failed'),
+    });
   }
   const data = await result.json() as { reply?: unknown; remaining?: number };
   if (typeof data.reply !== 'string' || !data.reply.trim()) {
-    throw new Error('Recibí una respuesta vacía. Intenta de nuevo o usa el diagnóstico rápido.');
+    throw new FloatingChatError('La respuesta llegó vacía. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
   }
   return { reply: data.reply.trim(), remaining: data.remaining };
 }
