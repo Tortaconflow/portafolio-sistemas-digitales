@@ -414,33 +414,6 @@ export const content = {
       evidenceApproved: true,
     },
     {
-      id: "senor-gallo",
-      title: "Señor Gallo VIP",
-      sector: "Comercio mayorista",
-      heroBrief: "Mayoreo · Catálogo y pedidos por WhatsApp",
-      summary:
-        "Negocio comercial mayorista: catálogo digital para armar pedidos desde el móvil y enviarlos listos por WhatsApp, reemplazando listas de precios en fotos y PDFs.",
-      tagline: "Del catálogo al pedido, sin pasos de más.",
-      status: "Trabajo construido y activo",
-      problem:
-        "Facilitar la consulta de productos de mayoreo y llevar una selección ordenada directamente a una cotización por WhatsApp.",
-      solution:
-        "Catálogo digital responsivo de mayoreo, sincronizado con datos estructurados y flujo de carrito a mensaje de WhatsApp.",
-      components: [
-        "Catálogo digital de mayoreo",
-        "Estructura ágil para móviles",
-        "Selección de productos y resumen",
-        "Cotización y pedido mediante WhatsApp",
-        "Optimización de velocidad y conversión",
-      ],
-      image: "/projects/senor-gallo-og.png",
-      imageAlt:
-        "Catálogo digital de mayoreo y sistema de pedidos para Señor Gallo VIP",
-      url: "https://darkslategray-dinosaur-608809.hostingersite.com",
-      tone: "gallo",
-      evidenceApproved: true,
-    },
-    {
       id: "consejo-cien-miradas",
       title: "El Consejo de las Cien Miradas",
       sector: "Inteligencia Artificial",
@@ -514,8 +487,8 @@ export const content = {
         "Políticas de reserva, cancelación y logística coordinada",
         "Generación de primeras ventas y reservas confirmadas en moneda extranjera",
       ],
-      image: "/projects/jl-tours-og.svg",
-      imageAlt: "Caso de éxito JL Tours: distribución de experiencias en TripAdvisor y Viator",
+      image: "/projects/jl-tours-744.webp",
+      imageAlt: "Caso de éxito JL Tours: ficha verificada en TripAdvisor for Business y distribución en Viator",
       url: "",
       tone: "laguna",
       evidenceApproved: true,
