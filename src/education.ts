@@ -460,6 +460,20 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     },
     suggestedStep:
       "Haz el ejercicio como si fueras un cliente nuevo: búscate en Google, intenta entender qué vendes en 30 segundos y fíjate qué tan fácil es hacerte una pregunta concreta.",
+    mobileGuide: {
+      steps: [
+        "Abre la app de Notas en tu celular (o una hoja de libreta) y crea una nota llamada 'Preguntas de clientes'.",
+        "Durante 7 días, anota cada pregunta repetida que te hagan en persona, por WhatsApp o redes (sin redactar largo, solo la idea).",
+        "Al terminar la semana, subraya las 3 a 5 preguntas que más se repitieron: esas son las prioridades reales antes de gastar en una web o herramienta.",
+        "Prepara una respuesta clara (con qué ofreces, horario, zona y forma de contacto) y compártela siempre igual en tus canales.",
+      ],
+      templates: [
+        {
+          label: "Plantilla simple para tu nota de 7 días",
+          text: "1) Pregunta del cliente: [ej. ¿Tienen envío a domicilio?]\n2) Cómo respondí hoy: [ej. Mandé 3 mensajes y una foto]\n3) Qué faltó para que fuera más claro: [ej. Tener precio y horario en un solo mensaje]",
+        },
+      ],
+    },
     sources: [],
   },
   {
@@ -492,6 +506,15 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     },
     suggestedStep:
       "Anota durante una semana cuántas veces respondes la misma duda y cuánto tiempo te toma. Prueba una mejora pequeña y compara; la frecuencia por sí sola no demuestra que debas construir una herramienta.",
+    mobileGuide: {
+      steps: [
+        "Desconecta el Wi-Fi de tu celular y abre tu página actual usando únicamente datos móviles en una pestaña de incógnito.",
+        "Comprueba la regla de los 10 segundos: sin hacer zoom ni buscar mucho, ¿se entiende qué ofreces, en qué zona atiendes y cómo contactarte?",
+        "Toca tu botón de WhatsApp, llamada o formulario y verifica que abre sin errores y sin pedir datos innecesarios.",
+        "Pide a alguien que no conozca tu página que encuentre tu horario o servicio principal desde su celular; si tarda o pregunta, anota ese punto antes de pagar un rediseño completo.",
+      ],
+      note: "Si tu página carga bien pero nadie te escribe, el problema puede estar en cómo llegan visitantes (difusión) o en la claridad de tu oferta, no necesariamente en cambiar de plataforma.",
+    },
     sources: [],
   },
 ];

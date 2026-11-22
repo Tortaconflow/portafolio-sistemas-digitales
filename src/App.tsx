@@ -126,6 +126,38 @@ function ProjectImage({
             decoding="async"
           />
         </picture>
+      ) : project.id === "senor-gallo" ? (
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/projects/senor-gallo-480.webp 480w, /projects/senor-gallo-900.webp 900w"
+            sizes="(max-width: 520px) 100vw, (max-width: 768px) 50vw, 33vw"
+          />
+          <img
+            src={project.image}
+            alt={project.imageAlt}
+            width={1600}
+            height={840}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+      ) : project.id === "gubidxa" ? (
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/projects/gubidxa-480.webp 480w, /projects/gubidxa-900.webp 900w"
+            sizes="(max-width: 520px) 100vw, (max-width: 768px) 50vw, 33vw"
+          />
+          <img
+            src={project.image}
+            alt={project.imageAlt}
+            width={960}
+            height={1280}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
       ) : (
         <img
           src={project.image}
