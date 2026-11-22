@@ -3,6 +3,7 @@ import { HomeJourney, OriginSection } from "./HomeJourney";
 import { CaseEvidence } from "./CaseEvidence";
 import { Contact } from "./Contact";
 import { HomeHero } from "./HomeHero";
+import { FloatingAssistant } from "./components/FloatingAssistant";
 import { useSectionEvent } from "./section-events";
 import {
   lazy,
@@ -1367,6 +1368,11 @@ export function App() {
         </aside>
       )}
       <CaseDialog project={project} onClose={() => setProject(null)} />
+      {!project && !menu && (
+        <FloatingAssistant
+          whatsappUrl={isWebUrl(c.links.whatsapp) ? c.links.whatsapp : undefined}
+        />
+      )}
     </>
   );
 }

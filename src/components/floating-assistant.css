@@ -1,0 +1,228 @@
+.cidiks-fab-root {
+  position: fixed;
+  right: 1.15rem;
+  bottom: 4.5rem;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.cidiks-fab-btn {
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #141414;
+  color: #f5f2eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.cidiks-fab-btn:hover {
+  transform: translateY(-2px);
+  background: #242424;
+}
+
+.cidiks-fab-btn:focus-visible {
+  outline: 2px solid #c59b43;
+  outline-offset: 3px;
+}
+
+.cidiks-chat-panel {
+  width: min(22.5rem, calc(100vw - 2rem));
+  max-height: min(32rem, calc(100dvh - 8rem));
+  background: #111111;
+  color: #f3f1ec;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1rem;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.cidiks-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #181818;
+}
+
+.cidiks-chat-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cidiks-chat-brand strong {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.1;
+}
+
+.cidiks-chat-brand span {
+  display: block;
+  font-size: 0.72rem;
+  color: #b7b2a7;
+}
+
+.cidiks-chat-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: #58c98a;
+  flex-shrink: 0;
+}
+
+.cidiks-chat-close {
+  background: transparent;
+  border: 0;
+  color: #c8c3b8;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.35rem;
+}
+
+.cidiks-chat-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.cidiks-chat-body {
+  padding: 0.9rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 9rem;
+  max-height: 18rem;
+}
+
+.cidiks-chat-msg {
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  max-width: 88%;
+  word-wrap: break-word;
+}
+
+.cidiks-chat-msg--assistant {
+  background: #1d1d1d;
+  color: #f3f1ec;
+  align-self: flex-start;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.cidiks-chat-msg--user {
+  background: #f3f1ec;
+  color: #111111;
+  align-self: flex-end;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.cidiks-chat-typing {
+  color: #b7b2a7;
+  font-style: italic;
+}
+
+.cidiks-chat-error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #f4a49e;
+}
+
+.cidiks-chat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 0.9rem 0.75rem;
+}
+
+.cidiks-chat-chip {
+  background: #1c1c1c;
+  color: #e9e4d8;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.cidiks-chat-chip:hover {
+  background: #292929;
+}
+
+.cidiks-chat-form {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #161616;
+}
+
+.cidiks-chat-form input {
+  flex: 1;
+  min-width: 0;
+  background: #0d0d0d;
+  color: #f3f1ec;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.cidiks-chat-form button {
+  background: #f3f1ec;
+  color: #111111;
+  border: 0;
+  border-radius: 0.6rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cidiks-chat-form button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cidiks-chat-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #131313;
+  font-size: 0.75rem;
+}
+
+.cidiks-chat-foot a {
+  color: #cfc8b8;
+  text-decoration: none;
+}
+
+.cidiks-chat-foot a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cidiks-fab-btn {
+    transition: none;
+  }
+  .cidiks-fab-btn:hover {
+    transform: none;
+  }
+}
