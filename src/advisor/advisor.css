@@ -120,9 +120,9 @@
   .advisor .advisor-confirm { padding: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .advisor .advisor-wizard *,
-  .advisor .advisor-wizard *::before,
-  .advisor .advisor-wizard *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .advisor *,
+  .advisor *::before,
+  .advisor *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 .advisor .hybrid-experience { max-width: 920px; margin: 0 auto; }
 .advisor .hybrid-experience [hidden] { display: none !important; }

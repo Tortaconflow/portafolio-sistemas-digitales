@@ -45,6 +45,7 @@ export function SiteHeader() {
             <a href="/#casos">Proyectos</a>
             <a href="/#proceso">Método</a>
             <a href="/conocimiento/">Conocimiento</a>
+            <a href="/asesor-ia/">Asesor IA</a>
             <a href="/#contacto">
               Quiero un diagnóstico <span aria-hidden="true">↗</span>
             </a>

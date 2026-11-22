@@ -69,6 +69,7 @@ export const content = {
     { id: "servicios", label: "Servicios" },
     { id: "proceso", label: "Método" },
     { id: "conocimiento", label: "Conocimiento", href: "/conocimiento/" },
+    { id: "asesor", label: "Asesor IA", href: "/asesor-ia/" },
     { id: "sobre-mi", label: "CÍDIKS" },
     { id: "contacto", label: "Contacto" },
   ],

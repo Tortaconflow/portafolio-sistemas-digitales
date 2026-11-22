@@ -41,6 +41,10 @@ export function HomeHero({
               {c.hero.primary}
               <Arrow />
             </a>
+            <a className="button button-light" href="/asesor-ia/">
+              Asesor gratis (3 preguntas)
+              <Arrow />
+            </a>
             <a
               className="inline-link"
               href="#casos"

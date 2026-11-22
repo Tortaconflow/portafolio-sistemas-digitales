@@ -55,13 +55,13 @@ test('diagnóstico rápido: florería, restaurante, negocio inicial, precedencia
   await expect(page.locator('.quick-result')).toHaveAttribute('data-rule-id', 'exploratory');
   await expect(learnLinkA).toHaveAttribute('href', '/conocimiento/diferencia-entre-presencia-digital-y-sistema-digital/');
 
-  // 6. Verificar que las guías enlazadas cargan HTTP 200 y las 3 prioritarias incluyen el bloque práctico en celular
+  // 6. Verificar que las 5 guías enlazadas cargan HTTP 200 e incluyen el bloque práctico en celular
   for (const [href, expectedText] of [
     ['/conocimiento/necesito-realmente-una-pagina-web/', 'Empieza hoy desde tu celular'],
     ['/conocimiento/google-maps-perfil-de-negocio/', 'Antes de empezar: ¿aplica para tu negocio?'],
     ['/conocimiento/whatsapp-y-seguimiento-de-clientes/', 'Plantillas listas para copiar y adaptar'],
-    ['/conocimiento/como-saber-si-una-herramienta-digital-esta-funcionando/', ''],
-    ['/conocimiento/diferencia-entre-presencia-digital-y-sistema-digital/', ''],
+    ['/conocimiento/como-saber-si-una-herramienta-digital-esta-funcionando/', 'Empieza hoy desde tu celular'],
+    ['/conocimiento/diferencia-entre-presencia-digital-y-sistema-digital/', 'Empieza hoy desde tu celular'],
   ]) {
     const res = await page.request.get(href);
     expect(res.status()).toBe(200);
