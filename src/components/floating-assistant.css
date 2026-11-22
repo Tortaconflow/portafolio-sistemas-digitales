@@ -226,3 +226,93 @@
     transform: none;
   }
 }
+
+/* Base responsive: nada se sale del viewport y el contenido se ajusta. */
+.cidiks-fab-root,
+.cidiks-fab-root * {
+  box-sizing: border-box;
+}
+.cidiks-fab-root {
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(5rem + env(safe-area-inset-bottom));
+  max-width: calc(100vw - 2rem);
+}
+.cidiks-chat-panel {
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: min(34rem, calc(100dvh - 8.5rem - env(safe-area-inset-bottom)));
+}
+.cidiks-chat-msg {
+  overflow-wrap: anywhere;
+}
+.cidiks-chat-body {
+  flex: 1 1 auto;
+  min-height: 6rem;
+  max-height: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.cidiks-chat-chips {
+  min-width: 0;
+}
+.cidiks-chat-chip {
+  min-height: 2.5rem;
+  text-align: left;
+  max-width: 100%;
+}
+.cidiks-chat-close {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+.cidiks-fab-btn {
+  min-width: 3.35rem;
+  min-height: 3.35rem;
+}
+/* 16px evita el zoom automático de iOS Safari al enfocar el campo. */
+.cidiks-chat-form input {
+  font-size: 16px;
+  min-height: 2.75rem;
+}
+.cidiks-chat-form button {
+  min-height: 2.75rem;
+  white-space: nowrap;
+}
+.cidiks-chat-foot {
+  flex-wrap: wrap;
+}
+.cidiks-chat-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+}
+
+/* Teléfono: panel como hoja inferior que ocupa el ancho disponible. */
+@media (max-width: 600px) {
+  .cidiks-fab-root {
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(4.75rem + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 1.5rem);
+  }
+  .cidiks-chat-panel {
+    position: fixed;
+    left: max(0.75rem, env(safe-area-inset-left));
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: calc(8.25rem + env(safe-area-inset-bottom));
+    width: auto;
+    max-height: calc(100dvh - 10rem - env(safe-area-inset-bottom));
+  }
+}
+
+/* Teléfono horizontal o pantallas muy bajas. */
+@media (max-height: 520px) {
+  .cidiks-chat-panel {
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 2rem);
+  }
+}
+
+/* Tablet y escritorio: panel anclado a la esquina. */
+@media (min-width: 601px) {
+  .cidiks-chat-panel {
+    width: 24rem;
+  }
+}

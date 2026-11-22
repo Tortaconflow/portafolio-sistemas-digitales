@@ -140,7 +140,7 @@ export default {
         if (isLocalMode) {
           if (body.challenge !== 'local-turnstile-simulation') return reply({ code: 'challenge' }, 400);
         } else {
-          const verifier = new CloudflareSiteVerifier(env.TURNSTILE_SECRET!, fetch);
+          const verifier = new CloudflareSiteVerifier(env.TURNSTILE_SECRET!, (input, init) => fetch(input, init));
           const result = await verifier.verify(body.challenge);
           if (!validChallenge(result, allowed.hostname)) return reply({ code: 'challenge' }, 403);
         }
