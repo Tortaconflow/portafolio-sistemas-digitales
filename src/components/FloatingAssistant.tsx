@@ -6,7 +6,7 @@ import {
   guidedChatReply,
   type FloatingChatMessage,
 } from "../../shared/floating-chat-guidance.ts";
-import { bootstrapLocalSession, FloatingChatError, requestFloatingChat } from "../advisor/ai-client.ts";
+import { bootstrapLocalSession, FloatingChatError, preloadTurnstile, requestFloatingChat } from "../advisor/ai-client.ts";
 import "./floating-assistant.css";
 
 const INITIAL_MESSAGE: FloatingChatMessage = {
@@ -37,6 +37,11 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
     setOpen(false);
     triggerRef.current?.focus();
   }
+
+  // Al abrir el chat se descarga la verificación de Cloudflare, para que el primer mensaje no espere.
+  useEffect(() => {
+    if (open) preloadTurnstile();
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

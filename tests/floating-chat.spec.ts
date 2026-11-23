@@ -122,9 +122,8 @@ test('reintenta la carga de Turnstile y usa el mismo ID si se pierde la conexió
   const message = 'Tengo un taller y pierdo citas entre llamadas y mensajes';
   await panel.getByRole('textbox').fill(message);
   await panel.getByRole('button', { name: 'Enviar' }).click();
-  await expect(panel.getByRole('status')).toContainText('No pude completar la verificación');
-  await expect(panel.getByRole('textbox')).toHaveValue(message);
-  await panel.getByRole('button', { name: 'Reintentar' }).click();
+  // La precarga al abrir el chat consumió el primer fallo de carga en silencio:
+  // el envío reintenta la carga por su cuenta y llega hasta el Worker.
   await expect(panel.getByRole('status')).toContainText('No pude recibir una respuesta');
   await expect(panel.getByRole('textbox')).toHaveValue(message);
   await panel.getByRole('button', { name: 'Reintentar' }).click();
@@ -134,4 +133,56 @@ test('reintenta la carga de Turnstile y usa el mismo ID si se pierde la conexió
   expect(turnstileLoads).toBe(2);
   expect(requestIds).toHaveLength(2);
   expect(requestIds[1]).toBe(requestIds[0]);
+});
+
+async function mockSite(page: import('@playwright/test').Page, request: import('@playwright/test').APIRequestContext, baseURL: string | undefined) {
+  const site = 'https://reilycastro.com/';
+  await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  await page.route(`${site}**`, async (route) => {
+    const local = new URL(route.request().url()).pathname;
+    await route.fulfill({ response: await request.get(new URL(local, baseURL).href) });
+  });
+  await page.route('https://cidiks-ia-advisor.reilyvica.workers.dev/v2/**', (route) => {
+    if (route.request().url().endsWith('/session')) return route.fulfill({ json: { sessionToken: 'fixture-session' } });
+    return route.fulfill({ json: { reply: 'Prueba apuntar las citas en un solo lugar.' } });
+  });
+  return site;
+}
+
+const turnstileFixture = (body: string) => (route: import('@playwright/test').Route) =>
+  route.fulfill({ contentType: 'application/javascript', body: `window.turnstile = { ${body}, remove() {}, reset() {} };` });
+
+async function askOnce(page: import('@playwright/test').Page, site: string) {
+  await page.goto(site);
+  await page.getByRole('button', { name: /Abrir asistente/ }).click();
+  const panel = page.getByRole('dialog', { name: 'Asistente CÍDIKS IA' });
+  await panel.getByRole('textbox').fill('Tengo un taller y pierdo citas entre llamadas y mensajes');
+  await panel.getByRole('button', { name: 'Enviar' }).click();
+  return panel;
+}
+
+test('un error reintentable de Turnstile (600010) no cancela la verificación: el widget reintenta y el chat responde', async ({ page, request, baseURL }) => {
+  const site = await mockSite(page, request, baseURL);
+  await page.route(/^https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/, turnstileFixture(
+    `render(_el, config) { config['error-callback']('600010'); setTimeout(() => config.callback('fixture-token'), 50); return 'fixture'; }`,
+  ));
+  const panel = await askOnce(page, site);
+  await expect(panel.getByRole('log')).toContainText('Prueba apuntar las citas en un solo lugar.');
+});
+
+test('un error de configuración de Turnstile (dominio no autorizado) falla de inmediato con un mensaje específico', async ({ page, request, baseURL }) => {
+  const site = await mockSite(page, request, baseURL);
+  await page.route(/^https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/, turnstileFixture(
+    `render(_el, config) { config['error-callback']('110200'); return 'fixture'; }`,
+  ));
+  const panel = await askOnce(page, site);
+  await expect(panel.getByRole('status')).toContainText('no está disponible en este momento');
+});
+
+test('si el script de Cloudflare no carga, el mensaje lo dice y la pregunta se conserva', async ({ page, request, baseURL }) => {
+  const site = await mockSite(page, request, baseURL);
+  await page.route(/^https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/, (route) => route.abort());
+  const panel = await askOnce(page, site);
+  await expect(panel.getByRole('status')).toContainText('No pude cargar la verificación de seguridad');
+  await expect(panel.getByRole('textbox')).toHaveValue('Tengo un taller y pierdo citas entre llamadas y mensajes');
 });

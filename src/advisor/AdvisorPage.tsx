@@ -35,8 +35,10 @@ export function AdvisorPage() {
             Recibir una URL no significa que hayamos analizado visualmente esa web.</p>
           <p>No necesitas nombre, correo ni teléfono para usar el recorrido.
             Tus respuestas permanecen en la memoria de esta pestaña y se borran
-            al recargar o cerrarla. Esta versión no envía respuestas a proveedores
-            de IA ni a un servidor de CÍDIKS.</p>
+            al recargar o cerrarla. Este recorrido guiado no envía respuestas a proveedores
+            de IA ni a un servidor de CÍDIKS. El chat flotante es distinto: si pides
+            una respuesta en línea, su servicio de IA (Cloudflare Workers AI) recibe
+            tu mensaje y hasta seis anteriores.</p>
           <p>Compartir es tu decisión: revisa el mensaje antes de abrir WhatsApp.
             El envío se completa en esa aplicación, con sus propias condiciones de
             privacidad. No se confirma recepción desde este sitio.</p>
