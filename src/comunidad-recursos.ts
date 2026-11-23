@@ -17,11 +17,20 @@ export type CommunityInstitutionId =
 export type ResourceLevel = "inicial" | "intermedio" | "avanzado";
 export type ResourceLanguage = "es" | "es-MX" | "en" | "pt";
 /**
- * Qué se confirmó sobre la cuenta. "no-para-leer": se puede leer el contenido sin cuenta (no se
- * afirma nada sobre registrar avance o certificados). "no-indicado": la página oficial no lo
- * aclara; no se asume.
+ * Qué se confirmó sobre la cuenta, con las palabras de la revisión. "no-para-leer": se puede leer
+ * el contenido sin cuenta (no se afirma nada sobre registrar avance o certificados). "requerida":
+ * hace falta una cuenta, sin precisar más. "sesion-facebook" y "sesion-google": hay que iniciar
+ * sesión con esa cuenta. "no-indicado": la página oficial no lo aclara; no se asume.
  */
-export type AccountRequirement = "no" | "no-para-leer" | "gratuita" | "de-pago" | "no-indicado";
+export type AccountRequirement =
+  | "no"
+  | "no-para-leer"
+  | "requerida"
+  | "sesion-facebook"
+  | "sesion-google"
+  | "gratuita"
+  | "de-pago"
+  | "no-indicado";
 
 export interface ResourceVerification {
   /** AAAA-MM-DD: día en que se leyó la página oficial del recurso. */
@@ -42,6 +51,13 @@ export interface VerifiedCommunityResource {
   routeId: CommunityRouteId;
   topic: string;
   level: ResourceLevel;
+  /**
+   * "editorial": el nivel lo clasificó CÍDIKS y la institución no lo declara; se muestra así.
+   * Si falta, el nivel es el que consta en la revisión externa de la página oficial.
+   */
+  levelSource?: "editorial";
+  /** Duración total que indica la página oficial, por ejemplo "18 minutos". */
+  duration?: string;
   languages: readonly [ResourceLanguage, ...ResourceLanguage[]];
   free: {
     /** Qué es gratis, según la página oficial. */
@@ -74,8 +90,9 @@ export interface PendingCommunityResource {
 export type CommunityResource = VerifiedCommunityResource | PendingCommunityResource;
 
 /**
- * Dominios institucionales esperados: protegen de errores de captura al registrar una URL.
- * No sustituyen la verificación de cada recurso.
+ * Dominios institucionales autorizados: protegen de errores de captura al registrar una URL.
+ * No sustituyen la verificación de cada recurso. Meta Blueprint y Google Skillshop se autorizaron
+ * tras la revisión externa del 2026-11-23 (Skillshop se imparte en la plataforma Exceed LMS).
  */
 export const COMMUNITY_INSTITUTIONS: Record<
   CommunityInstitutionId,
@@ -83,9 +100,9 @@ export const COMMUNITY_INSTITUTIONS: Record<
 > = {
   "santander-open-academy": { name: "Santander Open Academy", officialHosts: ["www.santanderopenacademy.com"] },
   "hubspot-academy": { name: "HubSpot Academy", officialHosts: ["academy.hubspot.com"] },
-  "meta-blueprint": { name: "Meta Blueprint", officialHosts: ["www.facebook.com"] },
+  "meta-blueprint": { name: "Meta Blueprint", officialHosts: ["www.facebookblueprint.com"] },
   "microsoft-learn": { name: "Microsoft Learn", officialHosts: ["learn.microsoft.com"] },
-  "google-skillshop": { name: "Google Skillshop", officialHosts: ["skillshop.withgoogle.com"] },
+  "google-skillshop": { name: "Google Skillshop", officialHosts: ["skillshop.exceedlms.com"] },
 };
 
 export const LEVEL_LABELS: Record<ResourceLevel, string> = {
@@ -102,6 +119,9 @@ export const LANGUAGE_LABELS: Record<ResourceLanguage, string> = {
 export const ACCOUNT_LABELS: Record<AccountRequirement, string> = {
   no: "No hace falta crear una cuenta.",
   "no-para-leer": "No hace falta una cuenta para leer el contenido.",
+  requerida: "Hace falta una cuenta para acceder al curso.",
+  "sesion-facebook": "Hace falta iniciar sesión con Facebook para acceder a las lecciones.",
+  "sesion-google": "Hace falta iniciar sesión con Google para acceder a la formación.",
   gratuita: "Hay que crear una cuenta gratuita en la institución.",
   "de-pago": "La cuenta o el acceso completo requieren pago.",
   "no-indicado": "La página oficial no lo indica; revísalo antes de empezar.",
@@ -111,10 +131,12 @@ export const MAX_COMMUNITY_RESOURCES = 5;
 
 /**
  * Estado de la biblioteca. La evidencia de los recursos verificados procede de una revisión
- * EXTERNA de las páginas públicas oficiales, hecha por CÍDIKS el 2026-11-23. El entorno de
+ * EXTERNA de información pública oficial, hecha por CÍDIKS el 2026-11-23. El entorno de
  * desarrollo no pudo consultar esos sitios (el proxy los bloquea) y no hizo ninguna consulta.
  * Solo se registran los datos que esa revisión confirmó; si falta uno que el contrato exige,
  * el recurso sigue en "pending" y la falta se anota en `pending`. No se rellena nada por suposición.
+ * El nivel de HubSpot Academy es una clasificación editorial de CÍDIKS (levelSource), no un nivel
+ * declarado por la institución.
  */
 export const COMMUNITY_RESOURCES: readonly CommunityResource[] = [
   {
@@ -128,24 +150,55 @@ export const COMMUNITY_RESOURCES: readonly CommunityResource[] = [
     publicEntry: false,
   },
   {
-    status: "pending",
-    id: "hubspot-academy",
+    status: "verified",
+    id: "hubspot-academy-digital-marketing",
     institutionId: "hubspot-academy",
+    title: "Marketing digital",
+    url: "https://academy.hubspot.com/es/courses/digital-marketing",
     routeId: "mejorar-mi-presencia-digital",
     topic: "Marketing digital para tu presencia en línea",
-    pending:
-      "Falta confirmar el nivel del curso «Marketing digital»: no consta en los datos de la revisión externa del 2026-11-23.",
-    publicEntry: true,
+    level: "inicial",
+    levelSource: "editorial",
+    duration: "5 horas y 45 minutos",
+    languages: ["es"],
+    free: {
+      conditions: "El curso es gratuito, según la información pública de su página oficial.",
+      account: "requerida",
+    },
+    learn:
+      "Un curso de marketing digital de HubSpot Academy. Su temario completo está en la página oficial.",
+    activity:
+      "Después del curso, elige un lugar donde hoy te encuentran (tu perfil en Google o una red social) y revisa que tu nombre, lo que vendes y cómo contactarte se entiendan en 30 segundos. Anota un cambio pequeño, hazlo y compara durante dos semanas cuántas personas te escriben.",
+    verification: {
+      checkedOn: "2026-11-23",
+      method:
+        "Revisión externa de información pública oficial, hecha por CÍDIKS. No se registra inscripción, curso completado, certificado ni acceso con cuenta.",
+    },
   },
   {
-    status: "pending",
-    id: "meta-blueprint",
+    status: "verified",
+    id: "meta-blueprint-use-whatsapp-business",
     institutionId: "meta-blueprint",
+    title: "Usa WhatsApp para un negocio",
+    url: "https://www.facebookblueprint.com/student/path/211935-use-whatsapp-business",
     routeId: "empezar-a-vender",
-    topic: "WhatsApp Business para atender clientes",
-    pending:
-      "Faltan por confirmar el costo (condiciones de gratuidad) y si hace falta cuenta: no constan en la revisión externa del 2026-11-23.",
-    publicEntry: true,
+    topic: "Uso de WhatsApp para un negocio",
+    level: "inicial",
+    duration: "18 minutos",
+    languages: ["es"],
+    free: {
+      conditions: "El curso es gratuito, según la información pública de su página oficial.",
+      account: "sesion-facebook",
+    },
+    learn:
+      "Un curso introductorio de Meta Blueprint sobre cómo usar WhatsApp para un negocio. Su temario completo está en la página oficial.",
+    activity:
+      "Después del curso, elige las tres preguntas que más te hacen tus clientes por mensaje y escribe una respuesta clara para cada una (qué es, cuánto cuesta y cómo pedir). Úsalas durante una semana y anota a quién le falta seguimiento.",
+    verification: {
+      checkedOn: "2026-11-23",
+      method:
+        "Revisión externa de información pública oficial, hecha por CÍDIKS. No se registra inscripción, curso completado, certificado ni acceso con cuenta.",
+    },
   },
   {
     status: "verified",
@@ -172,14 +225,29 @@ export const COMMUNITY_RESOURCES: readonly CommunityResource[] = [
     },
   },
   {
-    status: "pending",
-    id: "google-skillshop",
+    status: "verified",
+    id: "google-skillshop-promote-with-content",
     institutionId: "google-skillshop",
+    title: "Promociona una empresa con contenido",
+    url: "https://skillshop.exceedlms.com/student/collection/711435-promote-with-content?locale=es",
     routeId: "mejorar-mi-presencia-digital",
     topic: "Promoción de una empresa con contenido",
-    pending:
-      "Faltan por confirmar el costo (condiciones de gratuidad) y si hace falta cuenta: no constan en la revisión externa del 2026-11-23.",
-    publicEntry: true,
+    level: "inicial",
+    duration: "3 horas",
+    languages: ["es"],
+    free: {
+      conditions: "El curso es gratuito, según la información pública de su página oficial.",
+      account: "sesion-google",
+    },
+    learn:
+      "Un curso introductorio de Google Skillshop sobre cómo promocionar una empresa con contenido. Su temario completo está en la página oficial.",
+    activity:
+      "Después del curso, anota cinco cosas que tus clientes te preguntan o que más valoran de tu negocio, y elige una para publicarla como foto con un texto corto en el canal que ya usas. Anota cuántas personas respondieron o preguntaron después.",
+    verification: {
+      checkedOn: "2026-11-23",
+      method:
+        "Revisión externa de información pública oficial, hecha por CÍDIKS. No se registra inscripción, curso completado, certificado ni acceso con cuenta.",
+    },
   },
 ];
 
@@ -222,6 +290,8 @@ function isCalendarDate(value: string): boolean {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 const TRACKING_PARAM = /^(utm_|fbclid$|gclid$|msclkid$|mc_|hsa_|_hs|ref$|referrer$|source$)/i;
+/** Únicos parámetros admitidos en un enlace: eligen el idioma de la página, no rastrean. */
+const FUNCTIONAL_PARAMS: readonly string[] = ["locale"];
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const MIN_TEXT = 20;
 
@@ -268,6 +338,10 @@ export function communityResourceIssues(
     ] as const)
       if (value.trim().length < min) issues.push(`${label}: ${field} vacío o demasiado corto`);
     if (!(resource.level in LEVEL_LABELS)) issues.push(`${label}: nivel inválido`);
+    if (resource.levelSource !== undefined && resource.levelSource !== "editorial")
+      issues.push(`${label}: levelSource solo admite "editorial"`);
+    if (resource.duration !== undefined && resource.duration.trim().length < 3)
+      issues.push(`${label}: duration vacía o demasiado corta`);
     if (!(resource.free.account in ACCOUNT_LABELS)) issues.push(`${label}: free.account inválido`);
     if (resource.free.paidExtras !== undefined && resource.free.paidExtras.trim().length < MIN_TEXT)
       issues.push(`${label}: free.paidExtras demasiado corto`);
@@ -291,8 +365,10 @@ export function communityResourceIssues(
       if (url.pathname === "/" ) issues.push(`${label}: la url debe apuntar a un recurso concreto, no a la página principal`);
       if (institution && !institution.officialHosts.includes(url.hostname))
         issues.push(`${label}: ${url.hostname} no es un dominio oficial esperado de ${institution.name}`);
-      for (const key of url.searchParams.keys())
+      for (const key of url.searchParams.keys()) {
         if (TRACKING_PARAM.test(key)) issues.push(`${label}: la url lleva el parámetro de rastreo "${key}"`);
+        else if (!FUNCTIONAL_PARAMS.includes(key)) issues.push(`${label}: parámetro de url no permitido "${key}"`);
+      }
       if (urls.has(url.href)) issues.push(`${label}: url repetida`);
       urls.add(url.href);
     }

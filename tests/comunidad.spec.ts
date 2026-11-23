@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
-import { COMMUNITY_INSTITUTIONS, COMMUNITY_RESOURCES, formatCheckedOn, pendingResources, publicPendingResources } from "../src/comunidad-recursos.ts";
+import { ACCOUNT_LABELS, COMMUNITY_INSTITUTIONS, COMMUNITY_RESOURCES, formatCheckedOn, pendingResources, publicPendingResources } from "../src/comunidad-recursos.ts";
 
 const PATH = COMMUNITY_PAGE.path;
 
@@ -192,8 +192,13 @@ test("recursos: los verificados muestran todos sus datos y abren de forma segura
     const card = page.locator(`[data-community-route="${r.routeId}"] [data-community-resource="${r.id}"]`);
     await expect(card, r.id).toHaveCount(1);
     await expect(card.getByRole("heading", { level: 4, name: r.title })).toBeVisible();
-    for (const label of ["Qué aprenderás en este recurso", "Nivel recomendado", "Idioma disponible", "Gratuidad", "Cuenta", "Actividad después del curso", "Verificación"])
+    const labels = ["Qué aprenderás en este recurso", "Nivel recomendado", "Idioma disponible", "Gratuidad", "Cuenta", "Actividad después del curso", "Verificación"];
+    for (const label of r.duration ? [...labels, "Duración"] : labels)
       await expect(card.getByText(label, { exact: true }), `${r.id}: ${label}`).toBeVisible();
+    if (r.duration) await expect(card.getByText(r.duration, { exact: true })).toBeVisible();
+    await expect(card.getByText(ACCOUNT_LABELS[r.free.account], { exact: true }), `${r.id}: cuenta`).toBeVisible();
+    // Un nivel clasificado por CÍDIKS se declara como tal; los demás no llevan esa nota.
+    await expect(card.getByText(/clasificación editorial de CÍDIKS/), `${r.id}: nivel`).toHaveCount(r.levelSource === "editorial" ? 1 : 0);
     await expect(card.getByText(formatCheckedOn(r.verification.checkedOn))).toBeVisible();
     await expect(card.locator("time")).toHaveAttribute("datetime", r.verification.checkedOn);
     const link = card.getByRole("link", { name: /Abrir en .+ \(pestaña nueva\)/ });

@@ -5,6 +5,7 @@ import { HOME_GUIDES } from "../src/guide-previews.ts";
 import { content } from "../src/content.ts";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import {
+  ACCOUNT_LABELS,
   COMMUNITY_INSTITUTIONS,
   COMMUNITY_RESOURCES,
   type VerifiedCommunityResource,
@@ -97,6 +98,12 @@ for (const [tag, href] of externalAnchors) {
 }
 for (const r of verifiedResources)
   assert.ok(new RegExp(`datetime="${r.verification.checkedOn}"`, "i").test(community), `Fecha de verificación visible: ${r.id}`);
+for (const r of verifiedResources) {
+  assert.ok(community.includes(ACCOUNT_LABELS[r.free.account]), `Condición de cuenta visible: ${r.id}`);
+  if (r.duration) assert.ok(community.includes(r.duration), `Duración visible: ${r.id}`);
+  if (r.levelSource === "editorial")
+    assert.ok(community.includes("clasificación editorial de CÍDIKS"), `Nivel editorial declarado: ${r.id}`);
+}
 const pendingHtml = community.match(/<section class="community-pending"[\s\S]*?<\/section>/)?.[0] ?? "";
 for (const r of COMMUNITY_RESOURCES.filter((r) => r.status === "pending")) {
   const name = COMMUNITY_INSTITUTIONS[r.institutionId].name;

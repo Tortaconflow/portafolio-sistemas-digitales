@@ -27,8 +27,19 @@ function ResourceCard({ resource }: { resource: VerifiedCommunityResource }) {
         </div>
         <div>
           <dt>Nivel recomendado</dt>
-          <dd>{LEVEL_LABELS[resource.level]}</dd>
+          <dd>
+            {LEVEL_LABELS[resource.level]}
+            {resource.levelSource === "editorial"
+              ? `. Es una clasificación editorial de CÍDIKS, no un nivel declarado por ${institution}.`
+              : ""}
+          </dd>
         </div>
+        {resource.duration && (
+          <div>
+            <dt>Duración</dt>
+            <dd>{resource.duration}</dd>
+          </div>
+        )}
         <div>
           <dt>Idioma disponible</dt>
           <dd>{resource.languages.map((language) => LANGUAGE_LABELS[language]).join(", ")}</dd>
@@ -86,7 +97,7 @@ export function ComunidadPage() {
           <p className="editorial-deck">
             Tres rutas gratuitas para emprendedores. Cada una reúne guías que ya
             puedes leer, una actividad que haces tú y una forma de comprobar lo
-            que aprendiste. No necesitas registrarte ni dejar tus datos.
+            que aprendiste. En esta página no necesitas registrarte ni dejar tus datos.
           </p>
         </header>
         <nav className="editorial-categories" aria-label="Rutas de aprendizaje">
@@ -178,7 +189,8 @@ export function ComunidadPage() {
                   <h3 id={`${route.id}-recursos`}>Para profundizar: cursos gratuitos de otras instituciones</h3>
                   <p>
                     Son recursos de terceros que ya revisamos. Su contenido y condiciones los
-                    define cada institución y pueden cambiar.
+                    define cada institución y pueden cambiar. Algunos piden una cuenta o iniciar
+                    sesión en su plataforma; lo indicamos en cada uno.
                   </p>
                   <ul className="community-resource-list">
                     {resources.map((resource) => (

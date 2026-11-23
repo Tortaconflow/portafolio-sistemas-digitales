@@ -73,11 +73,12 @@ La asignación es provisional y cambia si el contenido de cada guía lo pide. La
 Implementada en `src/comunidad-recursos.ts` (`COMMUNITY_RESOURCES`, tipos estrictos). Reglas editoriales, validadas en pruebas y en cada build:
 
 - Un recurso es `verified` solo si se leyó su página oficial y se registraron la fecha (AAAA-MM-DD) y el método reales. Si no, es `pending`: se muestra aparte, **sin enlace**, y no se recomienda.
-- Cada recurso verificado declara: nombre, institución, enlace oficial directo (HTTPS, dominio de la institución, sin parámetros de rastreo), tema, ruta, nivel, idiomas (debe incluir español), condiciones de gratuidad (y lo que sí cuesta), si pide cuenta, qué se aprende y una actividad posterior.
+- Cada recurso verificado declara: nombre, institución, enlace oficial directo (HTTPS, dominio autorizado de la institución, sin parámetros de rastreo; solo se admite `locale`), tema, ruta, nivel, idiomas (debe incluir español), condiciones de gratuidad (y lo que sí cuesta), si pide cuenta, qué se aprende y una actividad posterior.
 - Un recurso por institución y cinco como máximo. Candidatos iniciales: Santander Open Academy, HubSpot Academy, Meta Blueprint, Microsoft Learn y Google Skillshop.
 - Lo que la página oficial no indique se declara "no indicado"; no se asume.
 - Los enlaces salen en pestaña nueva con `noopener noreferrer`; sin incrustados, JavaScript ni seguimiento.
 - **Procedencia de la evidencia:** puede ser una revisión externa de las páginas públicas oficiales hecha por CÍDIKS; así se registra en `verification.method`. No se atribuyen inscripciones, certificados ni accesos con cuenta que no se hayan realizado. Si un dato que exige el contrato no consta, el recurso sigue `pending` y se anota qué falta; no se rellena por suposición.
+- Si el nivel lo clasifica CÍDIKS y la institución no lo declara, se marca `levelSource: "editorial"` y la tarjeta lo dice. La duración (`duration`) es opcional.
 - Un `pending` puede ocultarse al público (`publicEntry: false`) si su entrada resultaría confusa para los visitantes.
 - Re-verificar cada recurso al menos cada 90 días y retirarlo si deja de cumplirse. La fecha visible permite a cada persona juzgar su vigencia.
 
