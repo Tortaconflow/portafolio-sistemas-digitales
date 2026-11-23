@@ -2,6 +2,12 @@ import { AI_POLICY, utf8Size } from '../../shared/cidikis-ai-policy.ts';
 import { validTurnResponse, type TurnRequest, type TurnResponse } from '../../shared/cidikis-ai-contract.ts';
 import { simulateTurn } from '../../shared/simulated-provider.ts';
 import type { FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
+import {
+  createErrorTracker,
+  TURNSTILE_POLICY,
+  TurnstileError,
+  turnstileFailureMessage,
+} from '../../shared/turnstile-policy.ts';
 
 const LOCAL_ENDPOINT = import.meta.env.VITE_LOCAL_AI_ENDPOINT as string | undefined;
 const PROD_AI_ENDPOINT = (import.meta.env.VITE_AI_ENDPOINT as string | undefined) ?? 'https://cidiks-ia-advisor.reilyvica.workers.dev';
@@ -12,6 +18,7 @@ declare global {
     turnstile?: {
       render(container: HTMLElement, options: Record<string, unknown>): string;
       remove(widgetId: string): void;
+      reset(widgetId: string): void;
     };
   }
 }
@@ -39,7 +46,7 @@ function loadTurnstile(): Promise<NonNullable<Window['turnstile']>> {
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
     script.async = true;
-    const timer = window.setTimeout(failed, 8_000);
+    const timer = window.setTimeout(failed, TURNSTILE_POLICY.scriptLoadMs);
 
     function cleanup() {
       window.clearTimeout(timer);
@@ -50,7 +57,7 @@ function loadTurnstile(): Promise<NonNullable<Window['turnstile']>> {
     function failed() {
       cleanup();
       script.remove();
-      reject(new Error('turnstile_load'));
+      reject(new TurnstileError('load'));
     }
 
     script.onerror = failed;
@@ -72,6 +79,12 @@ function loadTurnstile(): Promise<NonNullable<Window['turnstile']>> {
   return turnstileLoad;
 }
 
+/** Descarga api.js al abrir el chat, para que el primer mensaje no espere la carga. */
+export function preloadTurnstile(): void {
+  if (!remoteWorkerEndpoint() || localWorkerEndpoint()) return;
+  loadTurnstile().catch(() => undefined);
+}
+
 async function getTurnstileToken(): Promise<string> {
   const api = await loadTurnstile();
   const container = document.createElement('div');
@@ -85,25 +98,37 @@ async function getTurnstileToken(): Promise<string> {
   let timer: number | undefined;
   try {
     return await new Promise<string>((resolve, reject) => {
-      const expire = () => reject(new Error('turnstile_timeout'));
-      timer = window.setTimeout(expire, 15_000);
+      const expire = () => reject(new TurnstileError('timeout'));
+      const track = createErrorTracker();
+      timer = window.setTimeout(expire, TURNSTILE_POLICY.silentMs);
       widgetId = api.render(container, {
         sitekey: TURNSTILE_SITE_KEY,
         action: 'cidikis_pilot',
         appearance: 'interaction-only',
         theme: 'dark',
         size: document.documentElement.clientWidth < 360 ? 'compact' : 'normal',
+        // Dejar que el widget reintente solo, a un ritmo más corto que los 8 s por defecto.
+        retry: 'auto',
+        'retry-interval': TURNSTILE_POLICY.retryIntervalMs,
         'before-interactive-callback': () => {
           container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:auto;background:#141414;padding:16px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,0.18);';
           window.clearTimeout(timer);
-          timer = window.setTimeout(expire, 60_000);
+          timer = window.setTimeout(expire, TURNSTILE_POLICY.interactiveMs);
         },
         'after-interactive-callback': () => {
           container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:none;';
         },
         callback: resolve,
-        'error-callback': () => reject(new Error('turnstile_error')),
-        'expired-callback': () => reject(new Error('turnstile_expired')),
+        // Los 300* y 600* son reintentables: solo nos rendimos con un error fatal o tras varios.
+        'error-callback': (code: unknown) => {
+          const failure = track(code);
+          if (failure) reject(failure);
+        },
+        // Si la casilla no se resolvió a tiempo, reinicia el widget en vez de abandonar.
+        'timeout-callback': () => {
+          if (widgetId) api.reset(widgetId);
+        },
+        'expired-callback': () => reject(new TurnstileError('timeout')),
       });
     });
   } finally {
@@ -119,8 +144,8 @@ async function getTurnstileToken(): Promise<string> {
 export async function bootstrapLocalSession(): Promise<string> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) return 'browser-simulation';
-  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await getTurnstileToken().catch(() => {
-    throw new FloatingChatError('No pude completar la verificación de seguridad. Puedes reintentar o seguir con la guía.');
+  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await getTurnstileToken().catch((error: unknown) => {
+    throw new FloatingChatError(turnstileFailureMessage(error instanceof TurnstileError ? error.failure : 'blocked'));
   });
   const response = await fetch(`${endpoint}/v2/session`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version: '2.0', challenge }), signal: AbortSignal.timeout(10000) });
   if (!response.ok) throw new FloatingChatError('No pude iniciar la sesión. Puedes reintentar o seguir con la guía.');
