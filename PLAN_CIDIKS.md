@@ -68,9 +68,16 @@ La asignación es provisional y cambia si el contenido de cada guía lo pide. La
 5. Pruebas de accesibilidad (axe) y de móvil (390 px) sin errores.
 6. Ningún archivo de `worker/` ni `shared/` modificado.
 
-## 5. Biblioteca de recursos externos (después del MVP)
+## 5. Biblioteca de recursos externos
 
-Un recurso entra solo con URL oficial, organización, costo declarado y fecha de verificación. Se revisa de forma periódica y se retira si deja de cumplirse. Sin afirmar lo que no se comprobó. El lote inicial lo aprueba el propietario.
+Implementada en `src/comunidad-recursos.ts` (`COMMUNITY_RESOURCES`, tipos estrictos). Reglas editoriales, validadas en pruebas y en cada build:
+
+- Un recurso es `verified` solo si se leyó su página oficial y se registraron la fecha (AAAA-MM-DD) y el método reales. Si no, es `pending`: se muestra aparte, **sin enlace**, y no se recomienda.
+- Cada recurso verificado declara: nombre, institución, enlace oficial directo (HTTPS, dominio de la institución, sin parámetros de rastreo), tema, ruta, nivel, idiomas (debe incluir español), condiciones de gratuidad (y lo que sí cuesta), si pide cuenta, qué se aprende y una actividad posterior.
+- Un recurso por institución y cinco como máximo. Candidatos iniciales: Santander Open Academy, HubSpot Academy, Meta Blueprint, Microsoft Learn y Google Skillshop.
+- Lo que la página oficial no indique se declara "no indicado"; no se asume.
+- Los enlaces salen en pestaña nueva con `noopener noreferrer`; sin incrustados, JavaScript ni seguimiento.
+- Re-verificar cada recurso al menos cada 90 días y retirarlo si deja de cumplirse. La fecha visible permite a cada persona juzgar su vigencia.
 
 ## 6. Riesgos y dependencias
 

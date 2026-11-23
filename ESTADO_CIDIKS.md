@@ -4,47 +4,67 @@ Actualizar al cerrar cada tarea importante. Sin secretos ni datos personales. Pl
 
 ## Fase actual
 
-**Fase 1 (MVP `/comunidad/`) en curso: tareas 1, 2 y 3 completadas.** La página existe, es indexable y ya se encuentra desde la home y desde Conocimiento. Falta la biblioteca de recursos externos (tarea 4), la medición y validar el contenido con emprendedores reales. Nada publicado.
+**Fase 1 (MVP `/comunidad/`) en curso: tareas 1 a 4 completadas en estructura; 0 de 5 recursos externos verificados.** La página existe, es indexable y se encuentra desde la home y Conocimiento. Falta verificar los recursos externos (bloqueado por la red del entorno, ver abajo), la medición y validar el contenido con emprendedores reales. Nada publicado.
 
 ## Última tarea completada
 
-Fase 1, tarea 3: descubrimiento de `/comunidad/` desde el sitio existente, sin tocar el encabezado.
+Fase 1, tarea 4: biblioteca de recursos educativos externos. Estructura, validación, interfaz y pruebas listas; **los cinco candidatos quedan como pendientes porque no se pudo comprobar ninguno**. No se inventó ningún curso, condición ni fecha.
 
 ## Rama y Git
 
 - Rama de trabajo: `feat/cidiks-comunidad-mvp`, creada desde `main` (`6bc1f50`). Sin copia remota; el clon es de solo lectura.
-- Commits locales: `cd7c52b` (documentos), `300ab97` (rutas), `157593f` (página) y el de la tarea 3.
+- Commits locales: `cd7c52b` (documentos), `300ab97` (rutas), `157593f` (página), `bc1a296` (descubrimiento), `b6135d8` (biblioteca) y el de cierre de la tarea 4.
 - Sin push, merge ni despliegue.
 
-## Archivos de la tarea 3
+## Estado de los recursos
 
-- Modificados: `src/KnowledgePage.tsx` (+enlace bajo la introducción del índice de Conocimiento), `src/HomeJourney.tsx` (+enlace al final de la sección `#aprende`), `scripts/check-evolution.ts` (+comprobaciones de descubrimiento), `tests/comunidad.spec.ts` (+3 pruebas), `ESTADO_CIDIKS.md`.
-- Sin CSS nuevo. Sin cambios en `SiteHeader`, `SiteFooter`, `content.ts` (navegación de la home), `worker/`, `shared/`, `public/` ni `vite.config.ts`.
+| Institución | Estado | Ruta prevista | Motivo |
+| --- | --- | --- | --- |
+| Santander Open Academy | Pendiente | Organizar mi negocio | Sin curso elegido ni comprobado |
+| HubSpot Academy | Pendiente | Empezar a vender | Sin curso elegido ni comprobado |
+| Meta Blueprint | Pendiente | Mejorar mi presencia digital | Sin curso elegido ni comprobado |
+| Microsoft Learn | Pendiente | Organizar mi negocio | Sin módulo elegido ni comprobado |
+| Google Skillshop | Pendiente | Mejorar mi presencia digital | Sin curso elegido ni comprobado |
+
+**Por qué no se verificó:** el proxy del entorno responde 403 (host no permitido) a los cinco sitios oficiales y no hay herramienta propia de lectura web. Se ofrecieron tres vías (agente `web-fetch`, permitir los hosts en la red del entorno, o dejarlos pendientes); la pregunta se denegó, así que no se usó ningún agente ni se cambió la red. Una búsqueda no sustituye abrir la página oficial, por eso no se registró nada como verificado.
+
+**Cómo completarlo (cualquiera de estas vías):**
+1. Autorizar el agente `web-fetch` (solo lectura, ~5 a 10 páginas públicas). Debe devolver citas textuales; solo se registra lo que respalden. La verificación sería por lectura automatizada, no por una persona abriendo el curso.
+2. Permitir los dominios oficiales en la red del entorno (`update_environment`, con aprobación) y verificar con `curl`.
+3. Que el propietario abra cada página oficial y comparta los datos.
+
+**Qué comprobar de cada recurso** (y registrar tal cual, con la fecha real y cómo se hizo): URL final tras redirecciones y que sea del dominio oficial; título; disponibilidad hoy; gratuidad (qué es gratis y qué cuesta: exámenes, certificados); si pide cuenta; idiomas ofrecidos (debe haber español); nivel; qué se aprende. Lo no indicado se declara "no indicado".
+
+**Cómo registrarlo:** reemplazar la entrada `pending` de `COMMUNITY_RESOURCES` por una `verified` con todos sus campos (ver el tipo `VerifiedCommunityResource` en `src/comunidad-recursos.ts`). El build y `tests/unit/comunidad-recursos.test.ts` fallan si falta algo (HTTPS, dominio oficial, sin rastreo, fecha válida, español, un recurso por institución, máximo cinco). Si el sitio oficial usa otro dominio, ajustar `COMMUNITY_INSTITUTIONS.officialHosts`.
+
+## Archivos de la tarea 4
+
+- Nuevos: `src/comunidad-recursos.ts` (tipos, instituciones, datos, validador, formato de fecha), `tests/unit/comunidad-recursos.test.ts` (10 pruebas).
+- Modificados: `src/ComunidadPage.tsx` (tarjeta de recurso verificado por ruta y sección "Recursos en verificación"), `src/comunidad.css` (estilos de la tarjeta, solo para `/comunidad/`), `vite.config.ts` (el build falla si `communityResourceIssues()` reporta algo), `scripts/check-evolution.ts` y `tests/comunidad.spec.ts` (comprobaciones de enlaces externos y pendientes), `PLAN_CIDIKS.md` (sección 5), `ESTADO_CIDIKS.md`.
+- Sin cambios en `src/education.ts`, `worker/`, `shared/`, `public/`, navegación ni `SiteHeader`.
 
 ## Decisiones técnicas
 
-- **Ubicación (la más simple):** un enlace de texto, "¿Prefieres seguir un orden? Conoce las rutas gratuitas de CÍDIKS Comunidad ↗", en dos sitios donde ya se lee contenido educativo: (1) índice `/conocimiento/`, al que lleva el enlace "Conocimiento" del encabezado de cada página; (2) sección de guías `#aprende` de la home. `HomeJourney` alimenta tanto el HTML estático previo a JavaScript como la home en React, así que un solo cambio cubre ambos.
-- **Encabezado intacto (5 enlaces):** en móvil `SiteHeader` apila sus enlaces y ocupa casi un tercio de la pantalla; un sexto elemento lo empeoraría. `check-evolution` falla si el encabezado de la home, el asesor, Conocimiento o Comunidad deja de tener 5 enlaces o enlaza `/comunidad/`; habrá que actualizarlo a propósito si algún día se añade.
-- **Sin CSS nuevo, a propósito:** se reutilizan `inline-link` y `section-description` (esta última da el margen superior de 20 px en la home). Una regla nueva habría cambiado el hash del CSS principal (115 KB, 22,7 KB gzip), y con él el HTML de todas las páginas y la caché de quienes ya visitaron.
-- **Indexable:** `/comunidad/` conserva `robots: index, follow`, canonical y su entrada en el sitemap; ya no queda huérfana.
-- **Sin analítica nueva:** no se añadió GA4 ni eventos; el Worker no se tocó.
+- **Tipos estrictos:** unión discriminada `verified | pending`. Un `pending` no puede tener `url`, `verification` ni datos del curso (lo impide el tipo y el validador), así que un recurso sin comprobar nunca se enlaza.
+- **Interfaz:** verificados dentro de su ruta, en tarjetas con nombre, institución, tema, nivel, idiomas, gratuidad, cuenta, qué se aprende, actividad posterior y fecha y método de verificación. Los pendientes van aparte, sin enlaces, en "Recursos en verificación". Enlaces externos con `target="_blank"` y `rel="noopener noreferrer"` ("pestaña nueva" visible en el texto).
+- **Sin JavaScript, sin seguimiento, sin dependencias:** el único `<script>` sigue siendo JSON-LD; no hay GA4 ni incrustados. CSP sin cambios.
+- **Regla editorial:** un recurso por institución, máximo cinco, español obligatorio, URL a un recurso concreto (no a la portada) y sin parámetros de rastreo. `COMMUNITY_INSTITUTIONS.officialHosts` son dominios esperados que protegen de errores de captura; no sustituyen la verificación.
+- **Aislamiento:** respecto a la tarea 3, el build solo cambia `comunidad/index.html` y su CSS propio; home, guías y asesor idénticos.
 
-## Pruebas de la tarea 3 (todas pasan)
+## Pruebas de la tarea 4 (todas pasan)
 
-- `npm run build` (incluye `tsc --noEmit`), `check:release`, `check:evolution` (12 páginas), `check:advisor`, `check:hybrid` (59 de 59).
-- Playwright, **suite completa** (móvil y escritorio): 88 de 88. Incluye las 3 pruebas nuevas: el enlace funciona con y sin JavaScript desde la home y desde Conocimiento, el encabezado sigue con 5 enlaces y axe WCAG 2.1 A/AA sin violaciones en las zonas modificadas.
-- **Regresión de diseño:** se comparó la geometría del DOM de la home y de Conocimiento antes y después, en 390 y 1440 px. Cambia solo el bloque añadido: todo lo anterior queda idéntico y todo lo posterior se desplaza exactamente lo mismo (home +81,5 px en móvil y +58,75 px en escritorio; Conocimiento +85,5 y +62,75). Estructura del DOM idéntica salvo el enlace. (La comparación de píxeles no sirve aquí: el desplazamiento fraccional cambia el suavizado del texto.)
-- **Accesibilidad de página completa (axe, con best-practice):** idéntica antes y después en la home y en Conocimiento.
-- **Rendimiento:** CSS sin cambios (los cuatro archivos conservan su hash); cambian `index.html`, `conocimiento/index.html` e `index-*.js` (+~50 B gzip cada uno). LCP dentro del ruido (±8 ms en local), CLS igual (home 0,0095 móvil; 0,011 escritorio), mismas peticiones. Los chunks `AltitudCaseStudy` y `ParaisoCaseStudy` cambian de nombre porque dependen del hash de `index` (se vuelven a descargar una vez tras el despliegue).
-- Se comprobó que `check-evolution` detecta la falta del enlace (mutación del HTML construido).
-- No ejecutado: Lighthouse (no hay dependencia instalada ni autorizada) ni `npm audit`.
+- `npm run build` (incluye `tsc --noEmit` y la validación de recursos), `check:release`, `check:evolution`, `check:advisor`, `check:hybrid` (69 de 69).
+- Playwright `tests/comunidad.spec.ts` (móvil y escritorio): 22 de 22. Una prueba nueva recorre los recursos de los datos: con todos pendientes comprueba que no hay enlaces externos y que los cinco aparecen aparte sin enlace.
+- Como hoy no hay verificados, la tarjeta se probó con un recurso de ejemplo **temporal** (ya retirado, sin rastro en código ni en `dist/`): 22 de 22 con axe WCAG 2.1 A/AA, sin desborde a 320 px, CSP real de `.htaccess` y atributos de los enlaces externos; revisión visual en 390 y 1440 px.
+- Pruebas unitarias: esquema, rutas, duplicados, instituciones, enlaces (HTTPS, dominio oficial, sin rastreo, fragmento, portada, credenciales), fecha válida, español, pendientes sin enlace y más de cinco recursos. El validador también se prueba con casos defectuosos.
+- No se hicieron consultas externas. No se ejecutó la suite Playwright completa: nada más cambió en el build.
 
 ## Cómo verla en local
 
 ```sh
 npm ci
 npm run build
-npm run preview        # http://127.0.0.1:4173/ , /conocimiento/ y /comunidad/
+npm run preview        # http://127.0.0.1:4173/comunidad/
 ```
 
 `npm run dev` no sirve las páginas estáticas (`/comunidad/`, `/conocimiento/`, `/asesor-ia/`): solo existen tras el build.
@@ -57,7 +77,7 @@ Playwright en este entorno de la nube: la versión fijada (1.64) espera `chromiu
 - `.github/workflows/build.yml` compila, ejecuta los `check:*` y Playwright, y sube el artefacto `hostinger-dist` (14 días). **No tiene pasos de despliegue** (ni FTP, SSH, rsync ni webhook).
 - No hay otro archivo de despliegue. Existe una rama remota `hostinger`; el `README.md` la describe como el contenido de `dist/` preparado a mano para el Git clásico de Hostinger.
 - El Worker se despliega aparte, con `wrangler`.
-- La CSP de `public/.htaccess` es compatible con `/comunidad/` y con los enlaces nuevos (sin scripts ni estilos en línea): no requiere cambios.
+- La CSP de `public/.htaccess` es compatible con `/comunidad/`, incluidos los enlaces externos (solo navegan; no cargan nada): no requiere cambios.
 
 **Requiere verificación del propietario**
 - Si Hostinger tira automáticamente de `hostinger` o de `main` (configuración del panel).
@@ -67,25 +87,22 @@ Playwright en este entorno de la nube: la versión fijada (1.64) espera `chromiu
 
 ## Decisiones pendientes del propietario
 
-1. **Analítica:** incluir o no GA4 en `/comunidad/` (hoy no lo tiene). Si se incluye, reutilizar el script de `/conocimiento/` (su hash ya está autorizado en la CSP) y definir los eventos en `docs/cidiks-learning.md`.
-2. **Contenido:** actividades y criterios son propuesta editorial sin probar con personas reales.
-3. **Más visibilidad (opcional):** enlace en `SiteFooter` o en las páginas de cada guía ("esta guía forma parte de la ruta…"). No se hizo para mantener el cambio mínimo.
+1. **Verificación de los recursos:** elegir una de las tres vías de arriba. Sin ella, la biblioteca no aporta recursos.
+2. **Antes de publicar:** mientras no haya al menos algunos verificados, la página solo muestra la sección "Recursos en verificación". Decidir si se publica así o si se oculta esa sección hasta verificar (hoy no hay interruptor; sería un cambio pequeño).
+3. **Analítica:** incluir o no GA4 en `/comunidad/` (hoy no lo tiene). Si se incluye, reutilizar el script de `/conocimiento/` (su hash ya está autorizado en la CSP) y definir los eventos en `docs/cidiks-learning.md`.
+4. **Contenido:** actividades y criterios son propuesta editorial sin probar con personas reales.
+5. **Más visibilidad (opcional):** enlace en `SiteFooter` o en las páginas de cada guía.
 
 ## Problemas conocidos
 
-- Preexistente: la home tiene avisos de `color-contrast` en axe (`.hero-note` 4,08:1 y `.stage-note` 3,32:1 en móvil; el botón final "Analicemos tu negocio" marcado con 1,12:1, posible falsa alarma por fondo con gradiente, sin verificar). Idénticos antes y después de la tarea 3.
+- Los recursos externos pueden cambiar o retirarse: re-verificar cada 90 días como máximo (política en `PLAN_CIDIKS.md`, sección 5). No hay un recordatorio automático.
+- Preexistente: la home tiene avisos de `color-contrast` en axe (`.hero-note` 4,08:1 y `.stage-note` 3,32:1 en móvil; el botón final "Analicemos tu negocio" marcado con 1,12:1, posible falsa alarma por fondo con gradiente, sin verificar).
 - Preexistente: `new AxeBuilder({ page })` no pasa `tsc` estricto por tipos de `playwright-core` duplicados en `node_modules`. Playwright no tipa al ejecutar, sin efecto en el CI.
 - Preexistente: en móvil el `SiteHeader` apila los cinco enlaces y ocupa casi un tercio de la pantalla (igual en `/conocimiento/`).
 - Preexistente: el `README.md` menciona "once URLs editoriales" en el sitemap; hoy hay 14.
-- Preexistente: la home tiene un CLS pequeño (~0,01), sin relación con este trabajo.
 - La ruta "Organizar" incluye la guía de seguridad en la entrega, la de encaje más débil.
 - El presupuesto de IA es compartido entre el asesor comercial y cualquier uso educativo futuro (Fase 2).
-- Para la tarea 4: el proxy de este entorno bloquea hosts externos (por ejemplo `reilycastro.com`), así que verificar en línea los enlaces oficiales puede no ser posible desde aquí. Se confirmará al empezar; si no hay red, el propietario verifica y se registra quién y cuándo.
 
 ## Próxima tarea sugerida (requiere autorización)
 
-**Fase 1, tarea 4: biblioteca inicial de cinco recursos educativos gratuitos con enlaces oficiales y verificación editorial.** Propuesta mínima:
-- `COMMUNITY_RESOURCES` en `src/comunidad.ts`: título, organización, URL oficial (HTTPS, dominio de la organización), ruta, costo declarado, idioma, nivel, qué se aprende, `verifiedOn` (fecha) y nota de verificación.
-- Una sección por ruta en `/comunidad/` con enlaces externos (`rel="noreferrer"`, marcados como externos). Sin incrustar nada (la CSP no cambia).
-- Protocolo de verificación: abrir la URL oficial, confirmar que el acceso es gratuito sin tarjeta, el idioma, la fecha y el alcance; registrar quién y cuándo. Prueba unitaria: cinco recursos, URL HTTPS válida, sin duplicados, con fecha y asignados a una ruta existente.
-- El propietario aprueba la lista de los cinco recursos antes de integrarlos.
+**Tarea 4b: verificar y registrar los recursos** por la vía que elija el propietario. Después, **tarea 5**: medición (GA4 y eventos) y, si se decide, enlace adicional en el pie o en las páginas de las guías, más una prueba del contenido con 3 a 5 emprendedores antes de publicar.
