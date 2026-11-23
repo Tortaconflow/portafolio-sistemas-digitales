@@ -4,6 +4,11 @@ import { EDUCATION_ARTICLES } from "../src/education.ts";
 import { HOME_GUIDES } from "../src/guide-previews.ts";
 import { content } from "../src/content.ts";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
+import {
+  COMMUNITY_INSTITUTIONS,
+  COMMUNITY_RESOURCES,
+  type VerifiedCommunityResource,
+} from "../src/comunidad-recursos.ts";
 import { track } from "../src/analytics.ts";
 
 const html = readFileSync("dist/index.html", "utf8");
@@ -76,6 +81,31 @@ for (const route of COMMUNITY_ROUTES) {
       `Guía enlazada una sola vez: ${slug}`,
     );
 }
+// Biblioteca de recursos externos: un enlace seguro por recurso verificado; los pendientes, sin enlace.
+const verifiedResources = COMMUNITY_RESOURCES.filter(
+  (r): r is VerifiedCommunityResource => r.status === "verified",
+);
+const externalAnchors = [...community.matchAll(/<a\s[^>]*href="(https?:\/\/[^"]+)"[^>]*>/g)];
+assert.equal(externalAnchors.length, verifiedResources.length, "Un enlace externo por recurso verificado");
+for (const [tag, href] of externalAnchors) {
+  assert.ok(href.startsWith("https://"), `Enlace externo HTTPS: ${href}`);
+  assert.ok(
+    /target="_blank"/.test(tag) && /rel="noopener noreferrer"/.test(tag),
+    `Enlace externo seguro (noopener noreferrer): ${href}`,
+  );
+  assert.ok(verifiedResources.some((r) => r.url === href), `Enlace externo no registrado: ${href}`);
+}
+for (const r of verifiedResources)
+  assert.ok(new RegExp(`datetime="${r.verification.checkedOn}"`, "i").test(community), `Fecha de verificación visible: ${r.id}`);
+const pendingHtml = community.match(/<section class="community-pending"[\s\S]*?<\/section>/)?.[0] ?? "";
+for (const r of COMMUNITY_RESOURCES.filter((r) => r.status === "pending")) {
+  assert.ok(
+    pendingHtml.includes(COMMUNITY_INSTITUTIONS[r.institutionId].name),
+    `Pendiente visible aparte: ${r.id}`,
+  );
+  assert.ok(!community.includes(`data-community-resource="${r.id}"`), `Un pendiente no se muestra como recurso: ${r.id}`);
+}
+assert.ok(!/<a[\s>]/.test(pendingHtml), "Los recursos pendientes no llevan enlaces");
 // Descubrimiento: Comunidad se enlaza desde la home y desde el índice de Conocimiento,
 // sin añadir un sexto elemento al encabezado (en móvil apila sus enlaces).
 const knowledgeIndex = readFileSync("dist/conocimiento/index.html", "utf8");

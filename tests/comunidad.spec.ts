@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
+import { COMMUNITY_INSTITUTIONS, COMMUNITY_RESOURCES, formatCheckedOn } from "../src/comunidad-recursos.ts";
 
 const PATH = COMMUNITY_PAGE.path;
 
@@ -18,8 +19,9 @@ test("HTML sin JavaScript: metadatos, tres rutas completas y acceso directo a la
   for (const route of COMMUNITY_ROUTES) {
     const section = page.locator(`[data-community-route="${route.id}"]`);
     await expect(section.getByRole("heading", { level: 2, name: route.title })).toBeVisible();
-    await expect(section.getByText("Para quién es", { exact: true })).toBeVisible();
-    await expect(section.getByText("Qué aprenderás", { exact: true })).toBeVisible();
+    const facts = section.locator(".community-facts");
+    await expect(facts.getByText("Para quién es", { exact: true })).toBeVisible();
+    await expect(facts.getByText("Qué aprenderás", { exact: true })).toBeVisible();
     await expect(section.getByRole("heading", { level: 3, name: "1. Lee estas guías" })).toBeVisible();
     await expect(section.getByRole("heading", { level: 3, name: `2. Haz esta actividad: ${route.activity.title}` })).toBeVisible();
     await expect(section.getByRole("heading", { level: 3, name: "3. Comprueba que aprendiste" })).toBeVisible();
@@ -178,4 +180,32 @@ test("las zonas modificadas siguen accesibles (WCAG 2.1 A/AA) y sin desbordes", 
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${path} desborde a ${width}px`).toBe(true);
     }
   }
+});
+
+// --- Biblioteca de recursos externos (tarea 4) ---
+test("recursos: los verificados muestran todos sus datos y abren de forma segura; los pendientes van aparte, sin enlace", async ({ page }) => {
+  await page.goto(PATH);
+  const verified = COMMUNITY_RESOURCES.filter((r) => r.status === "verified");
+  const pending = COMMUNITY_RESOURCES.filter((r) => r.status === "pending");
+  for (const r of verified) {
+    const card = page.locator(`[data-community-route="${r.routeId}"] [data-community-resource="${r.id}"]`);
+    await expect(card, r.id).toHaveCount(1);
+    await expect(card.getByRole("heading", { level: 4, name: r.title })).toBeVisible();
+    for (const label of ["Qué aprenderás en este recurso", "Nivel recomendado", "Idioma disponible", "Gratuidad", "Cuenta", "Actividad después del curso", "Verificación"])
+      await expect(card.getByText(label, { exact: true }), `${r.id}: ${label}`).toBeVisible();
+    await expect(card.getByText(formatCheckedOn(r.verification.checkedOn))).toBeVisible();
+    await expect(card.locator("time")).toHaveAttribute("datetime", r.verification.checkedOn);
+    const link = card.getByRole("link", { name: /Abrir en .+ \(pestaña nueva\)/ });
+    await expect(link).toHaveAttribute("href", r.url);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", /noopener/);
+    await expect(link).toHaveAttribute("rel", /noreferrer/);
+  }
+  // Ningún otro enlace sale del sitio.
+  await expect(page.locator('main a[href^="http"]')).toHaveCount(verified.length);
+  const section = page.getByRole("region", { name: "Recursos en verificación" });
+  if (!pending.length) return expect(section).toHaveCount(0);
+  await expect(section).toBeVisible();
+  await expect(section.getByRole("link")).toHaveCount(0);
+  for (const r of pending) await expect(section.getByText(COMMUNITY_INSTITUTIONS[r.institutionId].name, { exact: true })).toBeVisible();
 });

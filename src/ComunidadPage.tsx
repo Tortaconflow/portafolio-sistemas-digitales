@@ -1,5 +1,70 @@
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES, guidesForRoute } from "./comunidad.ts";
+import {
+  ACCOUNT_LABELS,
+  COMMUNITY_INSTITUTIONS,
+  LANGUAGE_LABELS,
+  LEVEL_LABELS,
+  formatCheckedOn,
+  pendingResources,
+  verifiedResourcesForRoute,
+  type VerifiedCommunityResource,
+} from "./comunidad-recursos.ts";
 import { SiteFooter, SiteHeader } from "./KnowledgePage.tsx";
+
+/** Recurso externo ya verificado. El enlace sale en otra pestaña, sin referrer ni acceso a esta página. */
+function ResourceCard({ resource }: { resource: VerifiedCommunityResource }) {
+  const institution = COMMUNITY_INSTITUTIONS[resource.institutionId].name;
+  return (
+    <article className="community-resource" data-community-resource={resource.id}>
+      <p className="mono">
+        {institution} · {resource.topic}
+      </p>
+      <h4>{resource.title}</h4>
+      <dl>
+        <div>
+          <dt>Qué aprenderás en este recurso</dt>
+          <dd>{resource.learn}</dd>
+        </div>
+        <div>
+          <dt>Nivel recomendado</dt>
+          <dd>{LEVEL_LABELS[resource.level]}</dd>
+        </div>
+        <div>
+          <dt>Idioma disponible</dt>
+          <dd>{resource.languages.map((language) => LANGUAGE_LABELS[language]).join(", ")}</dd>
+        </div>
+        <div>
+          <dt>Gratuidad</dt>
+          <dd>
+            {resource.free.conditions}
+            {resource.free.paidExtras ? ` ${resource.free.paidExtras}` : ""}
+          </dd>
+        </div>
+        <div>
+          <dt>Cuenta</dt>
+          <dd>{ACCOUNT_LABELS[resource.free.account]}</dd>
+        </div>
+        <div>
+          <dt>Actividad después del curso</dt>
+          <dd>{resource.activity}</dd>
+        </div>
+        <div>
+          <dt>Verificación</dt>
+          <dd>
+            Revisado el{" "}
+            <time dateTime={resource.verification.checkedOn}>
+              {formatCheckedOn(resource.verification.checkedOn)}
+            </time>
+            . {resource.verification.method}
+          </dd>
+        </div>
+      </dl>
+      <a className="inline-link" href={resource.url} target="_blank" rel="noopener noreferrer">
+        Abrir en {institution} (pestaña nueva) <span aria-hidden="true">↗</span>
+      </a>
+    </article>
+  );
+}
 
 /**
  * /comunidad/: HTML estático generado en el build. No necesita JavaScript,
@@ -50,6 +115,7 @@ export function ComunidadPage() {
         </section>
         {COMMUNITY_ROUTES.map((route, index) => {
           const titleId = `${route.id}-titulo`;
+          const resources = verifiedResourcesForRoute(route.id);
           return (
             <section
               key={route.id}
@@ -107,9 +173,46 @@ export function ComunidadPage() {
                 <h3>3. Comprueba que aprendiste</h3>
                 <p>{route.learningCriterion}</p>
               </div>
+              {resources.length > 0 && (
+                <section className="community-resources" aria-labelledby={`${route.id}-recursos`}>
+                  <h3 id={`${route.id}-recursos`}>Para profundizar: cursos gratuitos de otras instituciones</h3>
+                  <p>
+                    Son recursos de terceros que ya revisamos. Su contenido y condiciones los
+                    define cada institución y pueden cambiar.
+                  </p>
+                  <ul className="community-resource-list">
+                    {resources.map((resource) => (
+                      <li key={resource.id}>
+                        <ResourceCard resource={resource} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
             </section>
           );
         })}
+        {pendingResources().length > 0 && (
+          <section className="community-pending" aria-labelledby="recursos-pendientes">
+            <h2 id="recursos-pendientes">Recursos en verificación</h2>
+            <p>
+              Son instituciones que queremos revisar para esta biblioteca. Todavía no elegimos ni
+              verificamos un curso concreto de ellas, así que no las recomendamos ni las enlazamos.
+            </p>
+            <dl className="community-facts">
+              {pendingResources().map((resource) => (
+                <div key={resource.id}>
+                  <dt>{COMMUNITY_INSTITUTIONS[resource.institutionId].name}</dt>
+                  <dd>
+                    Ruta prevista:{" "}
+                    {COMMUNITY_ROUTES.find((route) => route.id === resource.routeId)?.title}. Tema
+                    que se quiere revisar: {resource.topic}. Falta: {resource.pending}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
         <section className="community-next" aria-labelledby="despues">
           <h2 id="despues">Después de una ruta</h2>
           <p>
@@ -141,7 +244,10 @@ export function ComunidadPage() {
             Las rutas, actividades y criterios son una propuesta editorial de
             CÍDIKS. No son resultados de clientes, una certificación ni una
             garantía de ventas. Cuando una guía se apoya en fuentes externas,
-            las enlaza al final.
+            las enlaza al final. Los cursos de otras instituciones son de
+            terceros: su contenido, disponibilidad, idioma y condiciones pueden
+            cambiar, así que revisa la fecha de verificación y confirma las
+            condiciones en su página oficial.
           </p>
         </section>
       </main>

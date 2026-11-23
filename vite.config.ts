@@ -13,6 +13,7 @@ import {
   COMMUNITY_ROUTES,
   communityRouteIssues,
 } from "./src/comunidad.ts";
+import { communityResourceIssues } from "./src/comunidad-recursos.ts";
 const escapeHtml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -301,7 +302,10 @@ export default defineConfig({
           fileName: content.advisor.path.slice(1) + "index.html",
           source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(content.advisor.title)}</title><meta name="description" content="${escapeHtml(content.advisor.description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(advisorUrl)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(content.advisor.title)}"><meta property="og:description" content="${escapeHtml(content.advisor.description)}"><meta property="og:url" content="${escapeHtml(advisorUrl)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(content.advisor.title)}"><meta name="twitter:description" content="${escapeHtml(content.advisor.description)}"><meta name="twitter:image" content="${escapeHtml(domain + content.seo.image)}">${advisorCss.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(advisorSchema).replace(/</g, "\\u003c")}</script><script type="module" src="/${advisorScript.fileName}"></script></head><body class="knowledge-page advisor-page">${renderToStaticMarkup(createElement(AdvisorPage))}</body></html>`,
         });
-        const communityIssues = communityRouteIssues();
+        const communityIssues = [
+          ...communityRouteIssues(),
+          ...communityResourceIssues(),
+        ];
         if (communityIssues.length)
           throw new Error(`Comunidad: ${communityIssues.join("; ")}`);
         const communityUrl = domain + COMMUNITY_PAGE.path;
