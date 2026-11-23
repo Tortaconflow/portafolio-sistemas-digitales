@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
 import { HOME_GUIDES } from "../src/guide-previews.ts";
 import { content } from "../src/content.ts";
+import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import { track } from "../src/analytics.ts";
 
 const html = readFileSync("dist/index.html", "utf8");
@@ -27,6 +28,7 @@ for (const guide of HOME_GUIDES) {
 const pages = [
   "/conocimiento/",
   ...EDUCATION_ARTICLES.map((a) => `/conocimiento/${a.slug}/`),
+  COMMUNITY_PAGE.path,
 ];
 const sitemap = readFileSync("dist/sitemap.xml", "utf8");
 for (const path of pages) {
@@ -48,6 +50,31 @@ for (const path of pages) {
       `Missing ${resource}`,
     );
   }
+}
+// CÍDIKS Comunidad: página estática sin JavaScript, compatible con la CSP de public/.htaccess.
+const community = readFileSync(`dist${COMMUNITY_PAGE.path}index.html`, "utf8");
+assert.ok(
+  community.includes('<meta name="robots" content="index, follow">'),
+  "Comunidad indexable como el resto de páginas editoriales",
+);
+assert.deepEqual(
+  community.match(/<script[^>]*>/g),
+  ['<script type="application/ld+json">'],
+  "Comunidad no carga ni ejecuta JavaScript (solo datos JSON-LD)",
+);
+assert.ok(!/<style[\s>]|\sstyle=/.test(community), "Comunidad sin estilos en línea (CSP)");
+assert.ok(!/https?:\/\/(?!reilycastro\.com)[^"'\s<]*\.(?:js|css)/.test(community), "Sin recursos externos");
+const communityIds = new Set([...community.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+for (const m of community.matchAll(/href="#([^"]+)"/g))
+  assert.ok(communityIds.has(m[1]), `Ancla sin destino: #${m[1]}`);
+for (const route of COMMUNITY_ROUTES) {
+  assert.ok(communityIds.has(route.id), `Ruta ausente: ${route.id}`);
+  for (const slug of route.guideSlugs)
+    assert.equal(
+      community.split(`href="/conocimiento/${slug}/"`).length - 1,
+      1,
+      `Guía enlazada una sola vez: ${slug}`,
+    );
 }
 const testWindow = {
   cidiksAnalyticsBuffer: [] as Array<{

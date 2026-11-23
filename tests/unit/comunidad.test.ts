@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { EDUCATION_ARTICLES } from "../../src/education.ts";
-import { COMMUNITY_ROUTES, communityRouteIssues, guidesForRoute } from "../../src/comunidad.ts";
+import { COMMUNITY_PAGE, COMMUNITY_ROUTES, communityRouteIssues, guidesForRoute } from "../../src/comunidad.ts";
 
 test("las tres rutas existen con los identificadores esperados", () => {
   assert.deepEqual(
@@ -64,4 +64,12 @@ test("communityRouteIssues no reporta problemas y detecta datos incoherentes", (
   assert.ok(issues.some((issue) => issue.includes(`"${stolen}" está en`)));
   assert.ok(issues.some((issue) => issue.includes("learningCriterion")));
   assert.ok(communityRouteIssues(COMMUNITY_ROUTES.slice(0, 2)).some((issue) => issue.includes("no pertenece a ninguna ruta")));
+});
+
+test("los metadatos de la página sirven para SEO y sitemap", () => {
+  assert.match(COMMUNITY_PAGE.path, /^\/[a-z0-9-]+\/$/);
+  assert.ok(COMMUNITY_PAGE.title.length <= 65, "título demasiado largo");
+  assert.ok(COMMUNITY_PAGE.description.length >= 70 && COMMUNITY_PAGE.description.length <= 170, "descripción fuera de rango");
+  assert.match(COMMUNITY_PAGE.lastmod, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(!Number.isNaN(Date.parse(COMMUNITY_PAGE.lastmod)));
 });

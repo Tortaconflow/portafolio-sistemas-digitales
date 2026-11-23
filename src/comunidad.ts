@@ -33,6 +33,16 @@ export interface CommunityRoute {
   learningCriterion: string;
 }
 
+/** Metadatos de la página estática /comunidad/; los usa el build (vite.config.ts). */
+export const COMMUNITY_PAGE = {
+  name: "CÍDIKS Comunidad",
+  path: "/comunidad/",
+  title: "Rutas gratuitas para emprendedores | CÍDIKS Comunidad",
+  description:
+    "Rutas gratuitas para emprendedores: empezar a vender, organizar tu negocio y mejorar tu presencia digital, con guías, una actividad y cómo comprobar lo aprendido.",
+  lastmod: "2026-11-23",
+} as const;
+
 export const COMMUNITY_ROUTES: readonly CommunityRoute[] = [
   {
     id: "empezar-a-vender",

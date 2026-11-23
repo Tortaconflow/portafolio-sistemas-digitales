@@ -7,6 +7,12 @@ import { KnowledgePage, StaticHome } from "./src/KnowledgePage.tsx";
 import { EDUCATION_ARTICLES } from "./src/education.ts";
 import { content, isWebUrl, releaseIssues } from "./src/content.ts";
 import { AdvisorPage } from "./src/advisor/AdvisorPage.tsx";
+import { ComunidadPage } from "./src/ComunidadPage.tsx";
+import {
+  COMMUNITY_PAGE,
+  COMMUNITY_ROUTES,
+  communityRouteIssues,
+} from "./src/comunidad.ts";
 const escapeHtml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -32,6 +38,12 @@ export default defineConfig({
             new URL("./src/editorial-entry.ts", import.meta.url),
           ),
           name: "editorial",
+        });
+        // Solo aporta comunidad.css; /comunidad/ no carga JavaScript.
+        this.emitFile({
+          type: "chunk",
+          id: fileURLToPath(new URL("./src/comunidad-entry.ts", import.meta.url)),
+          name: "comunidad",
         });
       },
       transformIndexHtml(html) {
@@ -153,6 +165,16 @@ export default defineConfig({
         );
         if (!advisorScript) throw new Error("Advisor assets missing");
         const advisorCss = stylesFor(advisorScript.fileName);
+        const communityScript = Object.values(bundle).find(
+          (item) => item.type === "chunk" && item.name === "comunidad",
+        );
+        const communityStyles = communityScript
+          ? stylesFor(communityScript.fileName)
+          : [];
+        if (!communityScript || !communityStyles.length)
+          throw new Error("Community assets missing");
+        // El chunk de JavaScript queda vacío: se descarta y solo se publica el CSS.
+        delete bundle[communityScript.fileName];
         if (!editorialScript || !cssFiles.length)
           throw new Error("Editorial assets missing");
         const pages = [
@@ -279,6 +301,44 @@ export default defineConfig({
           fileName: content.advisor.path.slice(1) + "index.html",
           source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(content.advisor.title)}</title><meta name="description" content="${escapeHtml(content.advisor.description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(advisorUrl)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(content.advisor.title)}"><meta property="og:description" content="${escapeHtml(content.advisor.description)}"><meta property="og:url" content="${escapeHtml(advisorUrl)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(content.advisor.title)}"><meta name="twitter:description" content="${escapeHtml(content.advisor.description)}"><meta name="twitter:image" content="${escapeHtml(domain + content.seo.image)}">${advisorCss.map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(advisorSchema).replace(/</g, "\\u003c")}</script><script type="module" src="/${advisorScript.fileName}"></script></head><body class="knowledge-page advisor-page">${renderToStaticMarkup(createElement(AdvisorPage))}</body></html>`,
         });
+        const communityIssues = communityRouteIssues();
+        if (communityIssues.length)
+          throw new Error(`Comunidad: ${communityIssues.join("; ")}`);
+        const communityUrl = domain + COMMUNITY_PAGE.path;
+        const communitySchema = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "CollectionPage",
+              "@id": `${communityUrl}#collection`,
+              name: COMMUNITY_PAGE.name,
+              description: COMMUNITY_PAGE.description,
+              url: communityUrl,
+              inLanguage: "es-MX",
+              mainEntity: {
+                "@type": "ItemList",
+                itemListElement: COMMUNITY_ROUTES.map((route, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  name: route.title,
+                  url: `${communityUrl}#${route.id}`,
+                })),
+              },
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Inicio", item: `${domain}/` },
+                { "@type": "ListItem", position: 2, name: COMMUNITY_PAGE.name, item: communityUrl },
+              ],
+            },
+          ],
+        };
+        this.emitFile({
+          type: "asset",
+          fileName: COMMUNITY_PAGE.path.slice(1) + "index.html",
+          source: `<!doctype html><html lang="es-MX"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#244C3B"><title>${escapeHtml(COMMUNITY_PAGE.title)}</title><meta name="description" content="${escapeHtml(COMMUNITY_PAGE.description)}"><meta name="robots" content="${ready ? "index, follow" : "noindex, nofollow"}"><link rel="canonical" href="${escapeHtml(communityUrl)}"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="icon" type="image/png" sizes="48x48" href="/brand/favicon/favicon-48.png"><link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon/favicon-32.png"><link rel="apple-touch-icon" sizes="180x180" href="/brand/favicon/apple-touch-icon.png"><meta property="og:title" content="${escapeHtml(COMMUNITY_PAGE.title)}"><meta property="og:description" content="${escapeHtml(COMMUNITY_PAGE.description)}"><meta property="og:url" content="${escapeHtml(communityUrl)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_MX"><meta property="og:image" content="${escapeHtml(domain + content.seo.image)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(COMMUNITY_PAGE.title)}"><meta name="twitter:description" content="${escapeHtml(COMMUNITY_PAGE.description)}"><meta name="twitter:image" content="${escapeHtml(domain + content.seo.image)}">${[...cssFiles, ...communityStyles].map((css) => `<link rel="stylesheet" href="/${css.fileName}">`).join("")}<script type="application/ld+json">${JSON.stringify(communitySchema).replace(/</g, "\\u003c")}</script></head><body class="knowledge-page community-page">${renderToStaticMarkup(createElement(ComunidadPage))}</body></html>`,
+        });
         this.emitFile({
           type: "asset",
           fileName: "robots.txt",
@@ -288,7 +348,7 @@ export default defineConfig({
           this.emitFile({
             type: "asset",
             fileName: "sitemap.xml",
-            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path), content.advisor.path].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc><lastmod>${path === content.advisor.path ? "2026-10-10" : lastmod}</lastmod></url>`).join("")}</urlset>`,
+            source: `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", ...pages.map((page) => page.path), content.advisor.path, COMMUNITY_PAGE.path].map((path) => `<url><loc>${escapeHtml(domain + path)}</loc><lastmod>${path === content.advisor.path ? "2026-10-10" : path === COMMUNITY_PAGE.path ? COMMUNITY_PAGE.lastmod : lastmod}</lastmod></url>`).join("")}</urlset>`,
           });
       },
     },
