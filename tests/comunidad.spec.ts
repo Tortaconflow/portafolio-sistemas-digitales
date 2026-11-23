@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
-import { COMMUNITY_INSTITUTIONS, COMMUNITY_RESOURCES, formatCheckedOn } from "../src/comunidad-recursos.ts";
+import { COMMUNITY_INSTITUTIONS, COMMUNITY_RESOURCES, formatCheckedOn, pendingResources, publicPendingResources } from "../src/comunidad-recursos.ts";
 
 const PATH = COMMUNITY_PAGE.path;
 
@@ -186,7 +186,8 @@ test("las zonas modificadas siguen accesibles (WCAG 2.1 A/AA) y sin desbordes", 
 test("recursos: los verificados muestran todos sus datos y abren de forma segura; los pendientes van aparte, sin enlace", async ({ page }) => {
   await page.goto(PATH);
   const verified = COMMUNITY_RESOURCES.filter((r) => r.status === "verified");
-  const pending = COMMUNITY_RESOURCES.filter((r) => r.status === "pending");
+  const publicPending = publicPendingResources();
+  const hidden = pendingResources().filter((r) => !r.publicEntry);
   for (const r of verified) {
     const card = page.locator(`[data-community-route="${r.routeId}"] [data-community-resource="${r.id}"]`);
     await expect(card, r.id).toHaveCount(1);
@@ -204,8 +205,10 @@ test("recursos: los verificados muestran todos sus datos y abren de forma segura
   // Ningún otro enlace sale del sitio.
   await expect(page.locator('main a[href^="http"]')).toHaveCount(verified.length);
   const section = page.getByRole("region", { name: "Recursos en verificación" });
-  if (!pending.length) return expect(section).toHaveCount(0);
+  // Las entradas ocultas no aparecen en ningún lugar de la página.
+  for (const r of hidden) await expect(page.getByText(COMMUNITY_INSTITUTIONS[r.institutionId].name), r.id).toHaveCount(0);
+  if (!publicPending.length) return expect(section).toHaveCount(0);
   await expect(section).toBeVisible();
   await expect(section.getByRole("link")).toHaveCount(0);
-  for (const r of pending) await expect(section.getByText(COMMUNITY_INSTITUTIONS[r.institutionId].name, { exact: true })).toBeVisible();
+  for (const r of publicPending) await expect(section.getByText(COMMUNITY_INSTITUTIONS[r.institutionId].name, { exact: true })).toBeVisible();
 });

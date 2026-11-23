@@ -5,7 +5,7 @@ import {
   LANGUAGE_LABELS,
   LEVEL_LABELS,
   formatCheckedOn,
-  pendingResources,
+  publicPendingResources,
   verifiedResourcesForRoute,
   type VerifiedCommunityResource,
 } from "./comunidad-recursos.ts";
@@ -192,21 +192,21 @@ export function ComunidadPage() {
             </section>
           );
         })}
-        {pendingResources().length > 0 && (
+        {publicPendingResources().length > 0 && (
           <section className="community-pending" aria-labelledby="recursos-pendientes">
             <h2 id="recursos-pendientes">Recursos en verificación</h2>
             <p>
-              Son instituciones que queremos revisar para esta biblioteca. Todavía no elegimos ni
-              verificamos un curso concreto de ellas, así que no las recomendamos ni las enlazamos.
+              Son cursos de otras instituciones que estamos revisando. Mientras falten datos por
+              confirmar, no los recomendamos ni los enlazamos.
             </p>
             <dl className="community-facts">
-              {pendingResources().map((resource) => (
+              {publicPendingResources().map((resource) => (
                 <div key={resource.id}>
                   <dt>{COMMUNITY_INSTITUTIONS[resource.institutionId].name}</dt>
                   <dd>
                     Ruta prevista:{" "}
-                    {COMMUNITY_ROUTES.find((route) => route.id === resource.routeId)?.title}. Tema
-                    que se quiere revisar: {resource.topic}. Falta: {resource.pending}
+                    {COMMUNITY_ROUTES.find((route) => route.id === resource.routeId)?.title}. Tema:{" "}
+                    {resource.topic}. En revisión: todavía no lo recomendamos.
                   </dd>
                 </div>
               ))}

@@ -8,6 +8,7 @@ import {
   communityResourceIssues,
   formatCheckedOn,
   pendingResources,
+  publicPendingResources,
   verifiedResourcesForRoute,
   type CommunityResource,
   type VerifiedCommunityResource,
@@ -88,6 +89,7 @@ test("los recursos pendientes no declaran enlace ni verificación", () => {
     for (const key of ["url", "verification", "free", "languages", "level", "learn", "activity"])
       assert.ok(!(key in resource), `${resource.id}: ${key}`);
     assert.ok(resource.pending.trim().length >= 20, resource.id);
+    assert.equal(typeof resource.publicEntry, "boolean", resource.id);
   }
   assert.equal(
     pendingResources().length + COMMUNITY_RESOURCES.filter((r) => r.status === "verified").length,
@@ -138,8 +140,10 @@ test("el validador rechaza pendientes con enlace y más de cinco recursos", () =
     routeId: "empezar-a-vender",
     topic: "Tema de ejemplo para las pruebas",
     pending: "Falta elegir y comprobar un curso concreto.",
+    publicEntry: true,
   };
   assert.deepEqual(communityResourceIssues([pending]), []);
+  assert.ok(hasIssue([{ ...pending, publicEntry: "sí" as never }], "publicEntry"));
   assert.ok(hasIssue([{ ...pending, url: "https://academy.hubspot.com/x" } as unknown as CommunityResource], 'no puede declarar "url"'));
   assert.ok(hasIssue([{ ...pending, pending: "" }], "pendiente"));
   const six = Array.from({ length: 6 }, (_, i) => ({ ...pending, id: `p-${i}`, institutionId: Object.keys(COMMUNITY_INSTITUTIONS)[i % 5] as never }));
@@ -149,4 +153,55 @@ test("el validador rechaza pendientes con enlace y más de cinco recursos", () =
 test("formatCheckedOn escribe la fecha en español sin depender del sistema", () => {
   assert.equal(formatCheckedOn("2026-11-23"), "23 de noviembre de 2026");
   assert.equal(formatCheckedOn("2027-01-05"), "5 de enero de 2027");
+});
+
+// Evidencia de la revisión externa del 2026-11-23: páginas públicas oficiales, revisadas por CÍDIKS
+// (este entorno no pudo consultarlas). Es la única puerta para marcar un recurso como verificado:
+// un recurso nuevo solo pasa si se registra aquí lo que esa revisión confirmó, nada más.
+const EXTERNAL_REVIEW_2026_11_23 = {
+  "microsoft-learn-work-smarter-with-ai": {
+    title: "Trabaje de forma más inteligente con IA",
+    url: "https://learn.microsoft.com/es-mx/training/paths/work-smarter-with-ai/",
+    routeId: "organizar-mi-negocio",
+    level: "inicial", // "principiante" en la revisión
+    languages: ["es"],
+    cost: "gratuito",
+    account: "no-para-leer", // "no necesaria para leer el contenido"
+  },
+} as const;
+
+test("cada recurso verificado coincide con la revisión externa y solo con ella", () => {
+  const verified = COMMUNITY_RESOURCES.filter((r): r is VerifiedCommunityResource => r.status === "verified");
+  assert.deepEqual(
+    verified.map((r) => r.id).sort(),
+    Object.keys(EXTERNAL_REVIEW_2026_11_23).sort(),
+    "hay un recurso verificado sin evidencia registrada en esta prueba (o falta uno)",
+  );
+  for (const r of verified) {
+    const evidence = EXTERNAL_REVIEW_2026_11_23[r.id as keyof typeof EXTERNAL_REVIEW_2026_11_23];
+    assert.equal(r.title, evidence.title);
+    assert.equal(r.url, evidence.url);
+    assert.equal(r.routeId, evidence.routeId);
+    assert.equal(r.level, evidence.level);
+    assert.deepEqual([...r.languages], [...evidence.languages]);
+    assert.equal(r.free.account, evidence.account);
+    assert.ok(r.free.conditions.toLowerCase().includes("gratuit"), "el costo debe constar como gratuito");
+    assert.equal(r.free.paidExtras, undefined, "no se declara lo que la revisión no confirmó");
+    assert.equal(r.verification.checkedOn, "2026-11-23");
+    assert.ok(/externa/i.test(r.verification.method), "el método debe decir que es una revisión externa");
+    assert.ok(!/(inscri|certificado obtenido)/i.test(r.verification.method.replace("No se registra inscripción, certificado ni acceso con cuenta.", "")), "no se atribuye inscripción ni certificados");
+  }
+});
+
+test("los recursos con datos sin confirmar siguen pendientes y Santander queda oculto", () => {
+  const byId = new Map(COMMUNITY_RESOURCES.map((r) => [r.id, r]));
+  for (const id of ["hubspot-academy", "meta-blueprint", "google-skillshop"]) {
+    const resource = byId.get(id);
+    assert.equal(resource?.status, "pending", id);
+  }
+  const santander = byId.get("santander-open-academy");
+  assert.equal(santander?.status, "pending");
+  assert.equal(santander?.status === "pending" && santander.publicEntry, false);
+  assert.ok(publicPendingResources().every((r) => r.id !== "santander-open-academy"));
+  assert.ok(publicPendingResources().every((r) => r.publicEntry));
 });

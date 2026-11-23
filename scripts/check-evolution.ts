@@ -99,10 +99,9 @@ for (const r of verifiedResources)
   assert.ok(new RegExp(`datetime="${r.verification.checkedOn}"`, "i").test(community), `Fecha de verificación visible: ${r.id}`);
 const pendingHtml = community.match(/<section class="community-pending"[\s\S]*?<\/section>/)?.[0] ?? "";
 for (const r of COMMUNITY_RESOURCES.filter((r) => r.status === "pending")) {
-  assert.ok(
-    pendingHtml.includes(COMMUNITY_INSTITUTIONS[r.institutionId].name),
-    `Pendiente visible aparte: ${r.id}`,
-  );
+  const name = COMMUNITY_INSTITUTIONS[r.institutionId].name;
+  if (r.publicEntry) assert.ok(pendingHtml.includes(name), `Pendiente público visible aparte: ${r.id}`);
+  else assert.ok(!community.includes(name), `Entrada pendiente oculta: ${r.id}`);
   assert.ok(!community.includes(`data-community-resource="${r.id}"`), `Un pendiente no se muestra como recurso: ${r.id}`);
 }
 assert.ok(!/<a[\s>]/.test(pendingHtml), "Los recursos pendientes no llevan enlaces");

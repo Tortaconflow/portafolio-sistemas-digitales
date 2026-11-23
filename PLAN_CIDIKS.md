@@ -77,6 +77,8 @@ Implementada en `src/comunidad-recursos.ts` (`COMMUNITY_RESOURCES`, tipos estric
 - Un recurso por institución y cinco como máximo. Candidatos iniciales: Santander Open Academy, HubSpot Academy, Meta Blueprint, Microsoft Learn y Google Skillshop.
 - Lo que la página oficial no indique se declara "no indicado"; no se asume.
 - Los enlaces salen en pestaña nueva con `noopener noreferrer`; sin incrustados, JavaScript ni seguimiento.
+- **Procedencia de la evidencia:** puede ser una revisión externa de las páginas públicas oficiales hecha por CÍDIKS; así se registra en `verification.method`. No se atribuyen inscripciones, certificados ni accesos con cuenta que no se hayan realizado. Si un dato que exige el contrato no consta, el recurso sigue `pending` y se anota qué falta; no se rellena por suposición.
+- Un `pending` puede ocultarse al público (`publicEntry: false`) si su entrada resultaría confusa para los visitantes.
 - Re-verificar cada recurso al menos cada 90 días y retirarlo si deja de cumplirse. La fecha visible permite a cada persona juzgar su vigencia.
 
 ## 6. Riesgos y dependencias

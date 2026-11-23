@@ -16,8 +16,12 @@ export type CommunityInstitutionId =
 
 export type ResourceLevel = "inicial" | "intermedio" | "avanzado";
 export type ResourceLanguage = "es" | "es-MX" | "en" | "pt";
-/** "no-indicado": la página oficial no lo aclara; no se asume. */
-export type AccountRequirement = "no" | "gratuita" | "de-pago" | "no-indicado";
+/**
+ * Qué se confirmó sobre la cuenta. "no-para-leer": se puede leer el contenido sin cuenta (no se
+ * afirma nada sobre registrar avance o certificados). "no-indicado": la página oficial no lo
+ * aclara; no se asume.
+ */
+export type AccountRequirement = "no" | "no-para-leer" | "gratuita" | "de-pago" | "no-indicado";
 
 export interface ResourceVerification {
   /** AAAA-MM-DD: día en que se leyó la página oficial del recurso. */
@@ -61,8 +65,10 @@ export interface PendingCommunityResource {
   routeId: CommunityRouteId;
   /** Tema que se quiere revisar. */
   topic: string;
-  /** Qué falta para poder recomendarlo. */
+  /** Dato que falta confirmar. Nota interna: no se muestra a los visitantes. */
   pending: string;
+  /** false: no aparece en la página pública (por ejemplo, si la entrada resultaría confusa). */
+  publicEntry: boolean;
 }
 
 export type CommunityResource = VerifiedCommunityResource | PendingCommunityResource;
@@ -95,6 +101,7 @@ export const LANGUAGE_LABELS: Record<ResourceLanguage, string> = {
 };
 export const ACCOUNT_LABELS: Record<AccountRequirement, string> = {
   no: "No hace falta crear una cuenta.",
+  "no-para-leer": "No hace falta una cuenta para leer el contenido.",
   gratuita: "Hay que crear una cuenta gratuita en la institución.",
   "de-pago": "La cuenta o el acceso completo requieren pago.",
   "no-indicado": "La página oficial no lo indica; revísalo antes de empezar.",
@@ -103,9 +110,11 @@ export const ACCOUNT_LABELS: Record<AccountRequirement, string> = {
 export const MAX_COMMUNITY_RESOURCES = 5;
 
 /**
- * Estado actual. Por ahora ninguno está verificado: no se pudo leer las páginas oficiales
- * (el entorno de desarrollo bloquea esos sitios). No se elige ni se enlaza un curso concreto
- * hasta poder comprobarlo.
+ * Estado de la biblioteca. La evidencia de los recursos verificados procede de una revisión
+ * EXTERNA de las páginas públicas oficiales, hecha por CÍDIKS el 2026-11-23. El entorno de
+ * desarrollo no pudo consultar esos sitios (el proxy los bloquea) y no hizo ninguna consulta.
+ * Solo se registran los datos que esa revisión confirmó; si falta uno que el contrato exige,
+ * el recurso sigue en "pending" y la falta se anota en `pending`. No se rellena nada por suposición.
  */
 export const COMMUNITY_RESOURCES: readonly CommunityResource[] = [
   {
@@ -114,39 +123,63 @@ export const COMMUNITY_RESOURCES: readonly CommunityResource[] = [
     institutionId: "santander-open-academy",
     routeId: "organizar-mi-negocio",
     topic: "Administración y finanzas básicas del negocio",
-    pending: "Elegir un curso concreto y comprobar su disponibilidad, gratuidad, idioma y enlace oficial.",
+    pending:
+      "No hay un curso vigente que recomendar: el único curso revisado figura como finalizado en su ficha. Se mantiene pendiente y sin entrada pública.",
+    publicEntry: false,
   },
   {
     status: "pending",
     id: "hubspot-academy",
     institutionId: "hubspot-academy",
-    routeId: "empezar-a-vender",
-    topic: "Ventas y seguimiento de clientes",
-    pending: "Elegir un curso concreto y comprobar su disponibilidad, gratuidad, idioma y enlace oficial.",
+    routeId: "mejorar-mi-presencia-digital",
+    topic: "Marketing digital para tu presencia en línea",
+    pending:
+      "Falta confirmar el nivel del curso «Marketing digital»: no consta en los datos de la revisión externa del 2026-11-23.",
+    publicEntry: true,
   },
   {
     status: "pending",
     id: "meta-blueprint",
     institutionId: "meta-blueprint",
-    routeId: "mejorar-mi-presencia-digital",
-    topic: "Presencia del negocio en redes sociales",
-    pending: "Elegir un curso concreto y comprobar su disponibilidad, gratuidad, idioma y enlace oficial.",
+    routeId: "empezar-a-vender",
+    topic: "WhatsApp Business para atender clientes",
+    pending:
+      "Faltan por confirmar el costo (condiciones de gratuidad) y si hace falta cuenta: no constan en la revisión externa del 2026-11-23.",
+    publicEntry: true,
   },
   {
-    status: "pending",
-    id: "microsoft-learn",
+    status: "verified",
+    id: "microsoft-learn-work-smarter-with-ai",
     institutionId: "microsoft-learn",
+    title: "Trabaje de forma más inteligente con IA",
+    url: "https://learn.microsoft.com/es-mx/training/paths/work-smarter-with-ai/",
     routeId: "organizar-mi-negocio",
-    topic: "Herramientas de oficina y hojas de cálculo",
-    pending: "Elegir un módulo concreto y comprobar su disponibilidad, gratuidad, idioma y enlace oficial.",
+    topic: "Trabajo más eficiente con inteligencia artificial",
+    level: "inicial",
+    languages: ["es"],
+    free: {
+      conditions: "La ruta es gratuita, según la información pública de su página oficial.",
+      account: "no-para-leer",
+    },
+    learn:
+      "Una ruta de aprendizaje introductoria sobre cómo trabajar de forma más inteligente con IA. Su temario completo está en la página oficial.",
+    activity:
+      "Después de la ruta, elige una tarea repetida de tu negocio y escribe cómo la haces hoy, paso a paso. Prueba una herramienta de IA solo para un primer borrador, sin pegar datos de clientes ni información sensible, revisa tú el resultado y anota cuánto tiempo te tomó con y sin ayuda. Decide si te conviene seguir usándola.",
+    verification: {
+      checkedOn: "2026-11-23",
+      method:
+        "Revisión externa de la página pública oficial, hecha por CÍDIKS. No se registra inscripción, certificado ni acceso con cuenta.",
+    },
   },
   {
     status: "pending",
     id: "google-skillshop",
     institutionId: "google-skillshop",
     routeId: "mejorar-mi-presencia-digital",
-    topic: "Presencia del negocio en Google",
-    pending: "Elegir un curso concreto y comprobar su disponibilidad, gratuidad, idioma y enlace oficial.",
+    topic: "Promoción de una empresa con contenido",
+    pending:
+      "Faltan por confirmar el costo (condiciones de gratuidad) y si hace falta cuenta: no constan en la revisión externa del 2026-11-23.",
+    publicEntry: true,
   },
 ];
 
@@ -163,6 +196,13 @@ export function pendingResources(
   resources: readonly CommunityResource[] = COMMUNITY_RESOURCES,
 ): PendingCommunityResource[] {
   return resources.filter((r): r is PendingCommunityResource => r.status === "pending");
+}
+
+/** Pendientes que sí se muestran a los visitantes. */
+export function publicPendingResources(
+  resources: readonly CommunityResource[] = COMMUNITY_RESOURCES,
+): PendingCommunityResource[] {
+  return pendingResources(resources).filter((resource) => resource.publicEntry);
 }
 
 const MONTHS = [
@@ -210,6 +250,7 @@ export function communityResourceIssues(
     if (resource.topic.trim().length < MIN_TEXT) issues.push(`${label}: tema vacío o demasiado corto`);
     if (resource.status === "pending") {
       if (resource.pending.trim().length < MIN_TEXT) issues.push(`${label}: falta explicar qué está pendiente`);
+      if (typeof resource.publicEntry !== "boolean") issues.push(`${label}: publicEntry debe ser verdadero o falso`);
       for (const forbidden of ["url", "verification", "free", "languages", "level", "learn", "activity"])
         if (forbidden in resource) issues.push(`${label}: un recurso pendiente no puede declarar "${forbidden}"`);
       continue;
