@@ -85,6 +85,34 @@ function hasForeignUrl(text: string, visitorText: string): boolean {
   return [...text.matchAll(URL_PATTERN)].some(match => !visitor.includes(match[0].toLowerCase()));
 }
 
+// Igual que PRICE_PATTERN, pero toma la cifra completa ("$1,500", no solo "$1") para compararla.
+// (Función de reemplazo: en un texto de reemplazo, "$" tiene significado especial.)
+const PRICE_MATCHES = new RegExp(PRICE_PATTERN.source.replace('\\$\\s?\\d', () => '\\$\\s?\\d[\\d.,]*'), 'gi');
+
+/**
+ * "1,500", "1.500", "1500.00" y "1500" son la misma cifra, y "25 mil" es 25000.
+ * Sin cifra ("mil quinientos pesos") devuelve null: no hay con qué compararla.
+ */
+function priceAmount(match: string): string | null {
+  const digits = match.match(/\d[\d.,]*/)?.[0].replace(/[.,]+$/, '');
+  if (!digits) return null;
+  const grouped = /^\d{1,3}(?:[.,]\d{3})+$/.test(digits) ? digits.replace(/[.,]/g, '') : digits.replace(',', '.');
+  return String(Number(grouped) * (/\bmil\b/i.test(match) ? 1000 : 1));
+}
+
+/**
+ * Un precio que la propia persona dio ("vendo tamales a 25 pesos") no es un precio
+ * inventado: el modelo puede repetirlo. Solo cuenta si la persona lo escribió como
+ * precio; un número suelto ("tengo 3 hijos") no habilita "3 mil pesos".
+ */
+function hasForeignPrice(text: string, visitorText: string): boolean {
+  const own = new Set([...visitorText.matchAll(PRICE_MATCHES)].map(match => priceAmount(match[0])).filter(Boolean));
+  return [...text.matchAll(PRICE_MATCHES)].some(match => {
+    const amount = priceAmount(match[0]);
+    return amount === null || !own.has(amount);
+  });
+}
+
 /**
  * El prompt pide no inventar URLs, teléfonos, precios, fechas ni promesas, pero un
  * modelo no siempre obedece. Esto lo hace cumplir antes de que la respuesta llegue
@@ -97,7 +125,7 @@ export function guardChatReply(reply: string, visitorText = ''): GuardedReply {
   const reason: BlockReason | null = !text || /^[[{]/.test(text) ? 'empty'
     : LEAK_PATTERN.test(text) ? 'leak'
     : PROMISE_PATTERN.test(text.replace(NEGATED_PROMISE, '')) ? 'promise'
-    : PRICE_PATTERN.test(text) ? 'price'
+    : hasForeignPrice(text, visitorText) ? 'price'
     : hasForeignUrl(text, visitorText) ? 'url'
     : PHONE_PATTERN.test(text) ? 'phone'
     : DATE_PATTERN.test(text) ? 'date'

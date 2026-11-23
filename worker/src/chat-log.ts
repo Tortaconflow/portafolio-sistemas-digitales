@@ -28,6 +28,8 @@ export interface ChatLog {
   /** Resultado de cada modelo cuando todos fallaron, p. ej. "timeout>error". */
   attempts?: string;
   neurons?: number;
+  /** Tokens de entrada que salieron de la caché de Workers AI (0 = no hubo caché). */
+  cached?: number;
 }
 
 export const latencyBucket = (ms: number) =>

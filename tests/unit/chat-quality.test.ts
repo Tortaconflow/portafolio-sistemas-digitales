@@ -6,7 +6,7 @@ import { CHAT_FEW_SHOTS, CHAT_SYSTEM_PROMPT, buildChatMessages, chatModelInput, 
 import { formatModelReply, toPlainChatText, trimToLastSentence } from '../../shared/chat-format.ts';
 import { guardChatReply } from '../../shared/chat-guard.ts';
 import { OPEN_REQUEST, ledgerHealth, reconcileReservation, type Rows } from '../../worker/src/ledger-queries.ts';
-import { ChainError, runChatChain } from '../../worker/src/chat-models.ts';
+import { CHAT_AFFINITY_SLOTS, ChainError, chatAffinityKey, runChatChain } from '../../worker/src/chat-models.ts';
 
 const ORDERS_QUESTION = '¿Por dónde te llegan más pedidos hoy: WhatsApp, redes sociales, llamadas o en persona?';
 
@@ -155,6 +155,27 @@ test('cadena de modelos: si el principal tarda, falla o viene vacío, responde e
     error instanceof ChainError && error.message === 'timeout' && error.attempts.length === 2);
   await assert.rejects(runChatChain(async () => { throw new Error('x'); }, steps, [], 'hola'), (error: unknown) =>
     error instanceof ChainError && error.message === 'provider');
+});
+
+test('caché del prompt: la cadena informa los tokens que salieron de caché', async () => {
+  const steps = [{ model: 'principal', timeoutMs: 40 }];
+  const cachedReply = { response: 'Hola.', usage: { neurons: 7.7, prompt_tokens_details: { cached_tokens: 1216 } } };
+  assert.equal((await runChatChain(async () => cachedReply, steps, [], 'hola')).cachedTokens, 1216);
+  assert.equal((await runChatChain(async () => ({ response: 'Hola.' }), steps, [], 'hola')).cachedTokens, undefined);
+});
+
+test('caché del prompt: cada sesión usa siempre la misma llave, y las llaves no identifican a nadie', () => {
+  const session = 'a3f9c2e1'.padEnd(64, '0');
+  const key = chatAffinityKey(session, 'chat-2026-11-23');
+  assert.equal(key, chatAffinityKey(session, 'chat-2026-11-23'));
+  assert.match(key, /^cidiks-chat-2026-11-23-[0-3]$/);
+  // Las sesiones se reparten entre las llaves disponibles.
+  const keys = new Set(['00000000', '00000001', '00000002', '00000003', 'ffffffff'].map(prefix =>
+    chatAffinityKey(prefix.padEnd(64, '0'), 'v')));
+  assert.equal(keys.size, CHAT_AFFINITY_SLOTS);
+  // Un prompt nuevo usa llaves nuevas, y un valor raro no rompe la llave.
+  assert.notEqual(chatAffinityKey(session, 'chat-2026-12-01'), key);
+  assert.equal(chatAffinityKey('zz', 'v'), 'cidiks-v-0');
 });
 
 test('ledger: al terminar se cobra lo que reportó Workers AI y se ignoran valores raros', () => {

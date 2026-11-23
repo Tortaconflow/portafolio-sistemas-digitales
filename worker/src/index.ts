@@ -5,7 +5,7 @@ import { guidedChatReply, type FloatingChatMessage } from '../../shared/floating
 import { guardChatReply, redactPersonalData, type BlockReason } from '../../shared/chat-guard.ts';
 import { formatModelReply } from '../../shared/chat-format.ts';
 import { CHAT_PROMPT_VERSION, DEFAULT_CHAT_FALLBACK_MODEL, DEFAULT_CHAT_MODEL, chatReplyWasCut } from '../../shared/chat-prompt.ts';
-import { ChainError, runChatChain, type ModelStep } from './chat-models.ts';
+import { ChainError, chatAffinityKey, runChatChain, type ModelStep } from './chat-models.ts';
 import { logChat, latencyBucket, lengthBucket, type ChatLog } from './chat-log.ts';
 import { digest, issueToken, readBody, verifyToken } from './security.ts';
 import { SimulatedProvider, type AdvisorProvider } from './provider.ts';
@@ -14,7 +14,7 @@ export { BudgetLedger } from './ledger.ts';
 
 export interface Env {
   LEDGER: DurableObjectNamespace;
-  AI?: { run(model: string, input: Record<string, unknown>): Promise<unknown> };
+  AI?: { run(model: string, input: Record<string, unknown>, options?: { extraHeaders?: Record<string, string> }): Promise<unknown> };
   AI_ENABLED: string;
   LOCAL_SIMULATION: string;
   ALLOWED_ORIGIN: string;
@@ -250,11 +250,13 @@ export default {
             if (fallbackModel !== 'none' && fallbackModel !== model) {
               steps.push({ model: fallbackModel, timeoutMs: localTimeout ?? AI_POLICY.chatFallbackTimeoutMs });
             }
-            const chain = await runChatChain((name, input) => env.AI!.run(name, input), steps, history, message, AI_POLICY.chatFailedAttemptNeurons);
+            // Caché de las instrucciones en Workers AI (ver chatAffinityKey en chat-models.ts).
+            const affinity = { extraHeaders: { 'x-session-affinity': chatAffinityKey(session, CHAT_PROMPT_VERSION) } };
+            const chain = await runChatChain((name, input) => env.AI!.run(name, input, affinity), steps, history, message, AI_POLICY.chatFailedAttemptNeurons);
             const { raw, text } = chain;
             neurons = chain.neurons;
-            // Qué modelo respondió y cómo le fue al principal, solo categorías.
-            Object.assign(log, { model: chain.model, fallback: chain.attempts.length > 1, primary: chain.attempts[0].outcome });
+            // Qué modelo respondió, cómo le fue al principal y cuánto salió de caché: solo números y categorías.
+            Object.assign(log, { model: chain.model, fallback: chain.attempts.length > 1, primary: chain.attempts[0].outcome, cached: chain.cachedTokens });
             const formatted = formatModelReply(text);
             // Lo que la persona escribió (su página, su perfil) no cuenta como enlace inventado.
             const visitorText = [message, ...history.filter(turn => turn.role === 'user').map(turn => turn.text)].join('\n');

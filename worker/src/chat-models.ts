@@ -24,6 +24,25 @@ export interface ChainResult {
    * conserva la reserva.
    */
   neurons?: number;
+  /** Tokens de entrada que Workers AI tomó de su caché (se cobran a la mitad en Gemma 4). */
+  cachedTokens?: number;
+}
+
+/**
+ * Las instrucciones del chat (~1,200 tokens) son casi todo el costo de cada mensaje y
+ * son iguales para todos. Workers AI reutiliza ese inicio si la petición llega a la
+ * misma instancia del modelo, y la cabecera `x-session-affinity` lo pide así. Medido
+ * el 2026-11-23 con Gemma 4: 13.3 → 7.7 neurons por respuesta, también con mensajes
+ * distintos. Se reparte en pocas llaves para no cargar una sola instancia; cada sesión
+ * usa siempre la misma, así su historial también se reutiliza. La llave no identifica
+ * a nadie: solo lleva la versión del prompt y un número del 0 al slots-1.
+ */
+export const CHAT_AFFINITY_SLOTS = 4;
+
+export function chatAffinityKey(sessionDigest: string, promptVersion: string, slots = CHAT_AFFINITY_SLOTS): string {
+  const value = Number.parseInt(sessionDigest.slice(0, 8), 16);
+  const slot = Number.isFinite(value) ? value % slots : 0;
+  return `cidiks-${promptVersion}-${slot}`;
 }
 
 export class ChainError extends Error {
@@ -52,6 +71,12 @@ export function usageNeurons(raw: unknown): number | undefined {
   return typeof neurons === 'number' && Number.isFinite(neurons) ? neurons : undefined;
 }
 
+export function usageCachedTokens(raw: unknown): number | undefined {
+  const cached = (raw as { usage?: { prompt_tokens_details?: { cached_tokens?: unknown } } } | null)
+    ?.usage?.prompt_tokens_details?.cached_tokens;
+  return typeof cached === 'number' && Number.isFinite(cached) ? cached : undefined;
+}
+
 export async function runChatChain(
   run: RunModel,
   steps: readonly ModelStep[],
@@ -73,7 +98,7 @@ export async function runChatChain(
       attempts.push({ model, outcome: 'ok', ms: now() - started });
       const used = usageNeurons(raw);
       const neurons = used === undefined ? undefined : used + failedAttemptNeurons * (attempts.length - 1);
-      return { raw, text, model, attempts, neurons };
+      return { raw, text, model, attempts, neurons, cachedTokens: usageCachedTokens(raw) };
     } catch (error) {
       attempts.push({ model, outcome: error instanceof Error && error.message === 'timeout' ? 'timeout' : 'error', ms: now() - started });
     }

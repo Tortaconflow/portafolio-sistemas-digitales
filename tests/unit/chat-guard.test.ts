@@ -80,6 +80,22 @@ test('no se bloquean negativas honestas, plantillas con corchetes ni el enlace q
   assert.equal(guardChatReply(ownSite, 'revisa mi página').blocked, 'url');
 });
 
+test('el precio que dio la propia persona puede repetirse; uno inventado sigue bloqueado', () => {
+  const visitor = 'vendo tamales a 25 pesos y casi nadie me compra';
+  assert.equal(guardChatReply('Con tamales de 25 pesos, lo que falta es que más gente sepa que existes.', visitor).blocked, null);
+  assert.equal(guardChatReply('Tus tamales de $25 se ven bien en un catálogo.', visitor).blocked, null);
+  // Una cifra distinta o un precio sin cifra sí cuentan como inventados.
+  assert.equal(guardChatReply('Con tamales de 25 pesos, una página te costaría 3,500 pesos.', visitor).blocked, 'price');
+  assert.equal(guardChatReply('Una página cuesta mil quinientos pesos.', visitor).blocked, 'price');
+  assert.equal(guardChatReply('Súbelos a 30 pesos.', visitor).blocked, 'price');
+  // Un número suelto no es un precio: "tengo 3 hijos" no habilita "3 mil pesos".
+  assert.equal(guardChatReply('Eso te costaría 3 mil pesos.', 'tengo 3 hijos y una tienda').blocked, 'price');
+  // Mismo precio con otro formato.
+  assert.equal(guardChatReply('La docena de 1500 pesos se vende bien.', 'doy la docena en $1,500').blocked, null);
+  assert.equal(guardChatReply('Un pedido de 25,000 pesos es grande.', 'me piden 25 mil pesos de mercancía').blocked, null);
+  assert.equal(guardChatReply('Un pedido de 25 pesos es poco.', 'me piden 25 mil pesos de mercancía').blocked, 'price');
+});
+
 test('las respuestas de bloqueo son distintas entre sí y no disparan su propio filtro', () => {
   const replies = Object.values(BLOCKED_REPLIES);
   assert.equal(new Set(replies).size, replies.length);
