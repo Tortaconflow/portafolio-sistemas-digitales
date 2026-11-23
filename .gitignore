@@ -4,5 +4,6 @@ dist/
 !.env.example
 *.local
 test-results/
+playwright-report/
 scripts/brand/references/
 deliverables/

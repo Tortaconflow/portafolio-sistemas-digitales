@@ -77,26 +77,30 @@ async function getTurnstileToken(): Promise<string> {
   const container = document.createElement('div');
   container.setAttribute('role', 'dialog');
   container.setAttribute('aria-label', 'Verificación de seguridad');
-  // Invisible por defecto; Turnstile solo se muestra si exige interacción.
-  container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;display:none;padding:12px;background:#111;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5)';
+  // Sin display: none para que el navegador ejecute el iframe de Turnstile.
+  // En appearance: 'interaction-only', Turnstile se mantiene colapsado a 0px automáticamente hasta requerir interacción.
+  container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:none;';
   document.body.appendChild(container);
   let widgetId: string | undefined;
   let timer: number | undefined;
   try {
     return await new Promise<string>((resolve, reject) => {
       const expire = () => reject(new Error('turnstile_timeout'));
-      timer = window.setTimeout(expire, 12_000);
+      timer = window.setTimeout(expire, 15_000);
       widgetId = api.render(container, {
         sitekey: TURNSTILE_SITE_KEY,
         action: 'cidikis_pilot',
         appearance: 'interaction-only',
+        theme: 'dark',
         size: document.documentElement.clientWidth < 360 ? 'compact' : 'normal',
         'before-interactive-callback': () => {
-          container.style.display = 'block';
+          container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:auto;background:#141414;padding:16px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,0.18);';
           window.clearTimeout(timer);
           timer = window.setTimeout(expire, 60_000);
         },
-        'after-interactive-callback': () => { container.style.display = 'none'; },
+        'after-interactive-callback': () => {
+          container.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:none;';
+        },
         callback: resolve,
         'error-callback': () => reject(new Error('turnstile_error')),
         'expired-callback': () => reject(new Error('turnstile_expired')),
