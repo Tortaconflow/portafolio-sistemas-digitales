@@ -7,6 +7,7 @@ import { KnowledgePage, StaticHome } from "./src/KnowledgePage.tsx";
 import { EDUCATION_ARTICLES } from "./src/education.ts";
 import { content, isWebUrl, releaseIssues } from "./src/content.ts";
 import { AdvisorPage } from "./src/advisor/AdvisorPage.tsx";
+import { offlineGuideAssets } from "./scripts/emit-offline-guide.ts";
 const escapeHtml = (s: string) =>
   s.replace(
     /[&<>"']/g,
@@ -284,6 +285,7 @@ export default defineConfig({
           fileName: "robots.txt",
           source: `User-agent: *\n${ready ? "Allow: /" : "Disallow: /"}\n${ready && domain ? `Sitemap: ${domain}/sitemap.xml\n` : ""}`,
         });
+        for (const asset of offlineGuideAssets()) this.emitFile({ type: "asset", ...asset });
         if (ready && domain)
           this.emitFile({
             type: "asset",

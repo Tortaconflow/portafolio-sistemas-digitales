@@ -7,6 +7,7 @@ import {
   type FloatingChatMessage,
 } from "../../shared/floating-chat-guidance.ts";
 import { bootstrapLocalSession, FloatingChatError, requestFloatingChat } from "../advisor/ai-client.ts";
+import { OFFLINE_GUIDE_PATH } from "../../shared/offline-guide.ts";
 import "./floating-assistant.css";
 
 const INITIAL_MESSAGE: FloatingChatMessage = {
@@ -175,6 +176,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
             {guideOpen && (
               <div className="cidiks-chat-guided" aria-labelledby="cidiks-chat-guide-heading">
                 <h3 id="cidiks-chat-guide-heading">Guía rápida</h3>
+                <p><a href={OFFLINE_GUIDE_PATH}>Abrir la versión para usar sin conexión ↗</a></p>
                 {guide ? (
                   <>
                     <p role="status">{guide.why} {guide.freeStep}</p>

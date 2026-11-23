@@ -1,0 +1,44 @@
+:root {
+  color-scheme: light;
+  color: #1b2e26;
+  background: #f5f1e7;
+  font: 1rem/1.55 system-ui, sans-serif;
+}
+
+body { margin: 0; }
+
+main {
+  max-width: 42rem;
+  margin-inline: auto;
+  padding: 1.5rem clamp(1rem, 5vw, 3rem) 3rem;
+}
+
+h1 {
+  margin: 0.75em 0 0.3em;
+  font-size: clamp(1.85rem, 7vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+
+a { color: #244c3b; }
+.brand { font-weight: 800; letter-spacing: 0.08em; }
+
+details {
+  border-block-start: 1px solid #bcbfb1;
+  padding: 0.25rem 0;
+}
+
+details:last-child { border-block-end: 1px solid #bcbfb1; }
+details[open] { padding-block-end: 1rem; }
+
+summary {
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+details > p { margin: 0 0 0.75rem; }
+[data-guide-status] { color: #4f5a51; }
+:focus-visible { outline: 2px solid #244c3b; outline-offset: 4px; }
