@@ -1,5 +1,26 @@
 import { test, expect } from '@playwright/test';
 
+const publishedSite = 'https://reilycastro.com/';
+const endpoint = 'https://cidiks-ia-advisor.reilyvica.workers.dev';
+
+test('el asesor conversacional conserva sus mensajes en el navegador en el dominio real', async ({ page, request, baseURL }) => {
+  await page.route(`${publishedSite}**`, async route => {
+    const path = new URL(route.request().url()).pathname;
+    await route.fulfill({ response: await request.get(new URL(path, baseURL).href) });
+  });
+  const externalRequests: string[] = [];
+  await page.route(/^https:\/\/(?:challenges\.cloudflare\.com|cidiks-ia-advisor\.reilyvica\.workers\.dev)\//, route => {
+    externalRequests.push(route.request().url());
+    return route.abort();
+  });
+  await page.goto(`${publishedSite}asesor-ia/`);
+  await page.getByRole('button', { name: 'Prefiero contar mi idea' }).click();
+  await page.getByRole('textbox', { name: 'Cuéntanos qué tienes en mente' }).fill('Tengo un taller y pierdo citas entre llamadas y mensajes');
+  await page.getByRole('button', { name: 'Enviar mensaje' }).click();
+  await expect(page.getByRole('log', { name: 'Conversación guiada' }).getByText('CÍDIKS · GUÍA AUTOMÁTICA')).toBeVisible();
+  expect(externalRequests).toEqual([]);
+});
+
 for (const size of [
   { name: 'iPhone SE', width: 320, height: 568 },
   { name: 'iPhone 15', width: 390, height: 844 },
@@ -88,8 +109,7 @@ test('permite seguir con la guía sin conexión y conserva la pregunta en la pes
 });
 
 test('reintenta la carga de Turnstile y usa el mismo ID si se pierde la conexión con el Worker', async ({ page, request, baseURL }) => {
-  const site = 'https://reilycastro.com/';
-  const endpoint = 'https://cidiks-ia-advisor.reilyvica.workers.dev';
+  const site = publishedSite;
   await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
   await page.route(`${site}**`, async (route) => {
     const local = new URL(route.request().url()).pathname;
@@ -113,7 +133,7 @@ test('reintenta la carga de Turnstile y usa el mismo ID si se pierde la conexió
     }
     requestIds.push(route.request().postDataJSON().requestId);
     if (requestIds.length === 1) return route.abort();
-    return route.fulfill({ json: { reply: 'Prueba apuntar las citas en un solo lugar.' } });
+    return route.fulfill({ headers: { 'Server-Timing': 'inference;dur=87', 'Access-Control-Expose-Headers': 'Server-Timing' }, json: { reply: 'Prueba apuntar las citas en un solo lugar.' } });
   });
 
   await page.goto(site);
@@ -134,4 +154,13 @@ test('reintenta la carga de Turnstile y usa el mismo ID si se pierde la conexió
   expect(turnstileLoads).toBe(2);
   expect(requestIds).toHaveLength(2);
   expect(requestIds[1]).toBe(requestIds[0]);
+  const timing = await page.evaluate(() => window.cidiksAnalyticsBuffer?.filter(event => event.event === 'chat_timing').map(event => event.data) ?? []);
+  expect(timing).toEqual(expect.arrayContaining([
+    expect.objectContaining({ stage: 'turnstile', outcome: 'error' }),
+    expect.objectContaining({ stage: 'turnstile', outcome: 'ok' }),
+    expect.objectContaining({ stage: 'request', outcome: 'error' }),
+    { stage: 'model', outcome: 'ok', duration_ms: 87 },
+    expect.objectContaining({ stage: 'request', outcome: 'ok' }),
+  ]));
+  expect(timing.every(event => Object.keys(event).sort().join(',') === 'duration_ms,outcome,stage')).toBe(true);
 });

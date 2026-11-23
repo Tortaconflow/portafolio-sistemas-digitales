@@ -62,7 +62,8 @@ export function AdvisorExperience() {
     const request: TurnRequest = { version: '2.0', requestId: crypto.randomUUID(), sessionToken: '', messageId, contextRevision: snapshot.revision, message: text, purpose: retry ? 'manual_retry' : snapshot.mode === 'guided' ? 'guided_guidance' : 'conversation', context: buildTurnContext(snapshot, questionField.current) };
     if (!retry) { dispatch({ version: 1, type: 'message', message: { id: messageId, role: 'user', text, simulated: false } }); setDraft(''); }
     try {
-      token.current ??= await bootstrapLocalSession(); request.sessionToken = token.current;
+      if (localWorkerEndpoint()) token.current ??= await bootstrapLocalSession();
+      request.sessionToken = token.current ?? '';
       const result = await requestLocalTurn(request, remaining - 1);
       // A late response cannot overwrite data corrected since it was requested.
       if (sessionRef.current.revision !== request.contextRevision) throw new Error('Cambió el contexto. Conservamos tus correcciones; esta respuesta no se aplicó.');

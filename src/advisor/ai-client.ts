@@ -2,6 +2,7 @@ import { AI_POLICY, utf8Size } from '../../shared/cidikis-ai-policy.ts';
 import { validTurnResponse, type TurnRequest, type TurnResponse } from '../../shared/cidikis-ai-contract.ts';
 import { simulateTurn } from '../../shared/simulated-provider.ts';
 import type { FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
+import { track, type AnalyticsPayloads } from '../analytics.ts';
 
 const LOCAL_ENDPOINT = import.meta.env.VITE_LOCAL_AI_ENDPOINT as string | undefined;
 const PROD_AI_ENDPOINT = (import.meta.env.VITE_AI_ENDPOINT as string | undefined) ?? 'https://cidiks-ia-advisor.reilyvica.workers.dev';
@@ -112,10 +113,26 @@ async function getTurnstileToken(): Promise<string> {
   }
 }
 
+async function measureChatStage<T>(stage: 'turnstile' | 'request', run: () => Promise<T>): Promise<T> {
+  const started = performance.now();
+  let outcome: 'ok' | 'error' = 'error';
+  try {
+    const result = await run();
+    outcome = 'ok';
+    return result;
+  } finally {
+    trackChatTiming(stage, outcome, performance.now() - started);
+  }
+}
+
+function trackChatTiming(stage: AnalyticsPayloads['chat_timing']['stage'], outcome: 'ok' | 'error', duration: number) {
+  track('chat_timing', { stage, outcome, duration_ms: Math.max(1, Math.min(120_000, Math.round(duration))) });
+}
+
 export async function bootstrapLocalSession(): Promise<string> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) return 'browser-simulation';
-  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await getTurnstileToken().catch(() => {
+  const challenge = localWorkerEndpoint() ? 'local-turnstile-simulation' : await measureChatStage('turnstile', getTurnstileToken).catch(() => {
     throw new FloatingChatError('No pude completar la verificación de seguridad. Puedes reintentar o seguir con la guía.');
   });
   const response = await fetch(`${endpoint}/v2/session`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version: '2.0', challenge }), signal: AbortSignal.timeout(10000) });
@@ -125,7 +142,7 @@ export async function bootstrapLocalSession(): Promise<string> {
   return body.sessionToken;
 }
 export async function requestLocalTurn(request: TurnRequest, remaining: number): Promise<TurnResponse> {
-  const endpoint = activeWorkerEndpoint();
+  const endpoint = localWorkerEndpoint();
   let response: unknown;
   if (endpoint) {
     const result = await fetch(`${endpoint}/v2/turn`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request), signal: AbortSignal.timeout(12000) });
@@ -144,7 +161,7 @@ export async function requestLocalTurn(request: TurnRequest, remaining: number):
   return response;
 }
 export async function requestLocalStatus(request: TurnRequest): Promise<string> {
-  const endpoint = activeWorkerEndpoint();
+  const endpoint = localWorkerEndpoint();
   if (!endpoint) return 'unknown';
   const result = await fetch(`${endpoint}/v2/request-status`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version: '2.0', sessionToken: request.sessionToken, requestId: request.requestId }), signal: AbortSignal.timeout(5000) });
   if (!result.ok) return 'unknown';
@@ -156,7 +173,7 @@ export class FloatingChatError extends Error {
   constructor(message: string, readonly options: {
     refreshSession?: boolean;
     retryWithNewId?: boolean;
-    alreadyAnswered?: boolean;
+    requiresEdit?: boolean;
   } = {}) {
     super(message);
   }
@@ -175,6 +192,10 @@ export async function requestFloatingChat(
       reply: 'Estoy en vista local. En reilycastro.com respondo con IA en vivo; mientras tanto puedes probar el diagnóstico rápido de 3 preguntas en /asesor-ia/ o escribir por WhatsApp.',
     };
   }
+  return measureChatStage('request', () => sendFloatingChat(endpoint, sessionToken, message, history, requestId));
+}
+
+async function sendFloatingChat(endpoint: string, sessionToken: string, message: string, history: FloatingChatMessage[], requestId: string): Promise<{ reply: string; remaining?: number }> {
   const result = await fetch(`${endpoint}/v2/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -187,8 +208,10 @@ export async function requestFloatingChat(
     }),
     signal: AbortSignal.timeout(14000),
   });
+  const inference = /^inference;dur=(\d+(?:\.\d+)?)$/.exec(result.headers.get('Server-Timing') ?? '');
+  if (inference) trackChatTiming('model', result.ok ? 'ok' : 'error', Number(inference[1]));
   if (!result.ok) {
-    const data = await result.json().catch(() => null) as { code?: string; status?: string } | null;
+    const data = await result.json().catch(() => null) as { code?: string; status?: string; leaseExpired?: boolean } | null;
     if (result.status === 401) {
       throw new FloatingChatError('La sesión caducó. Puedes reintentar o seguir con la guía.', { refreshSession: true });
     }
@@ -196,7 +219,10 @@ export async function requestFloatingChat(
       throw new FloatingChatError('El chat está ocupado o alcanzó su límite. Puedes seguir con la guía.');
     }
     if ((data?.code === 'duplicate' && data.status === 'success') || data?.code === 'unchanged_context') {
-      throw new FloatingChatError('La respuesta se generó y se perdió en el camino. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
+      throw new FloatingChatError('La respuesta se generó y se perdió en el camino. Puedes cambiar tu pregunta o seguir con la guía.', { requiresEdit: true });
+    }
+    if (data?.code === 'duplicate' && data.leaseExpired === true) {
+      throw new FloatingChatError('El intento anterior quedó sin confirmar. Puedes cambiar tu pregunta o seguir con la guía.', { requiresEdit: true });
     }
     throw new FloatingChatError('No pude responder en este momento. Puedes reintentar o seguir con la guía.', {
       retryWithNewId: data?.code === 'provider_failure' || (data?.code === 'duplicate' && data.status === 'failed'),
@@ -204,7 +230,7 @@ export async function requestFloatingChat(
   }
   const data = await result.json() as { reply?: unknown; remaining?: number };
   if (typeof data.reply !== 'string' || !data.reply.trim()) {
-    throw new FloatingChatError('La respuesta llegó vacía. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
+    throw new FloatingChatError('La respuesta llegó vacía. Puedes cambiar tu pregunta o seguir con la guía.', { requiresEdit: true });
   }
   return { reply: data.reply.trim(), remaining: data.remaining };
 }
