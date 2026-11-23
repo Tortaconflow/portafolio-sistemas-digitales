@@ -11,7 +11,9 @@
     "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     // Chat flotante. Comparado con 12 mensajes reales el 2026-11-22: más preciso que Llama 8B,
     // no reveló el prompt ante inyección y cuesta ~12 neurons por respuesta.
-    "CHAT_MODEL": "@cf/google/gemma-4-26b-a4b-it"
+    "CHAT_MODEL": "@cf/google/gemma-4-26b-a4b-it",
+    // Responde si Gemma tarda más de 6 s o falla (medido: <1 s casi siempre). "none" lo desactiva.
+    "CHAT_FALLBACK_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast"
   },
   "ai": {
     "binding": "AI"

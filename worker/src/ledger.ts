@@ -3,7 +3,7 @@ import { AI_POLICY } from '../../shared/cidikis-ai-policy.ts';
 import type { Env } from './index.ts';
 import { SINGLE_POLICY, isSingleCampaign } from './single-policy.ts';
 import {migrateLedgerSchema} from './ledger-schema.ts';
-import { OPEN_REQUEST, ledgerHealth } from './ledger-queries.ts';
+import { OPEN_REQUEST, ledgerHealth, reconcileReservation } from './ledger-queries.ts';
 
 type Row = Record<string, string | number | null>;
 const reply = (data: unknown, status = 200) => Response.json(data, { status });
@@ -79,13 +79,15 @@ export class BudgetLedger extends DurableObject<Env> {
         // never more than the default and never for campaigns.
         const routeReservation=!data.campaign&&Number.isSafeInteger(data.reservation)&&Number(data.reservation)>=1&&Number(data.reservation)<=AI_POLICY.reservationNeurons?Number(data.reservation):AI_POLICY.reservationNeurons;
         const reservationNeurons=single?SINGLE_POLICY.reservation:data.campaign==='v02-lab-no-ai-1'?0:routeReservation;
+        // The chat may ask for more attempts per session than /v2/turn, up to chatMaxAttempts.
+        const attemptLimit=!data.campaign&&Number.isSafeInteger(data.maxAttempts)&&Number(data.maxAttempts)>=1&&Number(data.maxAttempts)<=AI_POLICY.chatMaxAttempts?Number(data.maxAttempts):AI_POLICY.maxAttempts;
         if (data.campaign && (!campaign || campaign.status !== 'active' || Number(campaign.expires) <= now)) return reply({ code: 'campaign_closed' }, 429);
         const session = this.rows('SELECT * FROM sessions WHERE id=?', data.session)[0];
         if (!session || Number(session.expires) <= now) return reply({ code: 'expired' }, 401);
         if ((isSingleCampaign(session.campaign)||single)&&session.campaign!==data.campaign) return reply({code:'campaign_session'},403);
         const previous = this.rows('SELECT * FROM requests WHERE id=?', data.id)[0];
         if (previous) return previous.session === data.session && previous.hash === data.hash ? reply({ code: 'duplicate', status: previous.status }, 409) : reply({ code: 'request_conflict' }, 409);
-        if (Number(session.attempts) >= AI_POLICY.maxAttempts) return reply({ code: 'session_limit' }, 429);
+        if (Number(session.attempts) >= attemptLimit) return reply({ code: 'session_limit' }, 429);
         if (session.busy) return reply({ code: 'session_busy' }, 429);
         if (campaign && (Number(campaign.attempts) >= (single?SINGLE_POLICY.attempts:5) || Number(campaign.reserved) + reservationNeurons > (single?SINGLE_POLICY.reservation:950))) return reply({ code: 'campaign_limit' }, 429);
         if (campaign && this.rows("SELECT id FROM requests WHERE campaign=? AND status IN ('pending','uncertain')", data.campaign).length) return reply({ code: 'campaign_busy' }, 429);
@@ -99,7 +101,7 @@ export class BudgetLedger extends DurableObject<Env> {
         this.rows("INSERT INTO requests(id,session,hash,status,day,campaign,reservation) VALUES (?,?,?,'pending',?,?,?)", data.id, data.session, data.hash, day, data.campaign ?? null,reservationNeurons);
         if (campaign) this.rows('UPDATE campaigns SET attempts=attempts+1,reserved=reserved+? WHERE id=?', reservationNeurons, data.campaign);
         if(single&&this.env.LOCAL_LEDGER_RESERVE_FAULT==='invalid-ack')return reply({ok:false});
-        return reply({ ok: true, remaining: single?SINGLE_POLICY.attempts-Number(campaign!.attempts)-1:AI_POLICY.maxAttempts - Number(session.attempts) - 1 });
+        return reply({ ok: true, remaining: single?SINGLE_POLICY.attempts-Number(campaign!.attempts)-1:attemptLimit - Number(session.attempts) - 1 });
       }
       if (path === '/finish') {
         if (this.env.LOCAL_LEDGER_FINISH_FAULT === 'true') return reply({ code: 'finish_fixture_failure' }, 503);
@@ -107,6 +109,8 @@ export class BudgetLedger extends DurableObject<Env> {
         const previous = this.rows('SELECT * FROM requests WHERE id=?', data.id)[0];
         if (!previous || previous.status !== 'pending' || !['success', 'failed', 'uncertain'].includes(String(data.status))) return reply({ code: 'state' }, 409);
         this.rows('UPDATE requests SET status=? WHERE id=?', data.status, data.id);
+        // Successful public requests charge what Workers AI reported, not the reservation.
+        if (data.status === 'success' && !previous.campaign) reconcileReservation((sql, ...b) => this.rows(sql, ...b), String(data.id), data.neurons);
         if (isSingleCampaign(previous.campaign)) this.rows("UPDATE campaigns SET status=? WHERE id=? AND status!='closed'",data.status==='uncertain'?'uncertain':'closed',previous.campaign);
         if (previous.campaign && data.status === 'uncertain') this.rows("UPDATE campaigns SET status='uncertain' WHERE id=? AND status!='closed'", previous.campaign as string);
         if (data.status !== 'uncertain') this.rows('UPDATE sessions SET busy=0 WHERE id=?', previous.session as string);

@@ -10,6 +10,9 @@ import { bootstrapLocalSession, exhaustedChatError, FloatingChatError, preloadTu
 import { track } from "../analytics.ts";
 import "./floating-assistant.css";
 
+/** Esperas antes de reintentar cuando el Worker dice que hay mucha gente (concurrency_limit). */
+const BUSY_WAITS_MS = [2000, 4000];
+
 const INITIAL_MESSAGE: FloatingChatMessage = {
   role: "assistant",
   text: "Cuéntame qué te está costando trabajo en tu negocio. Puedes escribir como hablas.",
@@ -21,7 +24,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
     INITIAL_MESSAGE,
   ]);
   const [draft, setDraft] = useState("");
-  const [phase, setPhase] = useState<"verification" | "answer" | null>(null);
+  const [phase, setPhase] = useState<"verification" | "answer" | "waiting" | null>(null);
   const [error, setError] = useState<FloatingChatError | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
@@ -114,6 +117,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
     if (exhaustedRef.current) {
       setDraft(text);
       setError(exhaustedChatError());
+      setGuideOpen(true);
       return;
     }
 
@@ -133,7 +137,21 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
         tokenRef.current = await bootstrapLocalSession();
       }
       setPhase("answer");
-      const result = await requestFloatingChat(tokenRef.current, text, history, id);
+      let result: Awaited<ReturnType<typeof requestFloatingChat>>;
+      // Si hay mucha gente a la vez, espera y reintenta solo antes de mostrar un error.
+      // Un 429 no registra la solicitud, así que se puede reusar el mismo ID.
+      for (let wait = 0; ; wait++) {
+        try {
+          result = await requestFloatingChat(tokenRef.current, text, history, id);
+          break;
+        } catch (err) {
+          const busy = err instanceof FloatingChatError && err.options.code === "concurrency_limit";
+          if (!busy || wait >= BUSY_WAITS_MS.length) throw err;
+          setPhase("waiting");
+          await new Promise((resolve) => setTimeout(resolve, BUSY_WAITS_MS[wait]));
+          setPhase("answer");
+        }
+      }
       // Mide cuántas respuestas filtra el Worker, solo con el motivo y nunca el texto.
       if (result.blocked) track("chat_reply_blocked", { reason: result.blocked });
       completeTurn(text, result.reply);
@@ -144,7 +162,11 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
         : new FloatingChatError("No pude recibir una respuesta. Tu pregunta sigue aquí. Puedes reintentar o seguir con la guía.");
       if (failure.options.refreshSession) tokenRef.current = null;
       if (failure.options.retryWithNewId) attemptRef.current = null;
-      if (failure.options.exhausted) exhaustedRef.current = true;
+      if (failure.options.exhausted) {
+        // Sin respuestas en línea, la guía queda abierta como siguiente paso útil.
+        exhaustedRef.current = true;
+        setGuideOpen(true);
+      }
       setError(failure);
     } finally {
       submitting.current = false;
@@ -191,7 +213,9 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
                 <p className="cidiks-chat-msg cidiks-chat-msg--assistant cidiks-chat-typing" role="status">
                   {phase === "verification"
                     ? "Preparando el chat… Si aparece una casilla para confirmar que no eres un robot, márcala."
-                    : "Estoy preparando tu respuesta…"}
+                    : phase === "waiting"
+                      ? "Hay varias personas usando el chat; te respondo en un momento…"
+                      : "Estoy preparando tu respuesta…"}
                 </p>
               )}
               {error && <p className="cidiks-chat-error" role="status" data-code={error.options.code}>{error.message}</p>}

@@ -5,7 +5,8 @@ import { guidedChatReply, chatOrientation, GUIDED_CHAT_OPTIONS } from '../../sha
 import { CHAT_FEW_SHOTS, CHAT_SYSTEM_PROMPT, buildChatMessages, chatModelInput, chatReplyWasCut, extractChatText } from '../../shared/chat-prompt.ts';
 import { formatModelReply, toPlainChatText, trimToLastSentence } from '../../shared/chat-format.ts';
 import { guardChatReply } from '../../shared/chat-guard.ts';
-import { OPEN_REQUEST, ledgerHealth, type Rows } from '../../worker/src/ledger-queries.ts';
+import { OPEN_REQUEST, ledgerHealth, reconcileReservation, type Rows } from '../../worker/src/ledger-queries.ts';
+import { ChainError, runChatChain } from '../../worker/src/chat-models.ts';
 
 const ORDERS_QUESTION = '¿Por dónde te llegan más pedidos hoy: WhatsApp, redes sociales, llamadas o en persona?';
 
@@ -124,4 +125,53 @@ test('salud del ledger: cuenta cupos y filas viejas, y borra solo lo cerrado hac
   const left = db.prepare('SELECT id FROM requests ORDER BY id').all().map(row => row.id);
   assert.deepEqual(left, ['abierta', 'atascada', 'piloto-vieja']);
   assert.deepEqual(db.prepare('SELECT id FROM sessions ORDER BY id').all().map(row => row.id), ['piloto', 'viva']);
+});
+
+test('cadena de modelos: si el principal tarda, falla o viene vacío, responde el de respaldo', async () => {
+  const steps = [{ model: 'principal', timeoutMs: 40 }, { model: 'respaldo', timeoutMs: 40 }];
+  const ok = (text: string, neurons?: number) => ({ choices: [{ message: { content: text }, finish_reason: 'stop' }], usage: { neurons } });
+  const never = () => new Promise<never>(() => {});
+
+  const first = await runChatChain(async () => ok('Hola desde el principal.', 12.4), steps, [], 'hola');
+  assert.equal(first.model, 'principal');
+  assert.equal(first.neurons, 12.4);
+  assert.deepEqual(first.attempts.map(a => a.outcome), ['ok']);
+
+  for (const [principal, outcome] of [
+    [never, 'timeout'],
+    [async () => { throw new Error('5xx'); }, 'error'],
+    [async () => ok(''), 'empty'],
+  ] as const) {
+    const run = (model: string) => model === 'principal' ? principal() : Promise.resolve(ok('Hola desde el respaldo.', 6));
+    const result = await runChatChain(run, steps, [], 'hola');
+    assert.equal(result.model, 'respaldo', outcome);
+    assert.equal(result.text, 'Hola desde el respaldo.');
+    assert.deepEqual(result.attempts.map(a => a.outcome), [outcome, 'ok']);
+    // Lo que reportó el respaldo más la estimación fija (20) por el intento que no respondió.
+    assert.equal(result.neurons, 26);
+  }
+
+  await assert.rejects(runChatChain(never, steps, [], 'hola'), (error: unknown) =>
+    error instanceof ChainError && error.message === 'timeout' && error.attempts.length === 2);
+  await assert.rejects(runChatChain(async () => { throw new Error('x'); }, steps, [], 'hola'), (error: unknown) =>
+    error instanceof ChainError && error.message === 'provider');
+});
+
+test('ledger: al terminar se cobra lo que reportó Workers AI y se ignoran valores raros', () => {
+  const db = new DatabaseSync(':memory:');
+  db.exec(`CREATE TABLE days(day TEXT PRIMARY KEY, reserved INTEGER NOT NULL);
+    CREATE TABLE requests(id TEXT PRIMARY KEY, day TEXT NOT NULL, reservation INTEGER);`);
+  db.prepare('INSERT INTO days VALUES (?,?)').run('2026-11-23', 150);
+  db.prepare('INSERT INTO requests VALUES (?,?,?)').run('r1', '2026-11-23', 50);
+  db.prepare('INSERT INTO requests VALUES (?,?,?)').run('r2', '2026-11-23', 50);
+  const rows: Rows = (sql, ...bindings) => db.prepare(sql).all(...bindings) as Record<string, unknown>[];
+  const reserved = () => Number(db.prepare('SELECT reserved FROM days').get()!.reserved);
+
+  assert.equal(reconcileReservation(rows, 'r1', 12.2), 13);
+  assert.equal(reserved(), 113);
+  assert.equal(Number(db.prepare("SELECT reservation FROM requests WHERE id='r1'").get()!.reservation), 13);
+  for (const bad of [undefined, null, -1, Number.NaN, 5000, '12']) {
+    assert.equal(reconcileReservation(rows, 'r2', bad), null, String(bad));
+  }
+  assert.equal(reserved(), 113);
 });

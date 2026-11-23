@@ -187,7 +187,13 @@ test('si el script de Cloudflare no carga, el mensaje lo dice y la pregunta se c
   await expect(panel.getByRole('textbox')).toHaveValue('Tengo un taller y pierdo citas entre llamadas y mensajes');
 });
 
-test('cada límite del Worker tiene su propio mensaje y, si ya no quedan respuestas, no se vuelve a llamar', async ({ page, request, baseURL }) => {
+/** Sitio real servido desde el build local, Turnstile simulado y el Worker respondiendo con `respond`. */
+async function mockWorker(
+  page: import('@playwright/test').Page,
+  request: import('@playwright/test').APIRequestContext,
+  baseURL: string | undefined,
+  respond: (call: number) => { status: number; json: Record<string, unknown> },
+) {
   const site = 'https://reilycastro.com/';
   await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
   await page.route(`${site}**`, async (route) => {
@@ -197,23 +203,43 @@ test('cada límite del Worker tiene su propio mensaje y, si ya no quedan respues
   await page.route(/^https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/, turnstileFixture(
     `render(_el, config) { config.callback('fixture-token'); return 'fixture'; }`,
   ));
-  const codes = ['concurrency_limit', 'session_limit'];
-  let chatCalls = 0;
+  const calls = { chat: 0 };
   await page.route('https://cidiks-ia-advisor.reilyvica.workers.dev/v2/**', (route) => {
     if (route.request().url().endsWith('/session')) return route.fulfill({ json: { sessionToken: 'fixture-session' } });
-    const code = codes[chatCalls++] ?? 'session_limit';
-    return route.fulfill({ status: 429, json: { code, fallback: 'guided' } });
+    return route.fulfill(respond(calls.chat++));
   });
+  return { site, calls };
+}
+
+test('si hay varias personas a la vez, el chat espera y responde sin mostrar error', async ({ page, request, baseURL }) => {
+  const { site, calls } = await mockWorker(page, request, baseURL, (call) => call === 0
+    ? { status: 429, json: { code: 'concurrency_limit', fallback: 'guided' } }
+    : { status: 200, json: { version: '2.0', reply: 'Prueba apuntar las citas en un solo lugar.', remaining: 19 } });
+  const panel = await askOnce(page, site);
+  await expect(panel.getByRole('status')).toContainText('te respondo en un momento');
+  await expect(panel.getByRole('log')).toContainText('Prueba apuntar las citas en un solo lugar.');
+  await expect(panel.locator('.cidiks-chat-error')).toHaveCount(0);
+  expect(calls.chat).toBe(2);
+});
+
+test('cada límite del Worker tiene su propio mensaje y, si ya no quedan respuestas, abre la guía y no vuelve a llamar', async ({ page, request, baseURL }) => {
+  // Tres veces "mucha gente" (la primera más dos reintentos automáticos) y luego sin respuestas.
+  const { site, calls } = await mockWorker(page, request, baseURL, (call) => ({
+    status: 429,
+    json: { code: call < 3 ? 'concurrency_limit' : 'session_limit', fallback: 'guided' },
+  }));
 
   const panel = await askOnce(page, site);
-  await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'concurrency_limit');
-  await expect(panel.getByRole('status')).toContainText('varias personas');
+  await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'concurrency_limit', { timeout: 15000 });
+  await expect(panel.locator('.cidiks-chat-error')).toContainText('varias personas');
+  expect(calls.chat).toBe(3);
   await panel.getByRole('button', { name: 'Reintentar' }).click();
   await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'session_limit');
-  await expect(panel.getByRole('status')).toContainText('ya no puedo responder más mensajes');
+  await expect(panel.locator('.cidiks-chat-error')).toContainText('ya no puedo responder más mensajes');
+  await expect(panel.getByRole('heading', { name: 'Guía rápida' })).toBeVisible();
   await expect(panel.getByRole('button', { name: 'Enviar' })).toBeVisible();
   await panel.getByRole('textbox').fill('Otra pregunta sobre mi taller y mis citas');
   await panel.getByRole('button', { name: 'Enviar' }).click();
   await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'exhausted');
-  expect(chatCalls).toBe(2);
+  expect(calls.chat).toBe(4);
 });

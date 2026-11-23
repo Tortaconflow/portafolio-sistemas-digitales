@@ -22,6 +22,12 @@ export interface ChatLog {
   hist?: number;
   remaining?: number;
   closed?: boolean;
+  /** Si respondió el modelo de respaldo y cómo le fue al principal (ok, timeout, error, empty). */
+  fallback?: boolean;
+  primary?: string;
+  /** Resultado de cada modelo cuando todos fallaron, p. ej. "timeout>error". */
+  attempts?: string;
+  neurons?: number;
 }
 
 export const latencyBucket = (ms: number) =>

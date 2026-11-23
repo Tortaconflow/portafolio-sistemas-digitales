@@ -8,6 +8,8 @@ import { guidedChatReply, type FloatingChatMessage } from './floating-chat-guida
  */
 
 export const DEFAULT_CHAT_MODEL = '@cf/google/gemma-4-26b-a4b-it';
+/** Rápido y barato: responde cuando el principal tarda o falla (el filtro de salida sigue aplicando). */
+export const DEFAULT_CHAT_FALLBACK_MODEL = '@cf/meta/llama-3.1-8b-instruct-fast';
 /** Cambia cuando cambie el prompt o los ejemplos: entra en la huella de cada solicitud. */
 export const CHAT_PROMPT_VERSION = 'chat-2026-11-23';
 export const CHAT_MAX_TOKENS = 280;

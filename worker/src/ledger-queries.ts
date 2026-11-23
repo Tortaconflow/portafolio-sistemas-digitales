@@ -13,6 +13,24 @@ export const OPEN_REQUEST =
   "status IN ('pending','uncertain') AND (campaign IS NOT NULL OR EXISTS (SELECT 1 FROM sessions s WHERE s.id=requests.session AND s.expires>?))";
 
 type Binding = string | number | null;
+
+/**
+ * Charges what Workers AI reported (`usage.neurons`) instead of the reservation, so
+ * the daily cap counts real spend. Ignores missing or absurd values (keeps the
+ * reservation, the conservative choice). Returns the neurons charged, or null.
+ */
+export function reconcileReservation(rows: Rows, id: string, neurons: unknown): number | null {
+  if (typeof neurons !== 'number' || !Number.isFinite(neurons) || neurons < 0 || neurons > 1000) return null;
+  const row = rows('SELECT day, reservation FROM requests WHERE id=?', id)[0];
+  if (!row || row.reservation === null || row.reservation === undefined) return null;
+  const used = Math.ceil(neurons);
+  const delta = used - Number(row.reservation);
+  if (delta !== 0) {
+    rows('UPDATE days SET reserved=MAX(0,reserved+?) WHERE day=?', delta, String(row.day));
+    rows('UPDATE requests SET reservation=? WHERE id=?', used, id);
+  }
+  return used;
+}
 export type Rows = (sql: string, ...bindings: Binding[]) => Record<string, unknown>[];
 
 const DAY_MS = 24 * 60 * 60 * 1000;

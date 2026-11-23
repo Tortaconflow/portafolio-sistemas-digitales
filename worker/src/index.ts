@@ -4,7 +4,8 @@ import { FACT_FIELDS } from '../../shared/advisor-session-contract.ts';
 import { guidedChatReply, type FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
 import { guardChatReply, redactPersonalData, type BlockReason } from '../../shared/chat-guard.ts';
 import { formatModelReply } from '../../shared/chat-format.ts';
-import { CHAT_PROMPT_VERSION, DEFAULT_CHAT_MODEL, chatModelInput, chatReplyWasCut, extractChatText } from '../../shared/chat-prompt.ts';
+import { CHAT_PROMPT_VERSION, DEFAULT_CHAT_FALLBACK_MODEL, DEFAULT_CHAT_MODEL, chatReplyWasCut } from '../../shared/chat-prompt.ts';
+import { ChainError, runChatChain, type ModelStep } from './chat-models.ts';
 import { logChat, latencyBucket, lengthBucket, type ChatLog } from './chat-log.ts';
 import { digest, issueToken, readBody, verifyToken } from './security.ts';
 import { SimulatedProvider, type AdvisorProvider } from './provider.ts';
@@ -23,6 +24,8 @@ export interface Env {
   AI_MODEL?: string;
   /** Modelo del chat flotante (/v2/chat); AI_MODEL sigue siendo el de /v2/turn. */
   CHAT_MODEL?: string;
+  /** Respaldo si el modelo del chat tarda o falla; "none" lo desactiva. */
+  CHAT_FALLBACK_MODEL?: string;
   LOCAL_DAILY_NEURONS?: string;
   LOCAL_PROVIDER_DELAY_MS?: string;
   LOCAL_PROVIDER_FAULT?: string;
@@ -222,29 +225,36 @@ export default {
         const promptKey = JSON.stringify({ v: CHAT_PROMPT_VERSION, model, history, message });
         const contextHash = await digest(secret, promptKey);
         const id = await digest(secret, `request:${body.requestId}`);
-        const reservation = await control('/reserve', { session, id, hash: contextHash, reservation: AI_POLICY.chatReservationNeurons });
+        const reservation = await control('/reserve', {
+          session, id, hash: contextHash,
+          reservation: AI_POLICY.chatReservationNeurons,
+          maxAttempts: AI_POLICY.chatMaxAttempts,
+        });
         const result = await reservation.json() as { remaining?: number; code?: string };
         if (!reservation.ok) {
           logChat({ ...log, outcome: `ledger_${result.code ?? reservation.status}` });
           return reply({ ...result, fallback: 'guided' }, reservation.status);
         }
 
-        let timeout: ReturnType<typeof setTimeout> | undefined;
         try {
           let replyText: string;
           let blocked: BlockReason | null = null;
+          let neurons: number | undefined;
           if (isLocalMode) {
             replyText = 'Modo local activo. ¿Qué te gustaría que fuera más fácil en tu negocio esta semana?';
             log.outcome = 'local';
           } else {
-            const raw = await Promise.race([
-              env.AI!.run(model, chatModelInput(model, history, message)),
-              new Promise<never>((_, reject) => {
-                timeout = setTimeout(() => reject(new Error('timeout')), Number(env.LOCAL_TIMEOUT_MS ?? AI_POLICY.chatTimeoutMs));
-              }),
-            ]);
-            const text = extractChatText(raw);
-            if (!text || utf8Size(text) > 2500) throw new Error('invalid');
+            const fallbackModel = env.CHAT_FALLBACK_MODEL ?? DEFAULT_CHAT_FALLBACK_MODEL;
+            const localTimeout = env.LOCAL_TIMEOUT_MS ? Number(env.LOCAL_TIMEOUT_MS) : undefined;
+            const steps: ModelStep[] = [{ model, timeoutMs: localTimeout ?? AI_POLICY.chatPrimaryTimeoutMs }];
+            if (fallbackModel !== 'none' && fallbackModel !== model) {
+              steps.push({ model: fallbackModel, timeoutMs: localTimeout ?? AI_POLICY.chatFallbackTimeoutMs });
+            }
+            const chain = await runChatChain((name, input) => env.AI!.run(name, input), steps, history, message, AI_POLICY.chatFailedAttemptNeurons);
+            const { raw, text } = chain;
+            neurons = chain.neurons;
+            // Qué modelo respondió y cómo le fue al principal, solo categorías.
+            Object.assign(log, { model: chain.model, fallback: chain.attempts.length > 1, primary: chain.attempts[0].outcome });
             const formatted = formatModelReply(text);
             // Lo que la persona escribió (su página, su perfil) no cuenta como enlace inventado.
             const visitorText = [message, ...history.filter(turn => turn.role === 'user').map(turn => turn.text)].join('\n');
@@ -260,9 +270,9 @@ export default {
             replyText = guarded.text;
             blocked = guarded.blocked;
           }
-          const finished = await control('/finish', { id, status: 'success' });
+          const finished = await control('/finish', { id, status: 'success', neurons });
           if (!finished.ok) throw new Error('finish_failed');
-          logChat({ ...log, latency: latencyBucket(Date.now() - started), remaining: result.remaining });
+          logChat({ ...log, latency: latencyBucket(Date.now() - started), remaining: result.remaining, neurons: neurons === undefined ? undefined : Math.ceil(neurons) });
           // `blocked` es solo el motivo (url, price, promise…): permite medir sin guardar texto.
           return reply({ version: '2.0', reply: replyText, remaining: result.remaining ?? 0, ...(blocked ? { blocked } : {}) });
         } catch (error) {
@@ -273,12 +283,11 @@ export default {
           logChat({
             ...log,
             outcome: code === 'timeout' ? 'timeout' : code === 'finish_failed' ? 'finish_failed' : 'provider_failure',
+            attempts: error instanceof ChainError ? error.attempts.map(attempt => attempt.outcome).join('>') : undefined,
             latency: latencyBucket(Date.now() - started),
             closed,
           });
           return reply({ code: 'provider_failure', fallback: 'guided' }, 503);
-        } finally {
-          if (timeout !== undefined) clearTimeout(timeout);
         }
       }
 
