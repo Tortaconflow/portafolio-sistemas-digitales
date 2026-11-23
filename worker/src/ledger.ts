@@ -3,6 +3,7 @@ import { AI_POLICY } from '../../shared/cidikis-ai-policy.ts';
 import type { Env } from './index.ts';
 import { SINGLE_POLICY, isSingleCampaign } from './single-policy.ts';
 import {migrateLedgerSchema} from './ledger-schema.ts';
+import { OPEN_REQUEST } from './ledger-queries.ts';
 
 type Row = Record<string, string | number | null>;
 const reply = (data: unknown, status = 200) => Response.json(data, { status });
@@ -27,8 +28,11 @@ export class BudgetLedger extends DurableObject<Env> {
     const path = new URL(request.url).pathname;
     return this.ctx.storage.transactionSync(() => {
       const now = Date.now(); const day = new Date(now).toISOString().slice(0, 10);
-      // Uncertain requests keep their global slot and reserve on subsequent UTC days.
-      const carried = Number(this.rows("SELECT COALESCE(SUM(COALESCE(reservation,CASE WHEN campaign='v02-lab-no-ai-1' THEN 0 ELSE ? END)),0) AS n FROM requests WHERE status IN ('pending','uncertain')",AI_POLICY.reservationNeurons)[0].n);
+      // Uncertain requests keep their global slot and reserve on subsequent UTC days,
+      // but public (non-campaign) rows only while their session is alive. Without that
+      // bound, two timeouts or a Worker crash between /reserve and /finish would hold
+      // both global slots forever and every visitor would get concurrency_limit.
+      const carried = Number(this.rows(`SELECT COALESCE(SUM(COALESCE(reservation,CASE WHEN campaign='v02-lab-no-ai-1' THEN 0 ELSE ? END)),0) AS n FROM requests WHERE ${OPEN_REQUEST}`,AI_POLICY.reservationNeurons,now)[0].n);
       this.rows('INSERT OR IGNORE INTO days(day,reserved) VALUES (?,?)', day, carried);
       if (path === '/operator/nonce') {
         // The authorized trial preserves every historical row, including nonce
@@ -71,7 +75,10 @@ export class BudgetLedger extends DurableObject<Env> {
       if (path === '/reserve') {
         const campaign = data.campaign ? this.rows('SELECT * FROM campaigns WHERE id=?', data.campaign)[0] : undefined;
         const single=isSingleCampaign(data.campaign);
-        const reservationNeurons=single?SINGLE_POLICY.reservation:data.campaign==='v02-lab-no-ai-1'?0:AI_POLICY.reservationNeurons;
+        // Public routes may ask for a smaller reservation (the chat measured ~12 neurons per call);
+        // never more than the default and never for campaigns.
+        const routeReservation=!data.campaign&&Number.isSafeInteger(data.reservation)&&Number(data.reservation)>=1&&Number(data.reservation)<=AI_POLICY.reservationNeurons?Number(data.reservation):AI_POLICY.reservationNeurons;
+        const reservationNeurons=single?SINGLE_POLICY.reservation:data.campaign==='v02-lab-no-ai-1'?0:routeReservation;
         if (data.campaign && (!campaign || campaign.status !== 'active' || Number(campaign.expires) <= now)) return reply({ code: 'campaign_closed' }, 429);
         const session = this.rows('SELECT * FROM sessions WHERE id=?', data.session)[0];
         if (!session || Number(session.expires) <= now) return reply({ code: 'expired' }, 401);
@@ -83,7 +90,7 @@ export class BudgetLedger extends DurableObject<Env> {
         if (campaign && (Number(campaign.attempts) >= (single?SINGLE_POLICY.attempts:5) || Number(campaign.reserved) + reservationNeurons > (single?SINGLE_POLICY.reservation:950))) return reply({ code: 'campaign_limit' }, 429);
         if (campaign && this.rows("SELECT id FROM requests WHERE campaign=? AND status IN ('pending','uncertain')", data.campaign).length) return reply({ code: 'campaign_busy' }, 429);
         if (this.rows("SELECT id FROM requests WHERE session=? AND hash=? AND status='success'", data.session, data.hash).length) return reply({ code: 'unchanged_context' }, 409);
-        if (Number(this.rows("SELECT COUNT(*) AS n FROM requests WHERE status IN ('pending','uncertain')")[0].n) >= AI_POLICY.globalConcurrency) return reply({ code: 'concurrency_limit' }, 429);
+        if (Number(this.rows(`SELECT COUNT(*) AS n FROM requests WHERE ${OPEN_REQUEST}`, now)[0].n) >= AI_POLICY.globalConcurrency) return reply({ code: 'concurrency_limit' }, 429);
         const reserved = Number(this.rows('SELECT reserved FROM days WHERE day=?', day)[0].reserved);
         const dailyLimit = Math.min(AI_POLICY.dailyNeurons, Math.max(0, Number(this.env.LOCAL_DAILY_NEURONS ?? AI_POLICY.dailyNeurons)));
         if (!Number.isFinite(dailyLimit) || reserved + reservationNeurons > dailyLimit) return reply({ code: 'global_budget' }, 429);

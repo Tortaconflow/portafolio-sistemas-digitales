@@ -2,6 +2,7 @@ import { AI_POLICY, utf8Size } from '../../shared/cidikis-ai-policy.ts';
 import { validTurnResponse, type TurnRequest, type TurnResponse } from '../../shared/cidikis-ai-contract.ts';
 import { simulateTurn } from '../../shared/simulated-provider.ts';
 import type { FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
+import { BLOCK_REASONS, type BlockReason } from '../../shared/chat-guard.ts';
 import {
   createErrorTracker,
   TURNSTILE_POLICY,
@@ -186,17 +187,52 @@ export class FloatingChatError extends Error {
     refreshSession?: boolean;
     retryWithNewId?: boolean;
     alreadyAnswered?: boolean;
+    /** Ya no quedan respuestas en línea por ahora: reintentar no sirve. */
+    exhausted?: boolean;
+    /** Código del Worker, solo para pruebas y QA (data-code); nunca texto del visitante. */
+    code?: string;
   } = {}) {
     super(message);
   }
 }
+
+const EXHAUSTED_MESSAGE = 'Por ahora ya no puedo responder más mensajes aquí. Toca «Seguir con la guía» o escríbele a Reily por WhatsApp.';
+
+/** Traduce cada código del Worker a un mensaje y a qué hacer después. */
+function chatFailure(status: number, data: { code?: string; status?: string } | null): FloatingChatError {
+  const code = data?.code ?? String(status);
+  if (status === 401) {
+    return new FloatingChatError('Pasó mucho tiempo y el chat necesita reconectarse. Toca «Reintentar»; tu mensaje sigue aquí.', { refreshSession: true, code });
+  }
+  if (code === 'session_limit' || code === 'global_budget') {
+    return new FloatingChatError(EXHAUSTED_MESSAGE, { exhausted: true, code });
+  }
+  if (code === 'concurrency_limit') {
+    return new FloatingChatError('Hay varias personas usando el chat en este momento. Intenta de nuevo en un minuto; tu mensaje sigue aquí.', { code });
+  }
+  if ((code === 'duplicate' && data?.status === 'success') || code === 'unchanged_context') {
+    return new FloatingChatError('La respuesta se perdió antes de llegar. Escribe tu mensaje con otras palabras para intentarlo de nuevo.', { alreadyAnswered: true, code });
+  }
+  if (code === 'session_busy' || code === 'uncertain' || (code === 'duplicate' && (data?.status === 'pending' || data?.status === 'uncertain'))) {
+    return new FloatingChatError('No pude responder en este momento. Toca «Reintentar» o sigue con la guía.', { refreshSession: true, retryWithNewId: true, code });
+  }
+  if (status === 429) {
+    return new FloatingChatError('El chat está ocupado en este momento. Intenta de nuevo en un minuto o sigue con la guía.', { code });
+  }
+  return new FloatingChatError('No pude responder en este momento. Toca «Reintentar» o sigue con la guía.', {
+    retryWithNewId: code === 'provider_failure' || (code === 'duplicate' && data?.status === 'failed'),
+    code,
+  });
+}
+
+export const exhaustedChatError = () => new FloatingChatError(EXHAUSTED_MESSAGE, { exhausted: true, code: 'exhausted' });
 
 export async function requestFloatingChat(
   sessionToken: string,
   message: string,
   history: FloatingChatMessage[],
   requestId: string,
-): Promise<{ reply: string; remaining?: number; blocked?: 'url' | 'price' | 'promise' | 'leak' | 'empty' }> {
+): Promise<{ reply: string; remaining?: number; blocked?: BlockReason }> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) {
     await new Promise(resolve => setTimeout(resolve, 180));
@@ -218,23 +254,12 @@ export async function requestFloatingChat(
   });
   if (!result.ok) {
     const data = await result.json().catch(() => null) as { code?: string; status?: string } | null;
-    if (result.status === 401) {
-      throw new FloatingChatError('La sesión caducó. Puedes reintentar o seguir con la guía.', { refreshSession: true });
-    }
-    if (result.status === 429) {
-      throw new FloatingChatError('El chat está ocupado o alcanzó su límite. Puedes seguir con la guía.');
-    }
-    if ((data?.code === 'duplicate' && data.status === 'success') || data?.code === 'unchanged_context') {
-      throw new FloatingChatError('La respuesta se generó y se perdió en el camino. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
-    }
-    throw new FloatingChatError('No pude responder en este momento. Puedes reintentar o seguir con la guía.', {
-      retryWithNewId: data?.code === 'provider_failure' || (data?.code === 'duplicate' && data.status === 'failed'),
-    });
+    throw chatFailure(result.status, data);
   }
   const data = await result.json() as { reply?: unknown; remaining?: number; blocked?: unknown };
   if (typeof data.reply !== 'string' || !data.reply.trim()) {
     throw new FloatingChatError('La respuesta llegó vacía. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
   }
-  const blocked = (['url', 'price', 'promise', 'leak', 'empty'] as const).find(reason => reason === data.blocked);
+  const blocked = BLOCK_REASONS.find(reason => reason === data.blocked);
   return { reply: data.reply.trim(), remaining: data.remaining, blocked };
 }

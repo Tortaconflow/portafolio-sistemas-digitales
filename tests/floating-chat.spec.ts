@@ -186,3 +186,34 @@ test('si el script de Cloudflare no carga, el mensaje lo dice y la pregunta se c
   await expect(panel.getByRole('status')).toContainText('No pude cargar la verificación de seguridad');
   await expect(panel.getByRole('textbox')).toHaveValue('Tengo un taller y pierdo citas entre llamadas y mensajes');
 });
+
+test('cada límite del Worker tiene su propio mensaje y, si ya no quedan respuestas, no se vuelve a llamar', async ({ page, request, baseURL }) => {
+  const site = 'https://reilycastro.com/';
+  await page.route('https://www.googletagmanager.com/**', (route) => route.abort());
+  await page.route(`${site}**`, async (route) => {
+    const local = new URL(route.request().url()).pathname;
+    await route.fulfill({ response: await request.get(new URL(local, baseURL).href) });
+  });
+  await page.route(/^https:\/\/challenges\.cloudflare\.com\/turnstile\/v0\/api\.js/, turnstileFixture(
+    `render(_el, config) { config.callback('fixture-token'); return 'fixture'; }`,
+  ));
+  const codes = ['concurrency_limit', 'session_limit'];
+  let chatCalls = 0;
+  await page.route('https://cidiks-ia-advisor.reilyvica.workers.dev/v2/**', (route) => {
+    if (route.request().url().endsWith('/session')) return route.fulfill({ json: { sessionToken: 'fixture-session' } });
+    const code = codes[chatCalls++] ?? 'session_limit';
+    return route.fulfill({ status: 429, json: { code, fallback: 'guided' } });
+  });
+
+  const panel = await askOnce(page, site);
+  await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'concurrency_limit');
+  await expect(panel.getByRole('status')).toContainText('varias personas');
+  await panel.getByRole('button', { name: 'Reintentar' }).click();
+  await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'session_limit');
+  await expect(panel.getByRole('status')).toContainText('ya no puedo responder más mensajes');
+  await expect(panel.getByRole('button', { name: 'Enviar' })).toBeVisible();
+  await panel.getByRole('textbox').fill('Otra pregunta sobre mi taller y mis citas');
+  await panel.getByRole('button', { name: 'Enviar' }).click();
+  await expect(panel.locator('.cidiks-chat-error')).toHaveAttribute('data-code', 'exhausted');
+  expect(chatCalls).toBe(2);
+});

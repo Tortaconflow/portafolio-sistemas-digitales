@@ -8,7 +8,10 @@
     "AI_ENABLED": "true",
     "LOCAL_SIMULATION": "false",
     "ALLOWED_ORIGIN": "https://reilycastro.com",
-    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast"
+    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
+    // Chat flotante. Comparado con 12 mensajes reales el 2026-11-22: más preciso que Llama 8B,
+    // no reveló el prompt ante inyección y cuesta ~12 neurons por respuesta.
+    "CHAT_MODEL": "@cf/google/gemma-4-26b-a4b-it"
   },
   "ai": {
     "binding": "AI"
@@ -21,7 +24,10 @@
   "migrations": [
     { "tag": "v1-prod", "new_sqlite_classes": ["BudgetLedger"] }
   ],
+  // Solo guarda las líneas de worker/src/chat-log.ts (categorías, sin texto del visitante).
+  // invocation_logs=false evita guardar URL, encabezados e IP de cada petición.
   "observability": {
-    "enabled": false
+    "enabled": true,
+    "logs": { "invocation_logs": false, "head_sampling_rate": 1 }
   }
 }

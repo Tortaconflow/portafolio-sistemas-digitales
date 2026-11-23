@@ -122,6 +122,8 @@
   line-height: 1.45;
   max-width: 88%;
   word-wrap: break-word;
+  /* Respeta los saltos de línea que deje el formato (p. ej. una plantilla para clientes). */
+  white-space: pre-line;
 }
 
 .cidiks-chat-msg--assistant {
@@ -148,6 +150,12 @@
   margin: 0;
   font-size: 0.8rem;
   color: #f4a49e;
+}
+
+.cidiks-chat-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #b7b2a7;
 }
 
 .cidiks-chat-chips {

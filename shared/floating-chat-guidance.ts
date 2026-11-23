@@ -20,7 +20,12 @@ export const GUIDED_CHAT_OPTIONS = [
 ] as const;
 
 export function chatOrientation(option: { need: string; channel: string }) {
-  return buildOrientation({ business: 'unsure', ...option });
+  const orientation = buildOrientation({ business: 'unsure', ...option });
+  // El texto del formulario de /asesor-ia/ habla de "tres respuestas"; en el chat no aplica.
+  if (orientation.ruleId === 'exploratory') {
+    return { ...orientation, why: 'Antes de elegir una herramienta conviene saber qué te preguntan más tus clientes. Así evitas gastar en algo que todavía no necesitas.' };
+  }
+  return orientation;
 }
 
 const ORDERS_QUESTION = '¿Por dónde te llegan más pedidos hoy: WhatsApp, redes sociales, llamadas o en persona?';
@@ -31,13 +36,21 @@ function normalize(text: string): string {
     .replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
-const WHATSAPP = /\b(?:whats? ?app|wasap|wassap|wats(?:ap)?|whats?|wsp)\b/;
+// Cubre faltas comunes: whatsapp, whats app, watsapp, whatsap, wasap, wassap, wasapp, guasap, whasap, wsp, wpp.
+const WA = String.raw`(?:wh?|gu)at?s{0,2} ?a{1,2}pp?|whats?|wats|wsp|wpp`;
+const WHATSAPP = new RegExp(String.raw`\b(?:${WA})\b`);
+/** Respuesta corta de canal ("por wasap", "en el whats"): solo eso dispara la respuesta fija. */
+const CHANNEL_ANSWER = new RegExp(String.raw`^(?:(?:por|en|x|pues|mas|mayormente|casi siempre) )*(?:el |mi )?(?:${WA})(?: business)?$`);
 const ORDER_CONTEXT = /\b(?:vend\w*|pedid\w*|client\w*|me preguntan|me escriben)\b/;
-const REPEATED = /\b(?:me preguntan|mism\w*|repet\w*|cada (?:pedido|vez)|siempre|a cada rato|junt\w*)\b/;
+const REPEATED = /\b(?:me (?:preguntan|piden)|lo mismo|repet\w*|repit\w*|cada (?:pedido|vez|rato)|a cada rato|siempre me (?:preguntan|piden|escriben)|se me junt\w*)\b/;
 const PRICE = /\b(?:precios?|cuanto|costos?)\b/;
-const DELIVERY = /\b(?:entreg\w*|envi\w*|mand\w*|donde)\b/;
+const DELIVERY = /\b(?:entreg\w*|envios?|envia[sn]?|enviar|domicilio|mand(?:as|an|ar|o|amos))\b/;
 const WEBSITE = /\b(?:web|pagin\w*|sitio)\b/;
-const WEB_OR_WHATSAPP = /^(?:web|pagina web|mi negocio necesita una web) o (?:solo |basta con )?(?:whatsapp|wasap|wats)$/;
+const WEB_OR_WHATSAPP = new RegExp(String.raw`^(?:(?:mi negocio necesita|necesito|me conviene) )?(?:una )?(?:web|pagina(?: web)?|sitio(?: web)?) o (?:solo |basta con |nomas )?(?:el )?(?:${WA})$`);
+// Casos en los que la respuesta fija contestaría otra cosa: mejor que responda el modelo.
+const NEGATED_CHANNEL = /\b(?:no|nunca|ya no|casi no) (?:uso|usamos|tengo|ocupo|manejo|vendo|me escriben|me llegan)\b/;
+const ASKS_WEB_PRICE = /\bcuanto (?:cobras|cobran|cuesta (?:una|la|hacer|tu)|sale (?:una|la|hacer))\b|\bprecio de (?:una|la|tu) (?:web|pagina|sitio)\b/;
+const HAS_WEBSITE = /\bya tengo (?:una |mi )?(?:web|pagina|sitio)\b/;
 
 function repetitiveWhatsAppReply(text: string, comparesWebsite: boolean): string | null {
   const hasPrice = PRICE.test(text);
@@ -45,6 +58,7 @@ function repetitiveWhatsAppReply(text: string, comparesWebsite: boolean): string
   if (!WHATSAPP.test(text) || !ORDER_CONTEXT.test(text) || !REPEATED.test(text) || !(hasPrice || hasDelivery)) {
     return null;
   }
+  if (NEGATED_CHANNEL.test(text) || ASKS_WEB_PRICE.test(text) || HAS_WEBSITE.test(text)) return null;
   const topic = hasPrice && hasDelivery ? 'el precio y cómo entregas' : hasPrice ? 'el precio' : 'cómo entregas';
   const firstStep = comparesWebsite ? 'Para tu caso, empezaría por ordenar WhatsApp antes de invertir en una web. ' : '';
   return `${firstStep}Ya te escriben por WhatsApp y te toca repetir ${topic}. Deja lista una respuesta corta con esa información o guárdala como respuesta rápida si usas WhatsApp Business. ¿Quieres que armemos el texto?`;
@@ -65,8 +79,8 @@ export function guidedChatReply(message: string, history: readonly FloatingChatM
 
   const orderReply = repetitiveWhatsAppReply(text, WEBSITE.test(text));
   if (orderReply) return orderReply;
-  if (WHATSAPP.test(text) && previous?.role === 'assistant' && previous.text === ORDERS_QUESTION) {
-    return chatOrientation({ need: 'whatsapp', channel: 'whatsapp-persona' }).freeStep;
+  if (CHANNEL_ANSWER.test(text) && previous?.role === 'assistant' && previous.text === ORDERS_QUESTION) {
+    return `${chatOrientation({ need: 'whatsapp', channel: 'whatsapp-persona' }).freeStep} ¿Qué es lo que más te preguntan?`;
   }
 
   if (WEBSITE.test(text) && /\b(?:no me (?:llega|yega) gente|no me encuentran)\b/.test(text)) {
@@ -79,11 +93,4 @@ export function guidedChatReply(message: string, history: readonly FloatingChatM
     return 'WhatsApp puede bastar si tus clientes ya te encuentran y te hacen pedidos por ahí. Una web puede ayudar si necesitan consultar tu oferta antes de escribirte. ¿Qué te cuesta más hoy: que te encuentren o atender a quienes ya te escriben?';
   }
   return null;
-}
-
-export function chatDiagnosticCriteria(): string {
-  return GUIDED_CHAT_OPTIONS.map((option) => {
-    const orientation = chatOrientation(option);
-    return `${option.label}. ${orientation.why} ${orientation.freeStep}`;
-  }).join('\n');
 }

@@ -6,7 +6,7 @@ import {
   guidedChatReply,
   type FloatingChatMessage,
 } from "../../shared/floating-chat-guidance.ts";
-import { bootstrapLocalSession, FloatingChatError, preloadTurnstile, requestFloatingChat } from "../advisor/ai-client.ts";
+import { bootstrapLocalSession, exhaustedChatError, FloatingChatError, preloadTurnstile, requestFloatingChat } from "../advisor/ai-client.ts";
 import { track } from "../analytics.ts";
 import "./floating-assistant.css";
 
@@ -25,6 +25,8 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
   const [error, setError] = useState<FloatingChatError | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideChoice, setGuideChoice] = useState<(typeof GUIDED_CHAT_OPTIONS)[number] | null>(null);
+  const [remaining, setRemaining] = useState<number | null>(null);
+  const exhaustedRef = useRef(false);
   const attemptRef = useRef<{ text: string; id: string } | null>(null);
   const submitting = useRef(false);
   const tokenRef = useRef<string | null>(null);
@@ -96,6 +98,12 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
       return;
     }
 
+    if (exhaustedRef.current) {
+      setDraft(text);
+      setError(exhaustedChatError());
+      return;
+    }
+
     submitting.current = true;
     setDraft(text);
     setError(null);
@@ -116,12 +124,14 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
       // Mide cuántas respuestas filtra el Worker, solo con el motivo y nunca el texto.
       if (result.blocked) track("chat_reply_blocked", { reason: result.blocked });
       completeTurn(text, result.reply);
+      if (typeof result.remaining === "number") setRemaining(result.remaining);
     } catch (err) {
       const failure = err instanceof FloatingChatError
         ? err
         : new FloatingChatError("No pude recibir una respuesta. Tu pregunta sigue aquí. Puedes reintentar o seguir con la guía.");
       if (failure.options.refreshSession) tokenRef.current = null;
       if (failure.options.retryWithNewId) attemptRef.current = null;
+      if (failure.options.exhausted) exhaustedRef.current = true;
       setError(failure);
     } finally {
       submitting.current = false;
@@ -169,7 +179,10 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
                   {phase === "verification" ? "Preparando el chat y verificando la conexión…" : "Estoy preparando tu respuesta…"}
                 </p>
               )}
-              {error && <p className="cidiks-chat-error" role="status">{error.message}</p>}
+              {error && <p className="cidiks-chat-error" role="status" data-code={error.options.code}>{error.message}</p>}
+              {!error && remaining !== null && remaining > 0 && remaining <= 2 && (
+                <p className="cidiks-chat-note">Te {remaining === 1 ? "queda 1 respuesta" : `quedan ${remaining} respuestas`} en línea en esta sesión.</p>
+              )}
             </div>
             {messages.length === 1 && !busy && !error && !guideOpen && (
               <div className="cidiks-chat-chips" aria-label="Ideas para empezar" role="group">
@@ -227,7 +240,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
               aria-describedby="cidiks-chat-privacy"
             />
             <button type="submit" disabled={busy || !draft.trim() || Boolean(error?.options.alreadyAnswered)}>
-              {error && !error.options.alreadyAnswered ? "Reintentar" : "Enviar"}
+              {error && !error.options.alreadyAnswered && !error.options.exhausted ? "Reintentar" : "Enviar"}
             </button>
           </form>
 

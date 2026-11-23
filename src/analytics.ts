@@ -1,6 +1,8 @@
 // Módulo centralizado de instrumentación y analítica para Cídiks · Reily Castro
 // Principio: Privacidad estricta, eventos mínimos y agregados. Nunca envía datos personales.
 
+import type { BlockReason } from "../shared/chat-guard.ts";
+
 export type AnalyticsEventName =
   | "page_view"
   | "diagnostic_start"
@@ -173,7 +175,7 @@ export interface AnalyticsPayloads {
   advisor_contact_opened: { channel: "whatsapp"; stage: "channel_opened" };
   advisor_validation_error: { step: number };
   // Solo el motivo por el que el filtro sustituyó una respuesta del modelo; nunca texto.
-  chat_reply_blocked: { reason: "url" | "price" | "promise" | "leak" | "empty" };
+  chat_reply_blocked: { reason: BlockReason };
 }
 
 // Advisor events accept only fixed categories and bounded numbers, never free text.
