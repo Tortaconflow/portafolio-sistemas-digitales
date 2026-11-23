@@ -215,14 +215,14 @@ test("ruta directa, HTML sin JavaScript y navegación editorial existente", asyn
   const noJs = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const staticPage = await noJs.newPage();
   expect((await staticPage.goto("/asesor-ia/"))?.status()).toBe(200);
-  await expect(staticPage.getByRole("heading", { name: "CÍDIKIS IA", exact: true })).toBeVisible();
+  await expect(staticPage.getByRole("heading", { name: "Asesor CÍDIKS", exact: true })).toBeVisible();
   await expect(staticPage.getByText(/El recorrido guiado requiere JavaScript/)).toBeVisible();
   await expect(staticPage.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://reilycastro.com/asesor-ia/");
   await staticPage.getByRole("link", { name: "guías de CÍDIKS", exact: true }).click();
   await expect(staticPage).toHaveURL(/\/conocimiento\/$/);
   await noJs.close();
   await page.goto("/");
-  await page.getByRole("link", { name: "Crear un brief con CÍDIKIS IA", exact: true }).click();
+  await page.getByRole("link", { name: "Crear un brief con el Asesor CÍDIKS", exact: true }).click();
   await page.getByRole('button', { name: /Quiero responder unas preguntas/ }).click();
   await expect(page.locator("#advisor-activity")).toBeVisible();
   await page.getByRole("link", { name: "Conocimiento", exact: true }).click();

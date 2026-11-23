@@ -431,7 +431,7 @@ export function HomeJourney({
           </a>
           <p>
             <a className="inline-link" href="/asesor-ia/">
-              Crear un brief con CÍDIKIS IA <span aria-hidden="true">↗</span>
+              Crear un brief con el Asesor CÍDIKS <span aria-hidden="true">↗</span>
             </a>
           </p>
         </div>

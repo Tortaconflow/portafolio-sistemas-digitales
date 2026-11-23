@@ -58,9 +58,9 @@ export const content = {
   },
   release: { approved: true },
   advisor: {
-    name: "CÍDIKIS IA",
+    name: "Asesor CÍDIKS",
     path: "/asesor-ia/",
-    title: "CÍDIKIS IA · Diagnóstico y brief de tu negocio | CÍDIKS",
+    title: "Asesor CÍDIKS · Diagnóstico y brief de tu negocio | Reily Castro",
     description:
       "Explora qué necesita tu negocio, compara referencias y prepara un brief editable para conversar con CÍDIKS. Recorrido gratuito por reglas, sin enviar datos a una IA.",
   },

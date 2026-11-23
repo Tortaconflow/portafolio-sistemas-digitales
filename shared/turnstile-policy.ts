@@ -31,7 +31,7 @@ export type TurnstileFailure = 'load' | 'config' | 'blocked' | 'timeout';
 const MESSAGES: Record<TurnstileFailure, string> = {
   load: 'No pude cargar la verificación de seguridad. Puede ser tu conexión o un bloqueador. Puedes reintentar, seguir con la guía o escribirnos por WhatsApp.',
   config: 'La verificación de seguridad no está disponible en este momento. Puedes seguir con la guía o escribirnos por WhatsApp.',
-  blocked: 'Tu navegador no pasó la verificación. Prueba otra vez, abre esta página en Chrome o Safari, o sigue con la guía o WhatsApp.',
+  blocked: 'No pude confirmar que eres una persona. Toca «Reintentar» o abre esta página en Chrome o Safari; también puedes seguir con la guía.',
   timeout: 'La verificación tardó demasiado. Puedes reintentar o seguir con la guía.',
 };
 

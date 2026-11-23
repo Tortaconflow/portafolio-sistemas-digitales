@@ -52,7 +52,7 @@ test('orienta con lenguaje informal y retoma el canal que la persona ya mencion�
   await page.getByRole('button', { name: /Abrir asistente/ }).click();
   const panel = page.getByRole('dialog', { name: 'Asistente CÍDIKS IA' });
   await expect(panel).toContainText('Puedes escribir como hablas.');
-  await expect(panel.getByRole('textbox')).toHaveAccessibleDescription(/Cloudflare Workers AI/);
+  await expect(panel.getByRole('textbox')).toHaveAccessibleDescription(/IA de Cloudflare/);
 
   await panel.getByRole('button', { name: 'Me cuesta atender pedidos' }).click();
   await expect(panel.getByRole('log')).toContainText('¿Por dónde te llegan más pedidos hoy');

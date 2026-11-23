@@ -85,6 +85,23 @@ class WorkersAiProvider implements AdvisorProvider {
 }
 
 export default {
+  /**
+   * Cron horario (wrangler.prod.jsonc): una línea de salud del ledger en los logs y
+   * limpieza de filas viejas. Si `openSlots` se queda en 2 o `staleRows` crece, el
+   * chat tiene un problema aunque nadie lo haya reportado.
+   */
+  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
+    if (env.AI_ENABLED !== 'true' || env.LOCAL_SIMULATION !== 'false') return;
+    const ledger = env.LEDGER.get(env.LEDGER.idFromName('cidikis-budget-v2-global'));
+    try {
+      const response = await ledger.fetch('http://control/health', { method: 'POST', body: '{}' });
+      const health = await response.json().catch(() => ({})) as Record<string, unknown>;
+      console.log(JSON.stringify({ evt: 'ledger_health', ok: response.ok, ...health }));
+    } catch {
+      console.log(JSON.stringify({ evt: 'ledger_health', ok: false }));
+    }
+  },
+
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin');

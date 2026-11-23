@@ -16,6 +16,8 @@
   "ai": {
     "binding": "AI"
   },
+  // Salud y limpieza del ledger cada hora (ver `scheduled` en src/index.ts).
+  "triggers": { "crons": ["0 * * * *"] },
   "durable_objects": {
     "bindings": [
       { "name": "LEDGER", "class_name": "BudgetLedger" }

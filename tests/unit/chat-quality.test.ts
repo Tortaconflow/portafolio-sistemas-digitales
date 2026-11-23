@@ -5,7 +5,7 @@ import { guidedChatReply, chatOrientation, GUIDED_CHAT_OPTIONS } from '../../sha
 import { CHAT_FEW_SHOTS, CHAT_SYSTEM_PROMPT, buildChatMessages, chatModelInput, chatReplyWasCut, extractChatText } from '../../shared/chat-prompt.ts';
 import { formatModelReply, toPlainChatText, trimToLastSentence } from '../../shared/chat-format.ts';
 import { guardChatReply } from '../../shared/chat-guard.ts';
-import { OPEN_REQUEST } from '../../worker/src/ledger-queries.ts';
+import { OPEN_REQUEST, ledgerHealth, type Rows } from '../../worker/src/ledger-queries.ts';
 
 const ORDERS_QUESTION = '¿Por dónde te llegan más pedidos hoy: WhatsApp, redes sociales, llamadas o en persona?';
 
@@ -97,4 +97,31 @@ test('ledger: una fila atascada deja de ocupar cupo cuando su sesión caduca (ex
   ]) db.prepare('INSERT INTO requests VALUES (?,?,?,?)').run(id, session, status, campaign);
   const open = db.prepare(`SELECT id FROM requests WHERE ${OPEN_REQUEST} ORDER BY id`).all(now).map(row => row.id);
   assert.deepEqual(open, ['c', 'e']);
+});
+
+test('salud del ledger: cuenta cupos y filas viejas, y borra solo lo cerrado hace más de 30 días', () => {
+  const db = new DatabaseSync(':memory:');
+  db.exec(`CREATE TABLE days(day TEXT PRIMARY KEY, reserved INTEGER NOT NULL);
+    CREATE TABLE sessions(id TEXT PRIMARY KEY, expires INTEGER NOT NULL, campaign TEXT);
+    CREATE TABLE requests(id TEXT PRIMARY KEY, session TEXT NOT NULL, status TEXT NOT NULL, day TEXT NOT NULL, campaign TEXT);`);
+  const now = Date.parse('2026-11-23T12:00:00Z');
+  const day = 24 * 60 * 60 * 1000;
+  db.prepare('INSERT INTO days VALUES (?,?)').run('2026-11-23', 120);
+  for (const [id, expires, campaign] of [['viva', now + 60_000, null], ['ayer', now - 2 * day, null], ['piloto', now - 2 * day, 'v02-pilot-1']] as const) {
+    db.prepare('INSERT INTO sessions VALUES (?,?,?)').run(id, expires, campaign);
+  }
+  for (const [id, session, status, rowDay, campaign] of [
+    ['abierta', 'viva', 'pending', '2026-11-23', null],
+    ['atascada', 'ayer', 'uncertain', '2026-11-21', null],
+    ['vieja', 'ayer', 'success', '2026-10-01', null],
+    ['vieja-atascada', 'ayer', 'uncertain', '2026-10-01', null],
+    ['piloto-vieja', 'piloto', 'success', '2026-10-01', 'v02-pilot-1'],
+  ] as const) db.prepare('INSERT INTO requests VALUES (?,?,?,?,?)').run(id, session, status, rowDay, campaign);
+  const rows: Rows = (sql, ...bindings) => db.prepare(sql).all(...bindings) as Record<string, unknown>[];
+
+  const health = ledgerHealth(rows, now);
+  assert.deepEqual(health, { openSlots: 1, staleRows: 2, reservedToday: 120, activeSessions: 1, deletedSessions: 1, deletedRequests: 2 });
+  const left = db.prepare('SELECT id FROM requests ORDER BY id').all().map(row => row.id);
+  assert.deepEqual(left, ['abierta', 'atascada', 'piloto-vieja']);
+  assert.deepEqual(db.prepare('SELECT id FROM sessions ORDER BY id').all().map(row => row.id), ['piloto', 'viva']);
 });

@@ -24,7 +24,6 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
   const [phase, setPhase] = useState<"verification" | "answer" | null>(null);
   const [error, setError] = useState<FloatingChatError | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
-  const [guideChoice, setGuideChoice] = useState<(typeof GUIDED_CHAT_OPTIONS)[number] | null>(null);
   const [remaining, setRemaining] = useState<number | null>(null);
   const exhaustedRef = useRef(false);
   const attemptRef = useRef<{ text: string; id: string } | null>(null);
@@ -34,7 +33,6 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
   const panelRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const busy = phase !== null;
-  const guide = guideChoice ? chatOrientation(guideChoice) : null;
 
   function closeAssistant() {
     setOpen(false);
@@ -78,13 +76,28 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
     if (open && listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
     }
-  }, [messages, open, phase, error, guideOpen, guideChoice]);
+  }, [messages, open, phase, error, guideOpen]);
 
   function completeTurn(text: string, reply: string) {
     setMessages((previous) => [...previous, { role: "user", text }, { role: "assistant", text: reply }]);
     setDraft("");
     setError(null);
     attemptRef.current = null;
+  }
+
+  /**
+   * La opción elegida en la guía entra a la conversación como si la persona la
+   * hubiera escrito: así el modelo la conoce en el siguiente mensaje. No toca el
+   * borrador para no perder lo que la persona ya había escrito.
+   */
+  function chooseGuideOption(option: (typeof GUIDED_CHAT_OPTIONS)[number]) {
+    const orientation = chatOrientation(option);
+    setMessages((previous) => [
+      ...previous,
+      { role: "user", text: option.label },
+      { role: "assistant", text: `${orientation.why} ${orientation.freeStep}` },
+    ]);
+    setGuideOpen(false);
   }
 
   async function sendMessage(rawText: string) {
@@ -176,7 +189,9 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
               ))}
               {busy && (
                 <p className="cidiks-chat-msg cidiks-chat-msg--assistant cidiks-chat-typing" role="status">
-                  {phase === "verification" ? "Preparando el chat y verificando la conexión…" : "Estoy preparando tu respuesta…"}
+                  {phase === "verification"
+                    ? "Preparando el chat… Si aparece una casilla para confirmar que no eres un robot, márcala."
+                    : "Estoy preparando tu respuesta…"}
                 </p>
               )}
               {error && <p className="cidiks-chat-error" role="status" data-code={error.options.code}>{error.message}</p>}
@@ -196,22 +211,13 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
             {guideOpen && (
               <div className="cidiks-chat-guided" aria-labelledby="cidiks-chat-guide-heading">
                 <h3 id="cidiks-chat-guide-heading">Guía rápida</h3>
-                {guide ? (
-                  <>
-                    <p role="status">{guide.why} {guide.freeStep}</p>
-                    <button type="button" className="cidiks-chat-chip" onClick={() => setGuideChoice(null)}>
-                      Elegir otra opción
+                <div className="cidiks-chat-chips" role="group" aria-label="¿Qué quieres mejorar primero?">
+                  {GUIDED_CHAT_OPTIONS.map((option) => (
+                    <button key={option.label} type="button" className="cidiks-chat-chip" onClick={() => chooseGuideOption(option)}>
+                      {option.label}
                     </button>
-                  </>
-                ) : (
-                  <div className="cidiks-chat-chips" role="group" aria-label="¿Qué quieres mejorar primero?">
-                    {GUIDED_CHAT_OPTIONS.map((option) => (
-                      <button key={option.label} type="button" className="cidiks-chat-chip" onClick={() => setGuideChoice(option)}>
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -224,7 +230,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
             }}
           >
             <p className="cidiks-chat-privacy" id="cidiks-chat-privacy">
-              Al pedir una respuesta en línea, Cloudflare Workers AI puede recibir tu mensaje y hasta seis anteriores. Evita incluir datos personales.
+              Este chat usa una IA de Cloudflare: puede recibir lo que escribes y tus últimos 6 mensajes. No escribas datos personales como tu dirección o datos bancarios.
             </p>
             <input
               type="text"
@@ -233,7 +239,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
                 setDraft(e.target.value);
                 setError(null);
               }}
-              placeholder="Cuéntame qué pasó…"
+              placeholder="Escribe o dicta tu mensaje…"
               maxLength={600}
               disabled={busy}
               aria-label="Escribe tu pregunta para CÍDIKS IA"

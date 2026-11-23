@@ -331,7 +331,7 @@ export function serializeBrief(brief: AdvisorBrief): string {
   if (!checked.ok) throw new Error(Object.values(checked.errors).join(" "));
   const statusLabels: Record<EvidenceStatus, string> = { confirmed: "Proporcionado por ti", inferred: "Inferencia por revisar", suggested: "Sugerencia por validar", pending: "Pendiente" };
   return [
-    "Solicitud de orientación · CÍDIKIS IA / CÍDIKS",
+    "Solicitud de orientación · Asesor CÍDIKS",
     `Brief v${brief.schemaVersion} · revisión ${brief.revision} · reglas locales, sin IA`,
     "La información aportada no fue verificada externamente. Este brief no es una cotización ni un compromiso de alcance, fechas o resultados.",
     "",

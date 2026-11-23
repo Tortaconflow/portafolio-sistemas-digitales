@@ -3,7 +3,7 @@ import { AI_POLICY } from '../../shared/cidikis-ai-policy.ts';
 import type { Env } from './index.ts';
 import { SINGLE_POLICY, isSingleCampaign } from './single-policy.ts';
 import {migrateLedgerSchema} from './ledger-schema.ts';
-import { OPEN_REQUEST } from './ledger-queries.ts';
+import { OPEN_REQUEST, ledgerHealth } from './ledger-queries.ts';
 
 type Row = Record<string, string | number | null>;
 const reply = (data: unknown, status = 200) => Response.json(data, { status });
@@ -119,6 +119,8 @@ export class BudgetLedger extends DurableObject<Env> {
         this.rows('UPDATE requests SET status_checks=status_checks+1 WHERE id=?', data.id);
         return reply({ status: row.status });
       }
+      // Only the Worker's cron calls this (see `scheduled` in index.ts); never routed publicly.
+      if (path === '/health') return reply(ledgerHealth((sql, ...b) => this.rows(sql, ...b), now));
       // This internal path is never routed by the public Worker, including locally.
       if (path === '/metrics') return reply({ days: this.rows('SELECT * FROM days'), sessions: this.rows('SELECT * FROM sessions'), requests: this.rows('SELECT * FROM requests'), tables: this.rows("SELECT name FROM sqlite_master WHERE type='table'") });
       return reply({ code: 'route' }, 404);
