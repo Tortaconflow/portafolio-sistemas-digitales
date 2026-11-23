@@ -169,6 +169,10 @@
   line-height: 1.45;
 }
 
+.cidiks-chat-guided a {
+  color: #f3f1ec;
+}
+
 .cidiks-chat-chip {
   background: #1c1c1c;
   color: #e9e4d8;

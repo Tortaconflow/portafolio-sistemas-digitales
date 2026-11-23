@@ -1,5 +1,6 @@
 import { content as c, type Project } from "./content.ts";
 import { track } from "./analytics.ts";
+import { OFFLINE_GUIDE_PATH } from "../shared/offline-guide.ts";
 const Arrow = () => <span aria-hidden="true">↗</span>;
 export function HomeHero({
   onInterest,
@@ -57,6 +58,7 @@ export function HomeHero({
           <p className="hero-note">
             <span aria-hidden="true">↳</span> {c.hero.note}
           </p>
+          <a className="inline-link" href={OFFLINE_GUIDE_PATH}>Abrir la guía rápida para poca señal</a>
         </div>
         <aside className="visual-stage" aria-label={c.hero.visualLabel}>
           <div className="glass-ribbon" aria-hidden="true" />
