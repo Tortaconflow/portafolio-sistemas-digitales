@@ -196,7 +196,7 @@ export async function requestFloatingChat(
   message: string,
   history: FloatingChatMessage[],
   requestId: string,
-): Promise<{ reply: string; remaining?: number }> {
+): Promise<{ reply: string; remaining?: number; blocked?: 'url' | 'price' | 'promise' | 'leak' | 'empty' }> {
   const endpoint = activeWorkerEndpoint();
   if (!endpoint) {
     await new Promise(resolve => setTimeout(resolve, 180));
@@ -231,9 +231,10 @@ export async function requestFloatingChat(
       retryWithNewId: data?.code === 'provider_failure' || (data?.code === 'duplicate' && data.status === 'failed'),
     });
   }
-  const data = await result.json() as { reply?: unknown; remaining?: number };
+  const data = await result.json() as { reply?: unknown; remaining?: number; blocked?: unknown };
   if (typeof data.reply !== 'string' || !data.reply.trim()) {
     throw new FloatingChatError('La respuesta llegó vacía. Puedes cambiar tu pregunta o seguir con la guía.', { alreadyAnswered: true });
   }
-  return { reply: data.reply.trim(), remaining: data.remaining };
+  const blocked = (['url', 'price', 'promise', 'leak', 'empty'] as const).find(reason => reason === data.blocked);
+  return { reply: data.reply.trim(), remaining: data.remaining, blocked };
 }

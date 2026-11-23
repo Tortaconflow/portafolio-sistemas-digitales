@@ -34,7 +34,8 @@ export type AnalyticsEventName =
   | "advisor_reference_added"
   | "advisor_brief_generated"
   | "advisor_contact_opened"
-  | "advisor_validation_error";
+  | "advisor_validation_error"
+  | "chat_reply_blocked";
 
 export type AbstractNeedCategory =
   | "presencia"
@@ -171,6 +172,8 @@ export interface AnalyticsPayloads {
   };
   advisor_contact_opened: { channel: "whatsapp"; stage: "channel_opened" };
   advisor_validation_error: { step: number };
+  // Solo el motivo por el que el filtro sustituyó una respuesta del modelo; nunca texto.
+  chat_reply_blocked: { reason: "url" | "price" | "promise" | "leak" | "empty" };
 }
 
 // Advisor events accept only fixed categories and bounded numbers, never free text.

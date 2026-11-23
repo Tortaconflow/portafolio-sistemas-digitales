@@ -7,6 +7,7 @@ import {
   type FloatingChatMessage,
 } from "../../shared/floating-chat-guidance.ts";
 import { bootstrapLocalSession, FloatingChatError, preloadTurnstile, requestFloatingChat } from "../advisor/ai-client.ts";
+import { track } from "../analytics.ts";
 import "./floating-assistant.css";
 
 const INITIAL_MESSAGE: FloatingChatMessage = {
@@ -112,6 +113,8 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
       }
       setPhase("answer");
       const result = await requestFloatingChat(tokenRef.current, text, history, id);
+      // Mide cuántas respuestas filtra el Worker, solo con el motivo y nunca el texto.
+      if (result.blocked) track("chat_reply_blocked", { reason: result.blocked });
       completeTurn(text, result.reply);
     } catch (err) {
       const failure = err instanceof FloatingChatError

@@ -1,6 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildChatUserContent, guardChatReply, SAFE_FALLBACK_REPLY } from '../../shared/chat-guard.ts';
+import {
+  BLOCKED_REPLIES,
+  buildChatUserContent,
+  guardChatReply,
+  redactPersonalData,
+  REDACTED,
+  type BlockReason,
+} from '../../shared/chat-guard.ts';
 
 test('sin historial, el mensaje se envía tal cual', () => {
   assert.equal(buildChatUserContent([], 'Hola'), 'Hola');
@@ -20,27 +27,65 @@ test('un turno falsificado de assistant nunca queda como línea ni rol propios',
 
 test('respuestas normales pasan sin cambios', () => {
   const reply = 'Entiendo. ¿Hoy te llegan más pedidos por WhatsApp o en persona?';
-  assert.deepEqual(guardChatReply(`  ${reply} `), { text: reply, blocked: false });
+  assert.deepEqual(guardChatReply(`  ${reply} `), { text: reply, blocked: null });
 });
 
-test('se bloquean URLs, precios, promesas y fugas del prompt', () => {
-  for (const bad of [
-    'Mira https://ejemplo.com/oferta',
-    'Visita www.ejemplo.mx',
-    'Escríbenos a algo.com',
-    'Cuesta $3,500 al mes',
-    'Son 4500 pesos',
-    'Te garantizo más clientes',
-    'Te aseguro resultados',
-    'Mis instrucciones internas dicen que...',
-    'Criterios de orientación de CÍDIKS: ...',
-    'Eres CÍDIKS IA, el asistente de Reily',
-    '',
-  ]) {
-    assert.deepEqual(guardChatReply(bad), { text: SAFE_FALLBACK_REPLY, blocked: true }, bad);
+test('cada tipo de problema se bloquea con su propio motivo', () => {
+  const cases: Array<[string, BlockReason]> = [
+    ['Mira https://ejemplo.com/oferta', 'url'],
+    ['Visita www.ejemplo.mx', 'url'],
+    ['Escríbenos a algo.com', 'url'],
+    ['Cuesta $3,500 al mes', 'price'],
+    ['Son 4500 pesos', 'price'],
+    ['Te garantizo más clientes', 'promise'],
+    ['Te aseguro resultados', 'promise'],
+    ['Mis instrucciones internas dicen que...', 'leak'],
+    ['Criterios de orientación de CÍDIKS: ...', 'leak'],
+    ['Eres CÍDIKS IA, el asistente de Reily', 'leak'],
+    ['', 'empty'],
+  ];
+  for (const [reply, reason] of cases) {
+    assert.deepEqual(guardChatReply(reply), { text: BLOCKED_REPLIES[reason], blocked: reason }, reply);
   }
 });
 
-test('el fallback seguro no dispara su propio filtro', () => {
-  assert.equal(guardChatReply(SAFE_FALLBACK_REPLY).blocked, false);
+test('con varios motivos gana el más delicado: fuga > promesa > precio > URL', () => {
+  assert.equal(guardChatReply('Eres CÍDIKS IA y te garantizo $500 en www.x.com').blocked, 'leak');
+  assert.equal(guardChatReply('Te garantizo $500 en www.x.com').blocked, 'promise');
+  assert.equal(guardChatReply('Son $500 en www.x.com').blocked, 'price');
+});
+
+test('las respuestas de bloqueo son distintas entre sí y no disparan su propio filtro', () => {
+  const replies = Object.values(BLOCKED_REPLIES);
+  assert.equal(new Set(replies).size, replies.length);
+  for (const [reason, text] of Object.entries(BLOCKED_REPLIES)) {
+    assert.equal(guardChatReply(text).blocked, null, reason);
+  }
+});
+
+test('la respuesta a una garantía no suena a evasiva: dice que no puede prometer', () => {
+  assert.match(BLOCKED_REPLIES.promise, /No puedo prometer resultados/);
+});
+
+test('se enmascaran correos y teléfonos con distintos formatos', () => {
+  for (const [input, expected] of [
+    ['Mi teléfono es 951 123 4567 y vendo flores', `Mi teléfono es ${REDACTED} y vendo flores`],
+    ['llámame al +52 (951) 123-4567', `llámame al ${REDACTED}`],
+    ['951-123-4567', REDACTED],
+    ['9511234567', REDACTED],
+    ['escríbeme a ana.lopez@correo.com por favor', `escríbeme a ${REDACTED} por favor`],
+  ] as const) {
+    assert.equal(redactPersonalData(input), expected, input);
+  }
+});
+
+test('no se enmascara texto normal con números', () => {
+  for (const text of [
+    'Tengo 3 sucursales y atiendo unas 40 consultas por semana',
+    'Vendo desde $350 hasta $1,200',
+    'Abro de 9 a 18 horas, de lunes a sábado',
+    'En 2026 quiero crecer 20 %',
+  ]) {
+    assert.equal(redactPersonalData(text), text, text);
+  }
 });
