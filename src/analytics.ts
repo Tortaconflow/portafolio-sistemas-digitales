@@ -34,6 +34,7 @@ export type AnalyticsEventName =
   | "advisor_reference_added"
   | "advisor_brief_generated"
   | "advisor_contact_opened"
+  | "chat_timing"
   | "advisor_validation_error";
 
 export type AbstractNeedCategory =
@@ -171,6 +172,11 @@ export interface AnalyticsPayloads {
   };
   advisor_contact_opened: { channel: "whatsapp"; stage: "channel_opened" };
   advisor_validation_error: { step: number };
+  chat_timing: {
+    stage: "turnstile" | "request" | "model";
+    outcome: "ok" | "error";
+    duration_ms: number;
+  };
 }
 
 // Advisor events accept only fixed categories and bounded numbers, never free text.
@@ -183,6 +189,7 @@ const ADVISOR_FIELDS: Record<string, Record<string, readonly string[] | number>>
   },
   advisor_contact_opened: { channel: ["whatsapp"], stage: ["channel_opened"] },
   advisor_validation_error: { step: 5 },
+  chat_timing: { stage: ["turnstile", "request", "model"], outcome: ["ok", "error"], duration_ms: 120000 },
 };
 
 export function sanitizeAdvisorPayload(event: string, payload: Record<string, unknown>) {
@@ -268,7 +275,7 @@ export function track<E extends AnalyticsEventName>(
 ): void {
   try {
     const raw = payload as unknown as Record<string, unknown>;
-    const cleanData = event.startsWith("advisor_")
+    const cleanData = event.startsWith("advisor_") || event === "chat_timing"
       ? sanitizeAdvisorPayload(event, raw)
       : sanitizePayload(raw);
 

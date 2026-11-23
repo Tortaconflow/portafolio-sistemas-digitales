@@ -92,7 +92,7 @@ class WorkersAiProvider implements AdvisorProvider {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin');
     const headers: Record<string, string> = {
@@ -131,6 +131,7 @@ export default {
     if (origin !== allowed.origin) return reply({ code: 'origin' }, 403);
 
     headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Expose-Headers'] = 'Server-Timing';
     if (request.method === 'OPTIONS') {
       headers['Access-Control-Allow-Methods'] = 'POST';
       headers['Access-Control-Allow-Headers'] = 'Content-Type';
@@ -202,40 +203,55 @@ export default {
         if (!reservation.ok) return reply({ ...result, fallback: 'guided' }, reservation.status);
 
         let timeout: ReturnType<typeof setTimeout> | undefined;
+        let inference: Promise<string> | undefined;
+        let inferenceStarted: number | undefined;
         try {
           let replyText = guidedChatReply(message, history);
           if (!replyText && isLocalMode) {
             replyText = 'Modo local activo. ¿Qué te gustaría que fuera más fácil en tu negocio esta semana?';
           }
           if (!replyText) {
-            const raw = await Promise.race([
-              env.AI!.run(env.AI_MODEL ?? DEFAULT_MODEL, {
-                messages: [
-                  { role: 'system', content: CHAT_SYSTEM_PROMPT },
-                  ...history.map(turn => ({ role: turn.role, content: turn.text })),
-                  { role: 'user', content: message },
-                ],
-                max_tokens: 280,
-                temperature: 0.3,
-              }) as Promise<{ response?: unknown; choices?: Array<{ message?: { content?: unknown } }> }>,
+            inferenceStarted = performance.now();
+            inference = (env.AI!.run(env.AI_MODEL ?? DEFAULT_MODEL, {
+              messages: [
+                { role: 'system', content: CHAT_SYSTEM_PROMPT },
+                ...history.map(turn => ({ role: turn.role, content: turn.text })),
+                { role: 'user', content: message },
+              ],
+              max_tokens: 280,
+              temperature: 0.3,
+            }) as Promise<{ response?: unknown; choices?: Array<{ message?: { content?: unknown } }> }>).then(raw => {
+              const content = typeof raw?.response === 'string' ? raw.response : raw?.choices?.[0]?.message?.content;
+              const text = typeof content === 'string' ? content.trim() : '';
+              if (!text || utf8Size(text) > 2500) throw new Error('invalid');
+              return text;
+            });
+            replyText = await Promise.race([
+              inference,
               new Promise<never>((_, reject) => {
                 timeout = setTimeout(() => reject(new Error('timeout')), Number(env.LOCAL_TIMEOUT_MS ?? AI_POLICY.providerTimeoutMs));
               }),
             ]);
-            replyText = typeof raw?.response === 'string'
-              ? raw.response.trim()
-              : typeof raw?.choices?.[0]?.message?.content === 'string'
-                ? raw.choices[0].message.content.trim()
-                : '';
           }
+          if (inferenceStarted !== undefined) headers['Server-Timing'] = `inference;dur=${Math.round(performance.now() - inferenceStarted)}`;
           if (!replyText || utf8Size(replyText) > 2500) throw new Error('invalid');
           const finished = await control('/finish', { id, status: 'success' });
           if (!finished.ok) throw new Error('finish_uncertain');
           return reply({ version: '2.0', reply: replyText, remaining: result.remaining ?? 0 });
         } catch (error) {
-          const uncertain = error instanceof Error && ['timeout', 'finish_uncertain'].includes(error.message);
-          await control('/finish', { id, status: uncertain ? 'uncertain' : 'failed' });
-          return reply({ code: uncertain ? 'uncertain' : 'provider_failure', fallback: 'guided' }, 503);
+          if (inferenceStarted !== undefined) headers['Server-Timing'] ??= `inference;dur=${Math.round(performance.now() - inferenceStarted)}`;
+          const timedOut = error instanceof Error && error.message === 'timeout';
+          const uncertain = timedOut || error instanceof Error && error.message === 'finish_uncertain';
+          const finished = await control('/finish', { id, status: uncertain ? 'uncertain' : 'failed' });
+          if (timedOut && inference) {
+            // Settle the original attempt if it finishes after the response. A
+            // Durable Object lease also handles an interrupted background task.
+            ctx.waitUntil(inference.then(
+              () => control('/finish', { id, status: 'success' }),
+              () => control('/finish', { id, status: 'failed' }),
+            ).catch(() => undefined));
+          }
+          return reply({ code: uncertain || !finished.ok ? 'uncertain' : 'provider_failure', fallback: 'guided' }, 503);
         } finally {
           if (timeout !== undefined) clearTimeout(timeout);
         }

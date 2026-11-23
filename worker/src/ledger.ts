@@ -3,6 +3,7 @@ import { AI_POLICY } from '../../shared/cidikis-ai-policy.ts';
 import type { Env } from './index.ts';
 import { SINGLE_POLICY, isSingleCampaign } from './single-policy.ts';
 import {migrateLedgerSchema} from './ledger-schema.ts';
+import { publicRequestStatus, recoverExpiredRequests, REQUEST_LEASE_MS } from './request-leases.ts';
 
 type Row = Record<string, string | number | null>;
 const reply = (data: unknown, status = 200) => Response.json(data, { status });
@@ -13,6 +14,9 @@ export class BudgetLedger extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     migrateLedgerSchema(ctx.storage);
+    // A separate, additive table keeps the existing ledger schema readable by
+    // previous Worker versions during a rollback.
+    this.rows('CREATE TABLE IF NOT EXISTS request_leases (id TEXT PRIMARY KEY, expires INTEGER NOT NULL)');
   }
   rows(sql: string, ...bindings: (string | number | null)[]) { return this.ctx.storage.sql.exec<Row>(sql, ...bindings).toArray(); }
   async fetch(request: Request): Promise<Response> {
@@ -27,7 +31,9 @@ export class BudgetLedger extends DurableObject<Env> {
     const path = new URL(request.url).pathname;
     return this.ctx.storage.transactionSync(() => {
       const now = Date.now(); const day = new Date(now).toISOString().slice(0, 10);
-      // Uncertain requests keep their global slot and reserve on subsequent UTC days.
+      if (path === '/reserve') recoverExpiredRequests(this.rows.bind(this), now);
+      // Live requests carry their reserve across UTC days. Expired leases
+      // release capacity while preserving the original day's charge.
       const carried = Number(this.rows("SELECT COALESCE(SUM(COALESCE(reservation,CASE WHEN campaign='v02-lab-no-ai-1' THEN 0 ELSE ? END)),0) AS n FROM requests WHERE status IN ('pending','uncertain')",AI_POLICY.reservationNeurons)[0].n);
       this.rows('INSERT OR IGNORE INTO days(day,reserved) VALUES (?,?)', day, carried);
       if (path === '/operator/nonce') {
@@ -77,7 +83,14 @@ export class BudgetLedger extends DurableObject<Env> {
         if (!session || Number(session.expires) <= now) return reply({ code: 'expired' }, 401);
         if ((isSingleCampaign(session.campaign)||single)&&session.campaign!==data.campaign) return reply({code:'campaign_session'},403);
         const previous = this.rows('SELECT * FROM requests WHERE id=?', data.id)[0];
-        if (previous) return previous.session === data.session && previous.hash === data.hash ? reply({ code: 'duplicate', status: previous.status }, 409) : reply({ code: 'request_conflict' }, 409);
+        if (previous) {
+          if (previous.session !== data.session || previous.hash !== data.hash) return reply({ code: 'request_conflict' }, 409);
+          return reply({
+            code: 'duplicate',
+            status: publicRequestStatus(previous.status),
+            ...(previous.status === 'expired_uncertain' ? { leaseExpired: true } : {}),
+          }, 409);
+        }
         if (Number(session.attempts) >= AI_POLICY.maxAttempts) return reply({ code: 'session_limit' }, 429);
         if (session.busy) return reply({ code: 'session_busy' }, 429);
         if (campaign && (Number(campaign.attempts) >= (single?SINGLE_POLICY.attempts:5) || Number(campaign.reserved) + reservationNeurons > (single?SINGLE_POLICY.reservation:950))) return reply({ code: 'campaign_limit' }, 429);
@@ -90,6 +103,7 @@ export class BudgetLedger extends DurableObject<Env> {
         this.rows('UPDATE days SET reserved=reserved+? WHERE day=?', reservationNeurons, day);
         this.rows('UPDATE sessions SET attempts=attempts+1,busy=1 WHERE id=?', data.session);
         this.rows("INSERT INTO requests(id,session,hash,status,day,campaign,reservation) VALUES (?,?,?,'pending',?,?,?)", data.id, data.session, data.hash, day, data.campaign ?? null,reservationNeurons);
+        if (!data.campaign) this.rows('INSERT INTO request_leases (id, expires) VALUES (?, ?)', data.id, now + REQUEST_LEASE_MS);
         if (campaign) this.rows('UPDATE campaigns SET attempts=attempts+1,reserved=reserved+? WHERE id=?', reservationNeurons, data.campaign);
         if(single&&this.env.LOCAL_LEDGER_RESERVE_FAULT==='invalid-ack')return reply({ok:false});
         return reply({ ok: true, remaining: single?SINGLE_POLICY.attempts-Number(campaign!.attempts)-1:AI_POLICY.maxAttempts - Number(session.attempts) - 1 });
@@ -98,11 +112,15 @@ export class BudgetLedger extends DurableObject<Env> {
         if (this.env.LOCAL_LEDGER_FINISH_FAULT === 'true') return reply({ code: 'finish_fixture_failure' }, 503);
         if (this.env.LOCAL_LEDGER_FINISH_FAULT === 'invalid-ack') return reply({ok:false});
         const previous = this.rows('SELECT * FROM requests WHERE id=?', data.id)[0];
-        if (!previous || previous.status !== 'pending' || !['success', 'failed', 'uncertain'].includes(String(data.status))) return reply({ code: 'state' }, 409);
+        const reconciling = previous?.campaign === null && previous.status === 'uncertain' && data.status !== 'uncertain';
+        if (!previous || (previous.status !== 'pending' && !reconciling) || !['success', 'failed', 'uncertain'].includes(String(data.status))) return reply({ code: 'state' }, 409);
         this.rows('UPDATE requests SET status=? WHERE id=?', data.status, data.id);
         if (isSingleCampaign(previous.campaign)) this.rows("UPDATE campaigns SET status=? WHERE id=? AND status!='closed'",data.status==='uncertain'?'uncertain':'closed',previous.campaign);
         if (previous.campaign && data.status === 'uncertain') this.rows("UPDATE campaigns SET status='uncertain' WHERE id=? AND status!='closed'", previous.campaign as string);
-        if (data.status !== 'uncertain') this.rows('UPDATE sessions SET busy=0 WHERE id=?', previous.session as string);
+        if (data.status !== 'uncertain') {
+          this.rows('DELETE FROM request_leases WHERE id = ?', data.id);
+          this.rows('UPDATE sessions SET busy=0 WHERE id=?', previous.session as string);
+        }
         return reply({ ok: true });
       }
       if (path === '/status') {
@@ -110,7 +128,7 @@ export class BudgetLedger extends DurableObject<Env> {
         if (!row) return reply({ code: 'unknown' }, 404);
         if (Number(row.status_checks) >= 2) return reply({ code: 'status_limit' }, 429);
         this.rows('UPDATE requests SET status_checks=status_checks+1 WHERE id=?', data.id);
-        return reply({ status: row.status });
+        return reply({ status: publicRequestStatus(row.status) });
       }
       // This internal path is never routed by the public Worker, including locally.
       if (path === '/metrics') return reply({ days: this.rows('SELECT * FROM days'), sessions: this.rows('SELECT * FROM sessions'), requests: this.rows('SELECT * FROM requests'), tables: this.rows("SELECT name FROM sqlite_master WHERE type='table'") });

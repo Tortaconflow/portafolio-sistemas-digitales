@@ -81,7 +81,7 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
 
   async function sendMessage(rawText: string) {
     const text = rawText.trim();
-    if (!text || submitting.current || (error?.options.alreadyAnswered && attemptRef.current?.text === text)) return;
+    if (!text || submitting.current || (error?.options.requiresEdit && attemptRef.current?.text === text)) return;
 
     const history = messages.slice(1);
     const localReply = guidedChatReply(text, history);
@@ -218,8 +218,8 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
               aria-label="Escribe tu pregunta para CÍDIKS IA"
               aria-describedby="cidiks-chat-privacy"
             />
-            <button type="submit" disabled={busy || !draft.trim() || Boolean(error?.options.alreadyAnswered)}>
-              {error && !error.options.alreadyAnswered ? "Reintentar" : "Enviar"}
+            <button type="submit" disabled={busy || !draft.trim() || Boolean(error?.options.requiresEdit)}>
+              {error && !error.options.requiresEdit ? "Reintentar" : "Enviar"}
             </button>
           </form>
 
