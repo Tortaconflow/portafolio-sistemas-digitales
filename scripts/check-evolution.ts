@@ -76,6 +76,28 @@ for (const route of COMMUNITY_ROUTES) {
       `Guía enlazada una sola vez: ${slug}`,
     );
 }
+// Descubrimiento: Comunidad se enlaza desde la home y desde el índice de Conocimiento,
+// sin añadir un sexto elemento al encabezado (en móvil apila sus enlaces).
+const knowledgeIndex = readFileSync("dist/conocimiento/index.html", "utf8");
+for (const [name, source] of [["home", html], ["conocimiento", knowledgeIndex]] as const)
+  assert.equal(
+    source.split(`href="${COMMUNITY_PAGE.path}"`).length - 1,
+    1,
+    `Un enlace a Comunidad en ${name}`,
+  );
+const learnSection = html.match(/<section[^>]*id="aprende"[\s\S]*?<\/section>/)?.[0] ?? "";
+assert.ok(
+  learnSection.includes(`href="${COMMUNITY_PAGE.path}"`),
+  "El enlace de la home está en la sección de guías (#aprende)",
+);
+for (const path of ["/", content.advisor.path, ...pages]) {
+  const nav =
+    readFileSync(`dist${path}index.html`, "utf8").match(
+      /<nav aria-label="Principal">(.*?)<\/nav>/s,
+    )?.[1] ?? "";
+  assert.equal((nav.match(/<a /g) || []).length, 5, `Encabezado con 5 enlaces: ${path}`);
+  assert.ok(!nav.includes(COMMUNITY_PAGE.path), `Comunidad fuera del encabezado: ${path}`);
+}
 const testWindow = {
   cidiksAnalyticsBuffer: [] as Array<{
     event: string;

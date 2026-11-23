@@ -133,3 +133,49 @@ test("el foco por teclado es visible en las guías y los enlaces", async ({ page
   expect(outline.style).not.toBe("none");
   expect(outline.width).toBeGreaterThanOrEqual(2);
 });
+
+// --- Descubrimiento (tarea 3): enlaces desde la home y Conocimiento, sin sexto elemento en el encabezado ---
+const COMMUNITY_LINK = /rutas gratuitas de CÍDIKS Comunidad/;
+
+test("la home (sin y con JavaScript) y el índice de Conocimiento enlazan a Comunidad", async ({ page, browser, baseURL }) => {
+  // HTML estático, el que leen los buscadores antes de ejecutar JavaScript.
+  const noJs = await browser.newContext({ javaScriptEnabled: false, baseURL });
+  const staticHome = await noJs.newPage();
+  await staticHome.goto("/");
+  await staticHome.locator("#aprende").getByRole("link", { name: COMMUNITY_LINK }).click();
+  await expect(staticHome).toHaveURL(new RegExp(`${PATH}$`));
+  await noJs.close();
+  // Home ya montada con React.
+  await page.goto("/");
+  const homeLink = page.locator("#aprende").getByRole("link", { name: COMMUNITY_LINK });
+  await homeLink.scrollIntoViewIfNeeded();
+  await expect(homeLink).toBeVisible();
+  await homeLink.click();
+  await expect(page).toHaveURL(new RegExp(`${PATH}$`));
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Aprende a mejorar tu negocio");
+  // Índice de Conocimiento, al que lleva el enlace "Conocimiento" de cualquier encabezado.
+  await page.goto("/conocimiento/");
+  await page.getByRole("main").getByRole("link", { name: COMMUNITY_LINK }).click();
+  await expect(page).toHaveURL(new RegExp(`${PATH}$`));
+});
+
+test("el encabezado de las páginas estáticas conserva sus cinco enlaces", async ({ page }) => {
+  for (const path of ["/conocimiento/", "/asesor-ia/", PATH]) {
+    await page.goto(path);
+    const links = page.getByRole("navigation", { name: "Principal" }).getByRole("link");
+    await expect(links, path).toHaveCount(5);
+    await expect(links.filter({ hasText: "Comunidad" }), path).toHaveCount(0);
+  }
+});
+
+test("las zonas modificadas siguen accesibles (WCAG 2.1 A/AA) y sin desbordes", async ({ page }) => {
+  for (const [path, scope] of [["/", "#aprende"], ["/conocimiento/", "main"]] as const) {
+    await page.goto(path);
+    const result = await new AxeBuilder({ page }).include(scope).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+    expect(result.violations, `${path}: ${JSON.stringify(result.violations, null, 2)}`).toEqual([]);
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${path} desborde a ${width}px`).toBe(true);
+    }
+  }
+});
