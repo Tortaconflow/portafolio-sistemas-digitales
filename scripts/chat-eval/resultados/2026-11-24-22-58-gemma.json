@@ -1,0 +1,1845 @@
+{
+  "fecha": "2026-11-24T22:58:17.767Z",
+  "modelo": "@cf/google/gemma-4-26b-a4b-it",
+  "repeticiones": 1,
+  "versiones": [
+    {
+      "id": "actual",
+      "version": "chat-2026-11-23",
+      "sha": "e2fb6d47fa2c",
+      "caracteres": 5134
+    },
+    {
+      "id": "propuesta",
+      "version": "chat-v03-propuesta",
+      "sha": "2ae163d75c0a",
+      "caracteres": 5456
+    }
+  ],
+  "resultados": [
+    {
+      "conversacion": "C1",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "necesito ayuda con mi negocio pero no se ni por donde empezar",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Te doy la bienvenida y aquí estamos para apoyarte. Para saber por dónde empezar, cuéntame qué situación reciente en tu negocio te gustaría hacer más fácil. ¿Qué es lo que más tiempo te quita hoy?",
+      "origen": "modelo",
+      "ms": 1778,
+      "intentos": 1,
+      "tokensEntrada": 1274,
+      "tokensSalida": 45,
+      "tokensCache": 0,
+      "neurons": 12.809090614318848,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 35,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": false
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C1",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "tengo una estetica chiquita, la atiendo yo nomas y ahorita no tengo dinero para pagar nada",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado llevar todo el trabajo tú solo en la estética. Para empezar sin gastar, puedes crear tu Perfil de Negocio en Google Maps para que la gente de tu zona te encuentre más fácil. Solo necesitas subir fotos de tus cortes o servicios y poner tu horario real. ¿Qué es lo que más te preguntan tus clientes cuando te buscan?",
+      "origen": "modelo",
+      "ms": 1843,
+      "intentos": 1,
+      "tokensEntrada": 1410,
+      "tokensSalida": 72,
+      "tokensCache": 1216,
+      "neurons": 9.25454044342041,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 61,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C1",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "lo que mas me pasa es que me escriben para preguntar si hay lugar y cuando contesto ya se fueron con otra",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es muy pesado perder clientes por no contestar rápido. Para que no se te vayan, puedes usar las respuestas rápidas de WhatsApp Business con tus horarios libres y cómo apartar un lugar. Así solo mandas un texto listo y les aseguras su cita de una vez. ¿Qué servicios de tu estética son los que más te piden?",
+      "origen": "modelo",
+      "ms": 3031,
+      "intentos": 1,
+      "tokensEntrada": 1519,
+      "tokensSalida": 69,
+      "tokensCache": 0,
+      "neurons": 15.690908432006836,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 57,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        },
+        {
+          "etiqueta": "Propone algo gratuito o que ya tiene",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C1",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "necesito ayuda con mi negocio pero no se ni por donde empezar",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Con gusto te ayudo. Para darte un consejo que de verdad te sirva, cuéntame qué vendes y cómo te compran hoy tus clientes. ¿Qué es lo que más te gustaría mejorar en este momento?",
+      "origen": "modelo",
+      "ms": 1389,
+      "intentos": 1,
+      "tokensEntrada": 1349,
+      "tokensSalida": 47,
+      "tokensCache": 0,
+      "neurons": 13.545454025268555,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 34,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C1",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "tengo una estetica chiquita, la atiendo yo nomas y ahorita no tengo dinero para pagar nada",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es normal sentirse así cuando trabajas solo. Para saber qué paso darte sin que gastes, cuéntame si tus clientes te buscan en redes sociales o si solo llegan porque pasan por tu local. ¿Cómo te contactan para pedir una cita?",
+      "origen": "modelo",
+      "ms": 1736,
+      "intentos": 1,
+      "tokensEntrada": 1487,
+      "tokensSalida": 52,
+      "tokensCache": 0,
+      "neurons": 14.936363220214844,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 40,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C1",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "lo que mas me pasa es que me escriben para preguntar si hay lugar y cuando contesto ya se fueron con otra",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado perder clientes por no contestar a tiempo. Si te escriben mucho por mensaje, esta semana podrías usar el catálogo de WhatsApp Business para que vean tus servicios y precios sin esperar tu respuesta. ¿Tus clientes te escriben más por WhatsApp o por otra aplicación?",
+      "origen": "modelo",
+      "ms": 1584,
+      "intentos": 1,
+      "tokensEntrada": 1575,
+      "tokensSalida": 57,
+      "tokensCache": 1408,
+      "neurons": 9.472721099853516,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 46,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": false
+        },
+        {
+          "etiqueta": "Propone algo gratuito o que ya tiene",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "hago artesanias de barro y quiero una pagina porque con pagina voy a vender el doble",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Tener una página puede ayudar mucho a que conozcan tu trabajo con el barro. Antes de gastar, puedes empezar gratis subiendo fotos claras de tus piezas a un álbum en Facebook para que la gente vea lo que haces. ¿Qué es lo que más te preguntan tus clientes cuando ven tus artesanías?",
+      "origen": "modelo",
+      "ms": 1887,
+      "intentos": 1,
+      "tokensEntrada": 1279,
+      "tokensSalida": 64,
+      "tokensCache": 1216,
+      "neurons": 7.845449447631836,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 52,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No da por hecho que venderá más",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "vendo en el mercado los domingos y a veces turistas me piden fotos por whatsapp",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Como vendes en el mercado, puedes aprovechar esas fotos que te piden los turistas para armar un álbum en Facebook con tus piezas de barro. Así, cuando alguien te escriba por WhatsApp, solo le mandas el enlace para que vea todo lo que haces. ¿Qué es lo que más te preguntan tus clientes cuando ven tus artesanías?",
+      "origen": "modelo",
+      "ms": 1796,
+      "intentos": 1,
+      "tokensEntrada": 1427,
+      "tokensSalida": 71,
+      "tokensCache": 1280,
+      "neurons": 9.090903282165527,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 57,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "pero aqui nadie busca en internet, eso es para la ciudad",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es cierto que en el mercado la gente te busca en persona, pero tener tus fotos en internet ayuda a que los turistas te encuentren antes de llegar. Esta semana puedes subir las fotos de tus piezas de barro a un álbum en Facebook para que ya las tengas listas. ¿Qué es lo que más te preguntan tus clientes cuando ven tus artesanías?",
+      "origen": "modelo",
+      "ms": 1992,
+      "intentos": 1,
+      "tokensEntrada": 1523,
+      "tokensSalida": 71,
+      "tokensCache": 1344,
+      "neurons": 9.672721862792969,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 63,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Retoma a los turistas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "hago artesanias de barro y quiero una pagina porque con pagina voy a vender el doble",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es posible que una página te ayude a llegar a más gente, pero no asegura que las ventas suban al doble. Para saber si es lo mejor para ti, cuéntame cómo te compran ahora y si tus clientes suelen buscarte en internet o te conocen en persona. ¿Vendes tus piezas en un local o las entregas a domicilio?",
+      "origen": "modelo",
+      "ms": 1752,
+      "intentos": 1,
+      "tokensEntrada": 1354,
+      "tokensSalida": 73,
+      "tokensCache": 1280,
+      "neurons": 8.481812477111816,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 58,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No da por hecho que venderá más",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "vendo en el mercado los domingos y a veces turistas me piden fotos por whatsapp",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Si tus clientes te encuentran en el mercado y te piden fotos por WhatsApp, quizás no necesites una página todavía. Podrías empezar usando un catálogo en WhatsApp Business para que los turistas vean tus piezas sin que tengas que enviar fotos una por una. ¿Tus clientes suelen comprarte piezas grandes o cosas más pequeñas?",
+      "origen": "modelo",
+      "ms": 2791,
+      "intentos": 1,
+      "tokensEntrada": 1511,
+      "tokensSalida": 65,
+      "tokensCache": 1344,
+      "neurons": 9.399993896484375,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 54,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C2",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "pero aqui nadie busca en internet, eso es para la ciudad",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es cierto que en el mercado la gente te busca en persona, pero los turistas que te piden fotos suelen usar internet para decidir qué comprar. Si tus piezas son pequeñas y fáciles de llevar, el catálogo de WhatsApp te servirá para mostrar todo rápido. ¿Tus clientes te piden piezas por encargo o solo compran lo que tienes listo?",
+      "origen": "modelo",
+      "ms": 2146,
+      "intentos": 1,
+      "tokensEntrada": 1601,
+      "tokensSalida": 70,
+      "tokensCache": 1472,
+      "neurons": 9.772720336914062,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 59,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Retoma a los turistas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "que hacen ustedes? me pueden ayudar con mi negocio?",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Te doy la bienvenida. Aquí te ayudamos con temas de tus clientes, ventas, WhatsApp, redes sociales, Google Maps, tu página web y automatizaciones. ¿Qué situación reciente en tu negocio te gustaría hacer más fácil?",
+      "origen": "modelo",
+      "ms": 1281,
+      "intentos": 1,
+      "tokensEntrada": 1271,
+      "tokensSalida": 46,
+      "tokensCache": 1216,
+      "neurons": 7.28181266784668,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 34,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": false
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "Describe servicios reales",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "tengo un taller mecanico y todo el dia me hablan para preguntar si ya esta su carro, pierdo mucho tiempo contestando",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado estar pendiente del celular mientras trabajas en los carros. Para ahorrar tiempo, puedes crear una respuesta rápida en WhatsApp Business que diga: «Hola, estamos revisando tu vehículo. En cuanto tengamos una actualización te avisamos por este medio». ¿Te gustaría que tus clientes también puedan agendar citas por mensaje?",
+      "origen": "modelo",
+      "ms": 841,
+      "intentos": 1,
+      "tokensEntrada": 1412,
+      "tokensSalida": 64,
+      "tokensCache": 0,
+      "neurons": 14.581817626953125,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 50,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "y eso me lo pueden hacer ustedes? cuanto me cobrarias",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "El costo depende de lo que necesites para tu taller. ¿Te gustaría que tus clientes puedan ver tus servicios, pedir una cita o solo recibir información por mensaje? Si quieres hablar con Reily, toca el botón de WhatsApp abajo del chat.",
+      "origen": "modelo",
+      "ms": 1635,
+      "intentos": 1,
+      "tokensEntrada": 1501,
+      "tokensSalida": 50,
+      "tokensCache": 1280,
+      "neurons": 9.190903663635254,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 41,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Menciona el diagnóstico gratuito",
+          "ok": false
+        },
+        {
+          "etiqueta": "Indica el botón de WhatsApp",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "que hacen ustedes? me pueden ayudar con mi negocio?",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "CÍDIKS ayuda a que tu negocio tenga presencia en internet, catálogos claros, orden en tus productos y que tus clientes te encuentren más fácil. Te puedo dar consejos para mejorar tu atención o tus ventas según lo que necesites. Para saber por dónde empezar, cuéntame qué vendes y cómo te compran hoy tus clientes.",
+      "origen": "modelo",
+      "ms": 1444,
+      "intentos": 1,
+      "tokensEntrada": 1347,
+      "tokensSalida": 71,
+      "tokensCache": 0,
+      "neurons": 14.181818008422852,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 54,
+      "preguntas": 0,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "Describe servicios reales",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "tengo un taller mecanico y todo el dia me hablan para preguntar si ya esta su carro, pierdo mucho tiempo contestando",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado estar atendiendo el celular mientras trabajas en los carros. Para darte un paso que te ahorre tiempo, cuéntame si tus clientes suelen escribirte por WhatsApp o si te llaman por teléfono. ¿Te gustaría que ellos pudieran consultar el estado de su vehículo por su cuenta?",
+      "origen": "modelo",
+      "ms": 1687,
+      "intentos": 1,
+      "tokensEntrada": 1511,
+      "tokensSalida": 60,
+      "tokensCache": 1344,
+      "neurons": 9.263629913330078,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 47,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C3",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "y eso me lo pueden hacer ustedes? cuanto me cobrarias",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Depende de lo que necesites que tus clientes puedan hacer en su proceso. Si quieres que ellos consulten el estado de su vehículo por su cuenta, el trabajo es distinto a solo organizar tus mensajes. ¿Te gustaría que vean sus servicios o que agenden una cita?",
+      "origen": "modelo",
+      "ms": 1907,
+      "intentos": 1,
+      "tokensEntrada": 1597,
+      "tokensSalida": 56,
+      "tokensCache": 1408,
+      "neurons": 9.645448684692383,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 46,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Menciona el diagnóstico gratuito",
+          "ok": false
+        },
+        {
+          "etiqueta": "Indica el botón de WhatsApp",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "mi familia y yo tejemos en telar de cintura y queremos vender a gente de otras ciudades",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Para que gente de otras ciudades conozca tu tejido, lo más importante es que puedan ver bien cada detalle de tus piezas. Esta semana puedes empezar subiendo fotos claras de tus productos a un álbum en Facebook para que la gente vea la calidad de tu trabajo. ¿Por qué medio te contactan más tus clientes actualmente?",
+      "origen": "modelo",
+      "ms": 1631,
+      "intentos": 1,
+      "tokensEntrada": 1279,
+      "tokensSalida": 65,
+      "tokensCache": 1216,
+      "neurons": 7.8727216720581055,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 56,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "en la comunidad el internet solo agarra en la plaza y casi nadie de nosotros sabe usar bien el celular",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado trabajar con poco internet y que el celular sea complicado. Para empezar, puedes pedirle ayuda a alguien de confianza para que suba fotos de tus tejidos a un álbum en Facebook cuando vayas a la plaza. Así tus piezas estarán listas para cuando alguien las busque. ¿Qué es lo que más se les dificulta al usar el celular para el negocio?",
+      "origen": "modelo",
+      "ms": 1631,
+      "intentos": 1,
+      "tokensEntrada": 1434,
+      "tokensSalida": 74,
+      "tokensCache": 0,
+      "neurons": 15.054545402526855,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 63,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Toma en cuenta la señal",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "mejor hazlo tu por nosotros, no sabemos de eso",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Aquí solo puedo ayudarte con temas de tu negocio. Reily puede apoyarte con más detalle si tocas el botón de WhatsApp abajo del chat. ¿Qué es lo que más tiempo les quita al intentar vender sus tejidos?",
+      "origen": "modelo",
+      "ms": 1233,
+      "intentos": 1,
+      "tokensEntrada": 1531,
+      "tokensSalida": 46,
+      "tokensCache": 1280,
+      "neurons": 9.35453987121582,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 37,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Menciona el diagnóstico gratuito",
+          "ok": false
+        },
+        {
+          "etiqueta": "Indica el botón de WhatsApp",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "mi familia y yo tejemos en telar de cintura y queremos vender a gente de otras ciudades",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Qué labor tan bonita realizan. Para saber cómo ayudarte a llegar a esas otras ciudades, cuéntame qué piezas tejen y si ya usan alguna red social o aplicación para mostrar su trabajo. ¿Cómo les compran actualmente?",
+      "origen": "modelo",
+      "ms": 1180,
+      "intentos": 1,
+      "tokensEntrada": 1355,
+      "tokensSalida": 46,
+      "tokensCache": 0,
+      "neurons": 13.572726249694824,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 36,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "en la comunidad el internet solo agarra en la plaza y casi nadie de nosotros sabe usar bien el celular",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es complicado trabajar con poca señal y si no dominan el celular es mejor no complicarse con cosas difíciles. Si ya tienen fotos de sus tejidos, podrían usar un álbum de Facebook para mostrar su trabajo cuando vayan a la plaza. ¿Tienen algún celular con fotos de sus piezas o alguien de la familia que sepa usar un poco más las redes?",
+      "origen": "modelo",
+      "ms": 2503,
+      "intentos": 1,
+      "tokensEntrada": 1489,
+      "tokensSalida": 72,
+      "tokensCache": 1344,
+      "neurons": 9.39090347290039,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 62,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Toma en cuenta la señal",
+          "ok": true
+        },
+        {
+          "etiqueta": "No atribuye región, pueblo ni lengua",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C4",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "mejor hazlo tu por nosotros, no sabemos de eso",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Reily ofrece un diagnóstico gratuito de 15 minutos para ver por dónde empezar con tu negocio. Si decides tomarlo, toca el botón de WhatsApp abajo del chat para hablar con él. ¿Te gustaría que revisen cómo mostrar sus piezas de forma sencilla?",
+      "origen": "modelo",
+      "ms": 1511,
+      "intentos": 1,
+      "tokensEntrada": 1585,
+      "tokensSalida": 53,
+      "tokensCache": 1408,
+      "neurons": 9.45453929901123,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 42,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Menciona el diagnóstico gratuito",
+          "ok": true
+        },
+        {
+          "etiqueta": "Indica el botón de WhatsApp",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "tengo una cocina economica, en el local no hay internet y solo uso datos que recargo cada semana",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Es pesado estar pendiente de las recargas para poder trabajar. Para que no te falte conexión, intenta usar el catálogo de WhatsApp Business con fotos de tus platillos y descripciones cortas para que tus clientes vean qué tienes sin que tú tengas que escribir tanto. ¿Qué es lo que más te preguntan tus clientes cuando te buscan?",
+      "origen": "modelo",
+      "ms": 4007,
+      "intentos": 1,
+      "tokensEntrada": 1281,
+      "tokensSalida": 69,
+      "tokensCache": 1216,
+      "neurons": 7.99999475479126,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 57,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "quiero que mas gente de la colonia sepa que existo",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Para que la gente de tu colonia te encuentre más fácil, lo mejor es que aparezcas en el mapa cuando busquen comida cerca. Crea gratis tu Perfil de Negocio en Google Maps poniendo tu horario real y fotos de tus platillos. ¿Hoy tus clientes llegan más por recomendación o te buscan en redes sociales?",
+      "origen": "modelo",
+      "ms": 1869,
+      "intentos": 1,
+      "tokensEntrada": 1431,
+      "tokensSalida": 67,
+      "tokensCache": 1280,
+      "neurons": 9.018176078796387,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 54,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "ya tengo face pero casi no lo uso",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Si casi no usas tu página de Facebook, lo mejor es que no te compliques con publicaciones diarias. Esta semana puedes subir solo tres fotos claras de tus platillos más vendidos con su descripción y tu ubicación para que la gente sepa qué vendes. ¿Qué es lo que más te quita tiempo cuando atiendes a tus clientes?",
+      "origen": "modelo",
+      "ms": 1722,
+      "intentos": 1,
+      "tokensEntrada": 1519,
+      "tokensSalida": 70,
+      "tokensCache": 1344,
+      "neurons": 9.609085083007812,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 57,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 4,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "el menu cambia diario",
+      "turnosEnviados": 6,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Como el menú cambia diario, no te compliques con publicaciones fijas en Facebook. Esta semana puedes subir una foto de la pizarra o del menú del día a tus historias de Facebook y de WhatsApp para que tus clientes sepan qué hay hoy. ¿Qué es lo que más te quita tiempo cuando atiendes a tus clientes?",
+      "origen": "modelo",
+      "ms": 13249,
+      "intentos": 1,
+      "tokensEntrada": 1607,
+      "tokensSalida": 66,
+      "tokensCache": 0,
+      "neurons": 16.409090042114258,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 56,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 5,
+      "repeticion": 1,
+      "variante": "actual",
+      "persona": "entonces me conviene que me hagan una app o una pagina con pedidos en linea?",
+      "turnosEnviados": 6,
+      "primerMensajeEnVentana": false,
+      "respuesta": "Depende de lo que tus clientes necesiten poder hacer en ella. ¿Quieres que vean tus productos, que te hagan pedidos o solo que encuentren tu ubicación? Si quieres hablar con Reily, toca el botón de WhatsApp abajo del chat.",
+      "origen": "modelo",
+      "ms": 1319,
+      "intentos": 1,
+      "tokensEntrada": 1598,
+      "tokensSalida": 49,
+      "tokensCache": 1280,
+      "neurons": 10.045448303222656,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 39,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Recuerda los datos limitados del turno 1",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 1,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "tengo una cocina economica, en el local no hay internet y solo uso datos que recargo cada semana",
+      "turnosEnviados": 0,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Qué difícil es trabajar sin internet estable. Para darte un consejo que te sirva con tus datos, cuéntame qué vendes y cómo te compran hoy tus clientes. ¿Te piden por mensaje o llegan directo al local?",
+      "origen": "modelo",
+      "ms": 1216,
+      "intentos": 1,
+      "tokensEntrada": 1356,
+      "tokensSalida": 48,
+      "tokensCache": 1280,
+      "neurons": 7.81817626953125,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 36,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Pregunta o pide un dato",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 2,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "quiero que mas gente de la colonia sepa que existo",
+      "turnosEnviados": 2,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Si quieres que la gente de tu zona te encuentre, lo mejor es que aparezcas en el mapa de sus celulares. Esta semana puedes crear tu Perfil de Negocio en Google para que cuando alguien busque comida cerca, vea tu cocina. ¿Vendes comida preparada para comer ahí o solo para llevar?",
+      "origen": "modelo",
+      "ms": 2218,
+      "intentos": 1,
+      "tokensEntrada": 1485,
+      "tokensSalida": 63,
+      "tokensCache": 1344,
+      "neurons": 9.109085083007812,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 51,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "No propone página ni app",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 3,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "ya tengo face pero casi no lo uso",
+      "turnosEnviados": 4,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Tener Facebook ayuda, pero si no lo usas seguido, la gente no se enterará de tus platillos. Si tu meta es que la gente de la colonia te encuentre, el mapa de Google es más directo para quienes buscan comida rápido. ¿Tus clientes suelen buscar comida en internet o prefieren preguntar a sus conocidos?",
+      "origen": "modelo",
+      "ms": 1853,
+      "intentos": 1,
+      "tokensEntrada": 1569,
+      "tokensSalida": 68,
+      "tokensCache": 1408,
+      "neurons": 9.718175888061523,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 54,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 4,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "el menu cambia diario",
+      "turnosEnviados": 6,
+      "primerMensajeEnVentana": true,
+      "respuesta": "Si el menú cambia diario, publicar fotos fijas en Facebook puede confundir a la gente. Para que sepan qué hay de comer hoy sin gastar muchos datos, puedes usar el estado de WhatsApp con una foto de tu menú. ¿Te resulta fácil tomar una foto al menú cada mañana?",
+      "origen": "modelo",
+      "ms": 2167,
+      "intentos": 1,
+      "tokensEntrada": 1654,
+      "tokensSalida": 59,
+      "tokensCache": 1536,
+      "neurons": 9.663629531860352,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 49,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "conversacion": "C5",
+      "turno": 5,
+      "repeticion": 1,
+      "variante": "propuesta",
+      "persona": "entonces me conviene que me hagan una app o una pagina con pedidos en linea?",
+      "turnosEnviados": 6,
+      "primerMensajeEnVentana": false,
+      "respuesta": "Si el menú cambia diario, una aplicación o página con pedidos podría ser complicada de mantener tú solo. Depende de si tus clientes prefieren ver todo el catálogo antes de escribirte o si solo quieren preguntar qué hay hoy. ¿Qué te gustaría que tus clientes pudieran hacer en ese sitio?",
+      "origen": "modelo",
+      "ms": 1394,
+      "intentos": 1,
+      "tokensEntrada": 1660,
+      "tokensSalida": 59,
+      "tokensCache": 1344,
+      "neurons": 10.590903282165527,
+      "cortada": false,
+      "conFormato": false,
+      "bloqueo": null,
+      "palabras": 50,
+      "preguntas": 1,
+      "senales": [
+        {
+          "etiqueta": "Máximo 80 palabras",
+          "ok": true
+        },
+        {
+          "etiqueta": "Como mucho una pregunta",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin listas ni negritas",
+          "ok": true
+        },
+        {
+          "etiqueta": "No la bloqueó el filtro",
+          "ok": true
+        },
+        {
+          "etiqueta": "Sin palabras que marquen género",
+          "ok": true
+        },
+        {
+          "etiqueta": "No empieza con \"Entiendo\"",
+          "ok": true
+        },
+        {
+          "etiqueta": "Recuerda los datos limitados del turno 1",
+          "ok": false
+        }
+      ]
+    }
+  ]
+}
