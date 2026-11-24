@@ -1,5 +1,5 @@
 /**
- * Cinco conversaciones sintéticas para comparar el prompt actual con el propuesto.
+ * Cinco conversaciones sintéticas para comparar el prompt anterior a v0.3 con el vigente.
  * No contienen datos de personas reales. Los mensajes imitan cómo escriben los
  * visitantes (faltas, sin puntos) y son distintos de los ejemplos del prompt, para
  * medir comportamiento y no memoria del ejemplo.

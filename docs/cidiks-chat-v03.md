@@ -1,12 +1,66 @@
 # CÍDIKS IA v0.3 · Comportamiento del chat flotante
 
-Estado: **propuesta pendiente de aprobación**. Producción no cambió: el Worker sigue usando `shared/chat-prompt.ts` (versión `chat-2026-11-23`).
+Estado: **incorporado en la rama de desarrollo `claude/cidiks-ia-evolucion-v03-bw2t8o`; no desplegado.** El Worker publicado sigue respondiendo con `chat-2026-11-23` hasta que el propietario autorice el despliegue, que es una decisión aparte.
 
-## Alcance
+Fase experimental cerrada el 24 de noviembre de 2026. El propietario aprobó la incorporación después de revisar a mano cuatro turnos y aceptó las limitaciones de abajo.
 
-- Solo el chat flotante (`/v2/chat`) y solo Gemma (`@cf/google/gemma-4-26b-a4b-it`). El respaldo Llama queda para después.
-- Se cambia únicamente el texto del prompt y sus ejemplos. Siguen igual: el modelo, `max_tokens`, la temperatura, la guía local (`shared/floating-chat-guidance.ts`), el filtro de salida, el enmascarado de datos y el historial.
-- No se agregan dependencias, RAG, fine-tuning, memoria ni machine learning adicional.
+## Qué cambió
+
+| | Antes (`chat-2026-11-23`) | v0.3 (`chat-2026-11-24`) |
+|---|---|---|
+| Archivo | `shared/chat-prompt.ts` | `shared/chat-prompt.ts` (copia del anterior en `scripts/chat-eval/prompt-anterior.ts`) |
+| Ubicación | «el asistente de Reily Castro en Oaxaca» | Reily trabaja desde Oaxaca; quien escribe puede estar en cualquier lugar |
+| Lo que cuenta la persona | «Usa lo que ya contó» | Declaración (su versión, sin darla por comprobada); verificable no es verificado (la asistente no comprueba nada y nunca dice «confirmado»); suposición (dicha como condición o preguntada) |
+| Afirmaciones equivocadas | Sin regla | Si tiene fundamento, corrige con respeto y explica por qué; si solo es dudosa, dice de qué depende; no da la razón por quedar bien |
+| Escucha | Siempre da un paso | Si falta un dato que cambia el consejo, pregunta una sola vez; en la respuesta siguiente da un paso, aunque sea como condición |
+| Recursos | «de preferencia gratis» | Ajusta el paso a dinero, tiempo, señal, celular y manejo de la tecnología, y explica por qué sirve |
+| Página web | Implícito en un ejemplo | Solo si sus clientes necesitan consultar mucho antes de escribir, la buscan fuera de redes o su canal ya no alcanza |
+| Servicios y precio | No describía servicios; ante el precio: «depende» | Servicios reales de `src/content.ts`. Ante el precio: sin cifras, depende, diagnóstico gratuito de 15 minutos y botón de WhatsApp |
+| Género y cultura | Solo género de la persona | Tampoco supone lengua, costumbres ni situación económica; evita «tú solo»; a Reily se refiere por su nombre |
+| Ejemplos | Ropa de manta, precio, tamales | Escuchar primero (nuevo), pan con poca señal (sustituye a ropa de manta), precio con diagnóstico, tamales (igual) |
+
+Sin cambios: modelo, `max_tokens`, temperatura, respaldo Llama, guía local, filtro de salida, enmascarado, historial, frontend y dependencias.
+
+`CHAT_PROMPT_VERSION` cambió, así que al desplegar se renuevan las llaves de caché de Workers AI: las primeras respuestas después del despliegue no aprovecharán la caché.
+
+## Resultados de la evaluación
+
+Detalle en `scripts/chat-eval/resultados/`:
+- `2026-11-24-23-02-gemma.md` y `.json`: 3 repeticiones, 102 llamadas, orden alternado entre versiones.
+- `2026-11-24-23-02-analisis.md`: evaluación humana.
+- `2026-11-24-22-58-gemma.*`: la primera iteración, antes de los ajustes finales.
+
+| | Anterior | v0.3 |
+|---|---|---|
+| Errores | 0 | 0 |
+| Tokens de entrada (promedio) | 1,430 | 1,538 (+7.6 %) |
+| Tokens de salida | 64 | 63 |
+| Neurons por respuesta | 10.4 | 11.9 (**+14 %**) |
+| Latencia p50 / p95 | 1.82 s / 3.08 s | 1.88 s / 4.31 s |
+| Calificación humana (máximo 50) | 31 | 42 |
+
+Mejoras sostenidas en las 3 repeticiones:
+- escucha antes de recomendar;
+- deja de validar «con página voy a vender el doble»;
+- describe los servicios reales;
+- ofrece el diagnóstico gratuito ante el precio (6 de 6; antes, 0 de 6);
+- deja de responder con la frase de fuera de tema cuando sí es un tema de negocio;
+- reduce las suposiciones de género (1 de 51; antes, «tú solo» 3 de 3).
+
+## Limitaciones conocidas (aceptadas, sin corregir en v0.3)
+
+1. **Recomienda el catálogo cuando el problema es la disponibilidad o el seguimiento.** Ante «me preguntan si hay lugar» (estética) y «¿ya está mi carro?» (taller), v0.3 sugirió el catálogo de WhatsApp Business en 6 de 6 respuestas. El catálogo no resuelve esas preguntas. El prompt anterior acertó con una respuesta rápida con horarios libres o un aviso de avance. Afecta la pertinencia en negocios con citas o servicios en proceso.
+2. **El filtro bloquea respuestas que cuestionan promesas comerciales.** En 1 de 3 respuestas a «con página voy a vender el doble», el filtro de promesas (`shared/chat-guard.ts`, sin cambios) bloqueó la respuesta del modelo, y la persona recibió el mensaje fijo «No puedo prometer resultados…». Lo más probable es una negación («no te aseguro») que `NEGATED_PROMISE` no reconoce. v0.3 aumenta ese riesgo porque invita a decir que algo no está asegurado.
+3. **Pérdida de contexto por el límite del historial.** Ver la sección siguiente. En la conversación C5, ninguna versión recordó en el turno 5 un dato del turno 1.
+4. **Aumento del 14 % en neurons.** De 10.4 a 11.9 por respuesta en promedio (por repetición: 10.3→10.4, 9.6→12.0, 11.3→13.4; la caché varía entre pasadas). Con el tope diario de 8,000 neurons (`AI_POLICY.dailyNeurons`), la capacidad pasa de unas 770 a unas 670 respuestas al día.
+5. **Limitaciones metodológicas.**
+   - Son 5 conversaciones sintéticas, no conversaciones reales de visitantes.
+   - Hubo 3 repeticiones: suficiente para ver consistencia, no para estimar tasas con precisión.
+   - Solo se evaluó Gemma. El respaldo Llama, que responde cuando Gemma tarda más de 6 s, recibe este prompt sin haber sido evaluado con él.
+   - La calificación humana la hizo una sola persona evaluadora, que además redactó la propuesta, y la lectura no fue ciega. El propietario revisó cuatro turnos.
+   - Las señales automáticas son por palabras clave: tuvieron falsos positivos y falsos negativos, que se corrigieron a mitad del experimento, y no sirven como calificación.
+   - La latencia depende de la carga de Workers AI en el momento de la prueba.
+   - Es probable que haya diferencias de comportamiento en producción que estas pruebas no captan.
 
 ## Problema del historial (documentado, sin cambios)
 
@@ -14,67 +68,57 @@ Cómo funciona hoy:
 
 - El navegador (`src/components/FloatingAssistant.tsx:110` y `src/advisor/ai-client.ts:251`) quita el saludo inicial y envía los últimos 6 turnos.
 - El Worker (`worker/src/index.ts:209-213`) vuelve a cortar a 6, valida el rol, recorta cada turno a 600 caracteres y enmascara teléfonos y correos.
-- Todo viaja como JSON dentro de un solo mensaje `user` (`shared/chat-guard.ts:11`), para que nadie pueda hacerse pasar por el asistente. Ese diseño se conserva.
+- Todo viaja como JSON dentro de un solo mensaje `user` (`shared/chat-guard.ts:11`), para que nadie pueda hacerse pasar por el asistente.
 
 Lo que falla:
 
-1. **6 turnos son 3 mensajes de la persona.** Los otros 3 son respuestas del asistente. Desde el 5.º mensaje se pierde el primero, que suele traer lo más importante (qué vende, dónde, con qué limitaciones). Eso contradice la regla de no volver a preguntar lo que ya contó. Una sesión admite hasta 20 respuestas (`chatMaxAttempts`).
-2. **Las respuestas del asistente ocupan cerca de la mitad del historial.** Cada una tiene hasta 80 palabras, son la parte menos informativa y el navegador puede falsificarlas. Las respuestas de «Seguir con la guía» también entran y son largas.
-3. **La caché se aprovecha menos.** Después de 6 turnos, el inicio del historial cambia en cada envío, así que Workers AI solo reutiliza las instrucciones fijas, no la conversación.
-4. **Una indicación se repite.** La nota sobre el JSON aparece en el prompt y en el encabezado del mensaje (unos 60 tokens).
+1. **6 turnos son 3 mensajes de la persona.** Desde su 5.º mensaje se pierde el primero, que suele traer lo más importante (qué vende, dónde, con qué limitaciones). Eso contradice la regla de no volver a preguntar lo que ya contó. Una sesión admite hasta 20 respuestas (`chatMaxAttempts`).
+2. **Las respuestas del asistente ocupan cerca de la mitad del historial.** Además, el navegador puede falsificarlas. Las respuestas de «Seguir con la guía» también entran y son largas.
+3. **La caché se aprovecha menos.** Después de 6 turnos, el inicio del historial cambia en cada envío, así que Workers AI solo reutiliza las instrucciones fijas.
+4. **Una indicación se repite.** La nota sobre el JSON aparece en el prompt y en el encabezado del mensaje.
 
-La conversación de prueba C5 lo muestra: en su turno 5, el dato «solo uso datos que recargo» del turno 1 ya no llega al modelo. El reporte lo marca.
+Opciones para una versión futura (no implementadas):
 
-Opciones para evaluar más adelante (no implementadas):
+- Priorizar los mensajes de la persona.
+- Recortar las respuestas antiguas del asistente.
 
-- Priorizar los mensajes de la persona sobre las respuestas del asistente.
-- Recortar las respuestas antiguas del asistente y conservar completa solo la última, que lleva la pregunta en curso.
+Cualquiera de las dos obliga a revisar el aviso de privacidad («tus últimos 6 mensajes»), la huella de idempotencia y la caché.
 
-Cualquiera de las dos obliga a revisar el aviso de privacidad («tus últimos 6 mensajes»), la huella de idempotencia (que incluye el historial) y el reparto de la caché.
+## Verificación hecha
 
-## Prompt propuesto
+- `npm run build`: correcto.
+- `npm run check:hybrid`: 51 de 51 pruebas, incluida la nueva prueba del prompt v0.3 (versión, reglas aprobadas, frases de fuga y tope de 5,600 caracteres).
+- `npm run check:release`, `npm run check:evolution` y `npm run check:advisor`: correctos.
+- El texto incorporado tiene el mismo hash que la versión evaluada (sha `2f06e5746b2a`), y la copia anterior coincide con producción previa (sha `e2fb6d47fa2c`).
+- El prompt solo lo usa el Worker: no está en `dist/` ni en las pruebas de navegador, así que no se ejecutaron estas últimas por este cambio.
+- No fue posible ejecutar `tsc -p worker/tsconfig.json` porque falta `@cloudflare/workers-types`. Es una falta previa: no está en `package.json` y la CI no lo ejecuta.
 
-Archivo candidato: `scripts/chat-eval/prompt-propuesto.ts`. Solo lo lee el script de comparación.
+## Reversión
 
-| Cambio | Antes | Propuesta |
-|---|---|---|
-| Ubicación | «el asistente de Reily Castro en Oaxaca» | Reily trabaja desde Oaxaca; quien escribe puede estar en cualquier lugar |
-| Lo que cuenta la persona | «Usa lo que ya contó» | Declaración (su versión, sin darla por comprobada), información verificable frente a verificada (la asistente no verifica nada: no dice «confirmado») y suposición (dicha como condición o preguntada) |
-| Afirmaciones equivocadas | No había regla | Si tiene fundamento, corrige con respeto y explica por qué; si solo es dudoso, dice de qué depende; no da la razón por quedar bien |
-| Escucha | Siempre da un paso | Si falta un dato que cambia el consejo, primero pregunta; si ya preguntó, da un paso como condición |
-| Recursos | «de preferencia gratis» | Ajusta el paso a dinero, tiempo, señal, celular y manejo de la tecnología, y explica por qué sirve |
-| Página web | Implícito en un ejemplo | Solo si sus clientes necesitan consultar mucho antes de escribir, la buscan fuera de redes o su canal ya no alcanza |
-| Servicios | No se describían | Servicios reales de `src/content.ts` y diagnóstico gratuito de 15 minutos, con reglas de cuándo mencionarlos |
-| Cultura | Solo género | Tampoco supone lengua, costumbres ni situación económica |
-| Ejemplos | Ropa de manta, precio, tamales | Escuchar primero (nuevo), pan con poca señal (sustituye a ropa de manta), precio con diagnóstico, tamales (igual) |
+Opción A, la más sencilla: deshacer el commit que incorporó v0.3 en la rama.
 
-Tamaño: las reglas pasan de 3,925 a 4,006 caracteres (+2 %) y el total con ejemplos sube un 6.3 % (de unos 1,216 a unos 1,292 tokens estimados): el ejemplo nuevo de escuchar primero y las reglas de verificado/verificable y de corregir con fundamento. Las instrucciones fijas se cobran a precio de caché. Los tokens reales salen de la comparación.
+```sh
+git revert <commit de incorporación>
+npm run check:hybrid && npm run build
+```
 
-El prompt conserva las frases que el filtro de salida usa para detectar fugas («Eres CÍDIKS IA», «Formato obligatorio», «Ejemplos del estilo esperado»).
+Opción B, a mano, conservando el resto:
 
-## Cómo ejecutar la comparación desde tu computadora
+1. En `shared/chat-prompt.ts`, reemplaza `CHAT_SYSTEM_PROMPT` y `CHAT_FEW_SHOTS` por `PREVIOUS_SYSTEM_PROMPT` y `PREVIOUS_FEW_SHOTS` de `scripts/chat-eval/prompt-anterior.ts`.
+2. Vuelve a poner `CHAT_PROMPT_VERSION = 'chat-2026-11-23'`.
+3. Quita la prueba «prompt v0.3» de `tests/unit/chat-quality.test.ts`.
+4. Ejecuta `npm run check:hybrid` y `npm run build`.
 
-Requisitos: Node.js 22.19 o posterior y `npm ci` hecho en el repositorio. No se instala nada nuevo.
+Si v0.3 ya estuviera desplegado, después de revertir hay que volver a desplegar el Worker con la autorización del propietario. Ningún dato ni configuración depende de la versión del prompt: no hay migraciones.
 
-1. En el panel de Cloudflare, abre **Workers AI → Use REST API**. Ahí elige **Create a Workers AI API Token** y copia el **Account ID**. Si creas el token a mano, necesita `Workers AI - Read` y `Workers AI - Edit`.
-2. Copia `scripts/chat-eval/.env.example` como `scripts/chat-eval/.env` y llena los dos valores. Git ignora ese archivo.
-3. Opcional, sin red ni token: `npm run eval:chat -- --simular`. Revisa el armado, las reglas fijas y la ventana de historial.
-4. Comparación real: `npm run eval:chat`. Son 34 llamadas: 17 turnos por 2 versiones.
-5. Para ver la variación: `npm run eval:chat -- --repeticiones 3`.
+## Repetir la comparación
 
-Costo: con lo medido en producción (de 7.7 a 13 neurons por respuesta), una pasada cuesta unos 260–450 neurons. Las llamadas se cobran a la misma cuenta de Workers AI que usa producción. No pasan por el ledger del Worker ni afectan sus cupos.
+Requisitos: Node.js 22.19 o posterior y `npm ci`.
 
-Resultado: `scripts/chat-eval/resultados/<fecha>-gemma.md` (lectura) y `.json` (datos). El reporte trae:
+1. Copia `scripts/chat-eval/.env.example` como `scripts/chat-eval/.env` con `CLOUDFLARE_ACCOUNT_ID` y `CLOUDFLARE_API_TOKEN` (plantilla «Workers AI»). Git ignora ese archivo.
+2. Ejecuta `npm run eval:chat -- --repeticiones 3`. Así compara `prompt-anterior.ts` con el vigente.
+3. Usa `--simular` para revisar el armado sin red ni token.
 
-- Un resumen de tokens de entrada, caché y salida; latencia p50 y p95; respuestas de más de 6 s (en producción habrían caído al respaldo); bloqueos del filtro; y señales automáticas.
-- Las respuestas de cada versión, lado a lado.
-- Una tabla de revisión humana de 0 a 2.
+Detrás de un proxy, agrega `NODE_USE_ENV_PROXY=1` a la ejecución (Node 22.21 o posterior).
 
-Las conversaciones son sintéticas y no tienen datos personales, así que puedes subir el reporte al repositorio o pegarlo en la conversación.
-
-## Después de la aprobación (no hecho todavía)
-
-1. Pasar el texto y los ejemplos de `prompt-propuesto.ts` a `shared/chat-prompt.ts` y cambiar `CHAT_PROMPT_VERSION`. Eso renueva las llaves de caché: las primeras respuestas costarán un poco más.
-2. Ajustar las pruebas unitarias del prompt y ejecutar `npm run check:hybrid` y `npm run build`.
-3. Conservar una copia del prompt anterior para que la comparación siga siendo reproducible.
-4. Desplegar solo cuando lo indique el propietario. Este trabajo no despliega.
+Costo aproximado: unos 11 neurons por llamada.

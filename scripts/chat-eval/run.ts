@@ -1,6 +1,6 @@
 /**
- * Compara el prompt actual del chat flotante (shared/chat-prompt.ts) con la
- * propuesta (scripts/chat-eval/prompt-propuesto.ts) usando Gemma en Workers AI.
+ * Compara el prompt anterior a v0.3 (scripts/chat-eval/prompt-anterior.ts) con el
+ * vigente del chat flotante (shared/chat-prompt.ts) usando Gemma en Workers AI.
  *
  * Se ejecuta desde tu computadora con la API REST de Cloudflare. No toca el Worker,
  * el ledger ni producción. Instrucciones: docs/cidiks-chat-v03.md.
@@ -25,7 +25,7 @@ import { formatModelReply } from '../../shared/chat-format.ts';
 import { guardChatReply, redactPersonalData } from '../../shared/chat-guard.ts';
 import { guidedChatReply, type FloatingChatMessage } from '../../shared/floating-chat-guidance.ts';
 import { AI_POLICY } from '../../shared/cidikis-ai-policy.ts';
-import { PROPOSED_PROMPT_VERSION, PROPOSED_SYSTEM_CONTENT, proposedChatInput } from './prompt-propuesto.ts';
+import { PREVIOUS_PROMPT_VERSION, PREVIOUS_SYSTEM_CONTENT, previousChatInput } from './prompt-anterior.ts';
 import { CONVERSACIONES, type Conversacion, type Turno } from './conversaciones.ts';
 
 /** Solo Gemma, el modelo principal de producción. El respaldo (Llama) queda fuera por ahora. */
@@ -35,15 +35,15 @@ const MAX_TURN_CHARS = 600;
 const REQUEST_TIMEOUT_MS = 30_000;
 
 interface Variante {
-  id: 'actual' | 'propuesta';
+  id: 'anterior' | 'vigente';
   version: string;
   system: string;
   input: (model: string, history: readonly FloatingChatMessage[], message: string) => Record<string, unknown>;
 }
 
 const VARIANTES: readonly Variante[] = [
-  { id: 'actual', version: CHAT_PROMPT_VERSION, system: buildChatMessages([], '')[0].content, input: chatModelInput },
-  { id: 'propuesta', version: PROPOSED_PROMPT_VERSION, system: PROPOSED_SYSTEM_CONTENT, input: proposedChatInput },
+  { id: 'anterior', version: PREVIOUS_PROMPT_VERSION, system: PREVIOUS_SYSTEM_CONTENT, input: previousChatInput },
+  { id: 'vigente', version: CHAT_PROMPT_VERSION, system: buildChatMessages([], '')[0].content, input: chatModelInput },
 ];
 
 interface Resultado {
@@ -299,18 +299,18 @@ function describe(r: Resultado | undefined): string {
 }
 
 function report(results: Resultado[], conversaciones: readonly Conversacion[], repeticiones: number, started: Date): string {
-  const a = summary(results, 'actual');
-  const p = summary(results, 'propuesta');
+  const a = summary(results, 'anterior');
+  const p = summary(results, 'vigente');
   const row = (label: string, x: string, y: string) => `| ${label} | ${x} | ${y} |`;
   const lines = [
     `# Comparación del chat flotante · ${started.toLocaleString('es-MX')}`,
     '',
     `Modelo: \`${MODEL}\` (solo el principal). Repeticiones: ${repeticiones}. Conversaciones: ${conversaciones.map(c => c.id).join(', ')}.`,
-    `Prompt actual \`${VARIANTES[0].version}\` (sha ${sha(VARIANTES[0].system)}) · propuesta \`${VARIANTES[1].version}\` (sha ${sha(VARIANTES[1].system)}).`,
+    `Prompt anterior \`${VARIANTES[0].version}\` (sha ${sha(VARIANTES[0].system)}) · vigente \`${VARIANTES[1].version}\` (sha ${sha(VARIANTES[1].system)}).`,
     '',
     '## Resumen',
     '',
-    '| | Actual | Propuesta |',
+    '| | Anterior | Vigente |',
     '|---|---|---|',
     row('Respuestas del modelo / errores', `${a.respuestas} / ${a.errores}`, `${p.respuestas} / ${p.errores}`),
     row('Respuestas fijas de la guía (sin modelo)', String(a.reglas), String(p.reglas)),
@@ -328,11 +328,11 @@ function report(results: Resultado[], conversaciones: readonly Conversacion[], r
       '',
       '### Por repetición',
       '',
-      '| Repetición | Entrada actual / propuesta | Salida actual / propuesta | p50 ms actual / propuesta | Neurons actual / propuesta | Errores actual / propuesta |',
+      '| Repetición | Entrada anterior / vigente | Salida anterior / vigente | p50 ms anterior / vigente | Neurons anterior / vigente | Errores anterior / vigente |',
       '|---|---|---|---|---|---|',
       ...Array.from({ length: repeticiones }, (_, i) => {
         const r = results.filter(x => x.repeticion === i + 1);
-        const [x, y] = [summary(r, 'actual'), summary(r, 'propuesta')];
+        const [x, y] = [summary(r, 'anterior'), summary(r, 'vigente')];
         return `| ${i + 1} | ${fmt(x.entrada)} / ${fmt(y.entrada)} | ${fmt(x.salida)} / ${fmt(y.salida)} | ${fmt(x.p50)} / ${fmt(y.p50)} | ${fmt(x.neurons, 1)} / ${fmt(y.neurons, 1)} | ${x.errores} / ${y.errores} |`;
       }),
     ] : []),
@@ -347,16 +347,16 @@ function report(results: Resultado[], conversaciones: readonly Conversacion[], r
       if (repeticiones > 1) lines.push(`### Repetición ${rep}`, '');
       conversacion.turnos.forEach((turno, i) => {
         const find = (v: Variante['id']) => results.find(r => r.conversacion === conversacion.id && r.turno === i + 1 && r.repeticion === rep && r.variante === v);
-        const actual = find('actual');
-        const lost = [actual, find('propuesta')].some(r => r && !r.primerMensajeEnVentana);
+        const actual = find('anterior');
+        const lost = [actual, find('vigente')].some(r => r && !r.primerMensajeEnVentana);
         lines.push(
           `**Turno ${i + 1}.** Persona: «${turno.persona}»`,
           '',
           `Esperado: ${turno.esperado}${lost ? ' **El primer mensaje de la persona ya no llega al modelo en este turno (límite de 6 turnos).**' : ''}`,
           '',
-          `**Actual** · ${describe(actual)}`,
+          `**Anterior** · ${describe(actual)}`,
           '',
-          `**Propuesta** · ${describe(find('propuesta'))}`,
+          `**Vigente** · ${describe(find('vigente'))}`,
           '',
         );
       });
@@ -368,7 +368,7 @@ function report(results: Resultado[], conversaciones: readonly Conversacion[], r
     '',
     'Califica cada conversación de 0 a 2 (0 no lo hace, 1 a medias, 2 bien). Lee sin mirar qué versión es, si puedes.',
     '',
-    '| Conversación | Criterio | Actual | Propuesta |',
+    '| Conversación | Criterio | Anterior | Vigente |',
     '|---|---|---|---|',
     ...conversaciones.flatMap(c => [
       'Escucha antes de recomendar',
@@ -438,12 +438,12 @@ async function main() {
   }
 
   if (args.simular) {
-    for (const r of results.filter(r => r.variante === 'actual' && r.repeticion === 1)) {
+    for (const r of results.filter(r => r.variante === 'anterior' && r.repeticion === 1)) {
       const note = r.origen === 'regla' ? '  ← la guía local responde sin modelo' : !r.primerMensajeEnVentana ? '  ← el primer mensaje ya no entra en la ventana' : '';
       console.log(`${r.conversacion} turno ${r.turno}: ${r.turnosEnviados} turnos de historial${note}`);
     }
-    const [actual, propuesta] = VARIANTES.map(v => v.system.length);
-    console.log(`\nInstrucciones fijas: actual ${actual} caracteres · propuesta ${propuesta} (${((propuesta / actual - 1) * 100).toFixed(1)} %).`);
+    const [anterior, vigente] = VARIANTES.map(v => v.system.length);
+    console.log(`\nInstrucciones fijas: anterior ${anterior} caracteres · vigente ${vigente} (${((vigente / anterior - 1) * 100).toFixed(1)} %).`);
     console.log('Los tokens reales salen del reporte con Workers AI (sin --simular).');
     return;
   }
@@ -464,7 +464,7 @@ async function main() {
 
 function readmeHint(): string {
   return [
-    'Compara el prompt actual del chat con la propuesta, usando Gemma en Workers AI.',
+    'Compara el prompt anterior a v0.3 con el vigente, usando Gemma en Workers AI.',
     '',
     '  npm run eval:chat -- --simular           revisa el armado sin red ni token',
     '  npm run eval:chat                         una pasada (5 conversaciones × 2 versiones)',
