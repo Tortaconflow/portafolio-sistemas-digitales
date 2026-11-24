@@ -155,7 +155,8 @@ function usage(raw: unknown) {
 
 /* ───────────── Señales automáticas ───────────── */
 
-const GENERO = /\b(?:bienvenid[oa]s?|cansad[oa]s?|preocupad[oa]s?|estresad[oa]s?|agobiad[oa]s?|abrumad[oa]s?)\b/i;
+// «Te doy la bienvenida» es la forma neutra que pide el prompt: no cuenta. «tú solo» y «con él» sí.
+const GENERO = /(?<!la )\bbienvenid[oa]s?\b|\b(?:cansad[oa]s?|preocupad[oa]s?|estresad[oa]s?|agobiad[oa]s?|abrumad[oa]s?)\b|\b(?:t[uú]|trabajas|atiendes|est[aá]s) sol[oa]\b|\bcon (?:él|ella)\b/i;
 const PIDE_DATO = /\b(?:cu[eé]ntame|dime|plat[ií]came|comp[aá]rteme)\b/i;
 
 const words = (text: string) => text.split(/\s+/).filter(Boolean).length;
@@ -323,6 +324,18 @@ function report(results: Resultado[], conversaciones: readonly Conversacion[], r
     row('Bloqueadas por el filtro / cortadas', `${a.bloqueadas} / ${a.cortadas}`, `${p.bloqueadas} / ${p.cortadas}`),
     row('Señales de forma cumplidas', a.genericas, p.genericas),
     row('Señales de comportamiento cumplidas', a.especificas, p.especificas),
+    ...(repeticiones > 1 ? [
+      '',
+      '### Por repetición',
+      '',
+      '| Repetición | Entrada actual / propuesta | Salida actual / propuesta | p50 ms actual / propuesta | Neurons actual / propuesta | Errores actual / propuesta |',
+      '|---|---|---|---|---|---|',
+      ...Array.from({ length: repeticiones }, (_, i) => {
+        const r = results.filter(x => x.repeticion === i + 1);
+        const [x, y] = [summary(r, 'actual'), summary(r, 'propuesta')];
+        return `| ${i + 1} | ${fmt(x.entrada)} / ${fmt(y.entrada)} | ${fmt(x.salida)} / ${fmt(y.salida)} | ${fmt(x.p50)} / ${fmt(y.p50)} | ${fmt(x.neurons, 1)} / ${fmt(y.neurons, 1)} | ${x.errores} / ${y.errores} |`;
+      }),
+    ] : []),
     '',
     'Las señales son comprobaciones aproximadas por palabras clave. La latencia depende de la carga de Workers AI en ese momento: compara con varias repeticiones antes de concluir.',
     '',
@@ -412,7 +425,9 @@ async function main() {
   const results: Resultado[] = [];
   for (let rep = 1; rep <= args.repeticiones; rep++) {
     for (const conversacion of conversaciones) {
-      for (const variante of VARIANTES) {
+      // Se alterna qué versión va primero para repartir el efecto de la caché y de la carga del servicio.
+      const first = (rep + conversaciones.indexOf(conversacion)) % 2 === 0;
+      for (const variante of first ? VARIANTES : [...VARIANTES].reverse()) {
         process.stdout.write(`${conversacion.id} · ${variante.id.padEnd(9)} · repetición ${rep} … `);
         const out = await runConversation(conversacion, variante, rep, run(variante));
         results.push(...out);

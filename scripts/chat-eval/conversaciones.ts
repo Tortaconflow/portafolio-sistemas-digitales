@@ -35,7 +35,8 @@ export interface Conversacion {
   turnos: Turno[];
 }
 
-const PAGINA = /\bp[aá]gina\b|\bsitio\b|\bweb\b|\bapp\b|aplicaci[oó]n/i;
+// «otra aplicación» (WhatsApp u otra) no es proponer una app: solo cuenta la palabra «app».
+const PAGINA = /\bp[aá]gina\b|\bsitio\b|\bweb\b|\bapp\b/i;
 const CULTURA = /oaxac|zapotec|mixtec|triqui|\bmixe|chinantec|maya|nahua|ind[ií]gena|originari|ancestral|guelaguetza|barro negro|chiapas|michoac|guerrero|puebla|milenari/i;
 const DIAGNOSTICO = /diagn[oó]stico/i;
 const BOTON_WHATSAPP = /bot[oó]n de whats ?app/i;
