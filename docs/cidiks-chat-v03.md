@@ -98,7 +98,7 @@ Cualquiera de las dos obliga a revisar el aviso de privacidad («tus últimos 6 
 Opción A, la más sencilla: deshacer el commit que incorporó v0.3 en la rama.
 
 ```sh
-git revert <commit de incorporación>
+git revert 2ecdd8f
 npm run check:hybrid && npm run build
 ```
 
