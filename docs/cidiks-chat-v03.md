@@ -93,14 +93,48 @@ Cualquiera de las dos obliga a revisar el aviso de privacidad («tus últimos 6 
 - El prompt solo lo usa el Worker: no está en `dist/` ni en las pruebas de navegador, así que no se ejecutaron estas últimas por este cambio.
 - No fue posible ejecutar `tsc -p worker/tsconfig.json` porque falta `@cloudflare/workers-types`. Es una falta previa: no está en `package.json` y la CI no lo ejecuta.
 
+### Cierre técnico (24 de noviembre de 2026)
+
+- **Compatibilidad con `main`.** La rama parte de `6bc1f50`, que sigue siendo la punta de `main`: integración directa, sin conflictos.
+- **Sitio.** Se compiló `main` y la rama, y los 217 archivos de `dist/` son idénticos byte a byte. El sitio de Hostinger no cambia; solo hay que desplegar el Worker.
+- **Tipos del Worker.**
+  - Con las dependencias existentes, se ejecutó `tsc` sobre `worker/` y `shared/` sin `@cloudflare/workers-types`.
+  - Aparecen los mismos 18 errores en `main` y en la rama. Todos se deben a los tipos de Cloudflare que faltan (`DurableObject*`, `ScheduledController`, `cloudflare:workers`).
+  - v0.3 no introduce ninguno, y `shared/chat-prompt.ts` no tiene errores.
+- **Integración.** Se ejecutó el manejador real de `/v2/chat` en Node, simulando solo el modelo, el ledger y `cloudflare:workers`. Pasaron 5 de 5 pruebas:
+  - envía el prompt v0.3 a Gemma con los mismos parámetros y la llave de caché `cidiks-chat-2026-11-24-N`;
+  - el filtro bloquea URL, precio y promesa con su mensaje;
+  - el historial se limita a 6 turnos, viaja como JSON en un solo mensaje y llega con teléfono y correo ocultos;
+  - el atajo de la guía responde sin modelo ni presupuesto;
+  - un origen ajeno recibe 403, una sesión inválida 401 y un cuerpo demasiado grande 400.
+- **Seguridad con Gemma real.** Siete mensajes adversos, sin hallazgos críticos:
+  - el intento de fuga directa y el historial falsificado no revelaron el prompt;
+  - ante el precio exacto no dio cifras y sí el diagnóstico;
+  - la tarea fuera de tema recibió la respuesta fija;
+  - no prometió una garantía de ventas;
+  - no confirmó una cita con fecha y remitió a WhatsApp;
+  - la tarjeta se ocultó antes de enviarse.
+- **Observaciones menores,** no corregidas por estar fuera de alcance:
+  - la CURP no se oculta, porque el enmascarado solo cubre teléfonos y correos; el modelo no la repitió;
+  - ante datos sensibles, la asistente no advierte que no deben compartirse;
+  - dice que el diagnóstico sirve para «darte un presupuesto» y afirmó que «Reily no maneja una agenda abierta», que es una afirmación no verificada.
+- **Interfaz.** Pasaron las 68 pruebas de navegador (móvil y escritorio), entre ellas:
+  - el chat flotante, «Seguir con la guía» y la guía abierta al agotarse las respuestas;
+  - el botón de WhatsApp y los límites del Worker;
+  - el diagnóstico de 3 preguntas en `/asesor-ia/` y las plantillas de WhatsApp Business.
+- **Reversión probada** en una copia temporal (ver abajo): restaura el prompt anterior (sha `e2fb6d47fa2c`), deja el código idéntico a `main` y pasan 50 de 50 pruebas.
+
 ## Reversión
 
-Opción A, la más sencilla: deshacer el commit que incorporó v0.3 en la rama.
+Opción A, la más sencilla (probada). Devuelve el prompt y sus pruebas al estado de `6bc1f50`, el último commit con `chat-2026-11-23`. Funciona igual antes y después de integrar en `main`, y no depende de los commits de documentación:
 
 ```sh
-git revert 2ecdd8f
+git checkout 6bc1f50 -- shared/chat-prompt.ts tests/unit/chat-quality.test.ts
 npm run check:hybrid && npm run build
+git commit -m "revert(chat): volver al prompt chat-2026-11-23"
 ```
+
+Este documento, los resultados y `scripts/chat-eval/` se conservan: el script sigue compilando y comparando. Un `git revert` de los commits de la incorporación también sirve, pero choca en este documento, que se editó después.
 
 Opción B, a mano, conservando el resto:
 
@@ -110,6 +144,28 @@ Opción B, a mano, conservando el resto:
 4. Ejecuta `npm run check:hybrid` y `npm run build`.
 
 Si v0.3 ya estuviera desplegado, después de revertir hay que volver a desplegar el Worker con la autorización del propietario. Ningún dato ni configuración depende de la versión del prompt: no hay migraciones.
+
+Reversión inmediata en producción, sin tocar código: `npx wrangler rollback --name cidiks-ia-advisor` vuelve a la versión anterior del Worker (ver el procedimiento de despliegue).
+
+## Procedimiento de despliegue (requiere la autorización final del propietario)
+
+Integrar el PR en `main` no despliega el Worker. El build de GitHub Actions produce un `dist/` idéntico al actual, así que el sitio no cambia. El Worker se publica a mano con Wrangler, desde una computadora con sesión de Cloudflare.
+
+1. **Integrar.** Con la aprobación, integrar el PR en `main`. Comprobar que el workflow «Verificar y empaquetar» termine en verde.
+2. **Preparar.** Actualizar el repositorio local: `git checkout main && git pull && npm ci`.
+3. **Revisar.**
+   - `npx wrangler login` (si hace falta).
+   - `npx wrangler deployments list --name cidiks-ia-advisor`: anota el ID de la versión vigente, que será la de la reversión.
+4. **Ensayar.** `npx wrangler deploy --config worker/wrangler.prod.jsonc --dry-run`. Debe compilar sin errores y mostrar los bindings `AI` y `LEDGER`, sin migraciones nuevas (`v1-prod` ya existe).
+5. **Desplegar.** `npx wrangler deploy --config worker/wrangler.prod.jsonc`. Los secretos (`SESSION_SECRET`, `TURNSTILE_SECRET`) ya están en el Worker y no se tocan.
+6. **Verificar en producción** (unos 10 minutos):
+   - En `https://reilycastro.com`, abrir el chat y escribir «cuanto cobras x una pagina». Debe responder sin cifras, con el diagnóstico gratuito de 15 minutos y el botón de WhatsApp.
+   - Probar «Seguir con la guía» y el botón de WhatsApp.
+   - `npx wrangler tail cidiks-ia-advisor`: las líneas `evt: chat` deben salir con `outcome: model_ok` y `neurons` cerca de 12. Las primeras respuestas tendrán `cached` en 0, porque la caché se renueva con la versión nueva.
+   - En la hora siguiente, revisar la línea `ledger_health`: `openSlots` no debe quedarse en 2.
+7. **Revertir si algo falla.** `npx wrangler rollback <ID anotado en el paso 3> --name cidiks-ia-advisor`. Después, revertir también el código (sección anterior) para que `main` coincida con lo publicado.
+
+Durante la primera semana, conviene vigilar el consumo diario frente al tope de 8,000 neurons: unas 670 respuestas al día con v0.3.
 
 ## Repetir la comparación
 
