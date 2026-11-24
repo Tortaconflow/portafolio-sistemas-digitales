@@ -88,7 +88,7 @@ export const CONVERSACIONES: readonly Conversacion[] = [
       },
       {
         persona: 'pero aqui nadie busca en internet, eso es para la ciudad',
-        esperado: 'No la desmiente. Con respeto, nota que los turistas sí le piden fotos por mensaje y sugiere cómo comprobarlo (preguntarles cómo la encontraron). No impone página.',
+        esperado: 'No le da la razón sin más ni le descalifica. Con fundamento en lo que contó (turistas que le piden fotos por mensaje), corrige con respeto la idea de que nadie busca por internet y sugiere cómo comprobarlo (preguntar a los turistas cómo le encontraron). No impone página.',
         senales: [
           { etiqueta: 'Retoma a los turistas', patron: /turist/i, debe: true },
           { etiqueta: 'No atribuye región, pueblo ni lengua', patron: CULTURA, debe: false },

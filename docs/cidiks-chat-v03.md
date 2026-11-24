@@ -39,7 +39,8 @@ Archivo candidato: `scripts/chat-eval/prompt-propuesto.ts`. Solo lo lee el scrip
 | Cambio | Antes | Propuesta |
 |---|---|---|
 | Ubicación | «el asistente de Reily Castro en Oaxaca» | Reily trabaja desde Oaxaca; quien escribe puede estar en cualquier lugar |
-| Lo que cuenta la persona | «Usa lo que ya contó» | Declaración (su versión, sin darla por comprobada), hecho (comprobable) y suposición (dicha como condición o preguntada) |
+| Lo que cuenta la persona | «Usa lo que ya contó» | Declaración (su versión, sin darla por comprobada), información verificable frente a verificada (la asistente no verifica nada: no dice «confirmado») y suposición (dicha como condición o preguntada) |
+| Afirmaciones equivocadas | No había regla | Si tiene fundamento, corrige con respeto y explica por qué; si solo es dudoso, dice de qué depende; no da la razón por quedar bien |
 | Escucha | Siempre da un paso | Si falta un dato que cambia el consejo, primero pregunta; si ya preguntó, da un paso como condición |
 | Recursos | «de preferencia gratis» | Ajusta el paso a dinero, tiempo, señal, celular y manejo de la tecnología, y explica por qué sirve |
 | Página web | Implícito en un ejemplo | Solo si sus clientes necesitan consultar mucho antes de escribir, la buscan fuera de redes o su canal ya no alcanza |
@@ -47,7 +48,7 @@ Archivo candidato: `scripts/chat-eval/prompt-propuesto.ts`. Solo lo lee el scrip
 | Cultura | Solo género | Tampoco supone lengua, costumbres ni situación económica |
 | Ejemplos | Ropa de manta, precio, tamales | Escuchar primero (nuevo), pan con poca señal (sustituye a ropa de manta), precio con diagnóstico, tamales (igual) |
 
-Tamaño: las reglas pasan de 3,925 a 3,871 caracteres. El total con ejemplos sube un 3.6 % (de unos 1,216 a unos 1,260 tokens estimados) por el ejemplo nuevo de escuchar primero. Las instrucciones fijas se cobran a precio de caché. Los tokens reales salen de la comparación.
+Tamaño: las reglas pasan de 3,925 a 4,006 caracteres (+2 %) y el total con ejemplos sube un 6.3 % (de unos 1,216 a unos 1,292 tokens estimados): el ejemplo nuevo de escuchar primero y las reglas de verificado/verificable y de corregir con fundamento. Las instrucciones fijas se cobran a precio de caché. Los tokens reales salen de la comparación.
 
 El prompt conserva las frases que el filtro de salida usa para detectar fugas («Eres CÍDIKS IA», «Formato obligatorio», «Ejemplos del estilo esperado»).
 
