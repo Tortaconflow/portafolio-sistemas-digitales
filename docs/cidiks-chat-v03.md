@@ -62,6 +62,18 @@ Mejoras sostenidas en las 3 repeticiones:
    - La latencia depende de la carga de Workers AI en el momento de la prueba.
    - Es probable que haya diferencias de comportamiento en producción que estas pruebas no captan.
 
+## Limitaciones de privacidad pendientes
+
+Registradas el 25 de noviembre de 2026, también en el PR #14. Ninguna la introduce v0.3: ya existían. Quedan por decidir por separado.
+
+1. **Enmascarado parcial.** `redactPersonalData` (`shared/chat-guard.ts`) solo oculta correos y secuencias de 8 o más dígitos (teléfonos y tarjetas con espacios). La CURP, el RFC, los nombres y las direcciones llegan a Cloudflare Workers AI. En la prueba de seguridad con Gemma, una CURP llegó al modelo; el modelo no la repitió.
+2. **Sin advertencia en la respuesta.** Cuando la persona comparte datos sensibles, la asistente no le recuerda que no debe hacerlo; responde con la frase de fuera de tema.
+3. **Proveedor externo.** El mensaje y hasta 6 turnos anteriores (de la persona y de la asistente) se envían a Workers AI.
+   - El aviso del chat lo informa y es visible: verificado el 25 de noviembre en móvil (390 px) y escritorio (1440 px), encima del campo de texto, legible y asociado al campo con `aria-describedby`.
+   - El aviso dice «tus últimos 6 mensajes», aunque en realidad son 6 turnos. La redacción es conservadora: el chat envía menos mensajes de la persona de los que el aviso da a entender, nunca más.
+4. **Registros.** El Worker solo registra categorías y contadores (`worker/src/chat-log.ts`), nunca el texto.
+5. **Credencial de evaluación.** El token de Workers AI de las evaluaciones está guardado en el entorno de Claude Code `portafolio-sistemas-digitales`, no en el repositorio. Conviene retirarlo cuando ya no se necesite.
+
 ## Problema del historial (documentado, sin cambios)
 
 Cómo funciona hoy:
@@ -178,3 +190,14 @@ Requisitos: Node.js 22.19 o posterior y `npm ci`.
 Detrás de un proxy, agrega `NODE_USE_ENV_PROXY=1` a la ejecución (Node 22.21 o posterior).
 
 Costo aproximado: unos 11 neurons por llamada.
+
+## Preparación del despliegue (25 de noviembre de 2026)
+
+- **Integración.** PR #14 integrado en `main` como `fbe8a58` (merge de `6bc1f50` y `1b0f194`), con autorización del propietario. Se comprobó que el contenido de `main` es igual al de `1b0f194`, que el build y las 51 pruebas pasan y que el prompt vigente es `chat-2026-11-24` (sha `2f06e5746b2a`).
+- **Ensayo sobre `main`.** `npx wrangler@4.160.0 deploy --config worker/wrangler.prod.jsonc --dry-run` terminó correctamente:
+  - empaqueta 78.33 KiB (24.36 KiB comprimido);
+  - muestra los bindings `LEDGER` (BudgetLedger) y `AI`, y las mismas variables que hoy (modelos y origen permitido);
+  - el paquete contiene `chat-2026-11-24` y el prompt v0.3, sin credenciales; el prompt anterior aparece solo en dos comentarios de código.
+  - No publicó nada.
+- **Versión publicada actualmente.** No se pudo leer desde la sesión: el token disponible solo tiene permiso de Workers AI (`No access to the specified resource`). Hay que anotarla antes de desplegar con `npx wrangler@4.160.0 deployments list --name cidiks-ia-advisor`, desde una sesión con permiso de Workers Scripts. Ese ID es el destino de `wrangler rollback`.
+- **Reversión.** En código: probada (ver «Reversión»). En producción: `wrangler rollback <ID anotado> --name cidiks-ia-advisor`; para usarlo falta el ID anterior.
