@@ -1,23 +1,29 @@
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
-import { HOME_GUIDES } from "../src/guide-previews.ts";
+import {
+  HOME_ACCOUNT_LABELS,
+  HOME_COMMUNITY_ROUTES,
+  HOME_EXTERNAL_RESOURCES,
+  HOME_RESOURCES_CHECKED_ON,
+} from "../src/home-community.ts";
 import { content } from "../src/content.ts";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import {
   ACCOUNT_LABELS,
   COMMUNITY_INSTITUTIONS,
   COMMUNITY_RESOURCES,
+  formatCheckedOn,
   type VerifiedCommunityResource,
 } from "../src/comunidad-recursos.ts";
 import { track } from "../src/analytics.ts";
 
 const html = readFileSync("dist/index.html", "utf8");
 assert.ok(
-  html.includes("Entendemos primero."),
+  html.includes("Comprender antes"),
   "Home should have readable HTML before JS",
 );
-assert.ok(html.includes("Construimos después."));
+assert.ok(html.includes("de construir."));
 assert.ok(html.includes('name="google-site-verification"'));
 assert.ok(!html.includes("Ingeniero de Software"));
 assert.equal(
@@ -25,11 +31,40 @@ assert.equal(
   EDUCATION_ARTICLES.length,
   "Unique article slugs",
 );
-for (const guide of HOME_GUIDES) {
-  const article = EDUCATION_ARTICLES.find((a) => a.id === guide.id);
-  assert.ok(article);
-  for (const field of ["slug", "title", "tagline", "category"] as const)
-    assert.equal(guide[field], article[field], `Preview: ${guide.id}/${field}`);
+// La vista previa de Comunidad en la home no importa las fuentes (peso del JavaScript):
+// aquí se comprueba que coincide con las guías, las rutas y los recursos verificados.
+assert.deepEqual(
+  HOME_COMMUNITY_ROUTES.map((r) => ({ id: r.id, title: r.title, guides: r.guides.map((g) => g.slug) })),
+  COMMUNITY_ROUTES.map((r) => ({ id: r.id, title: r.title, guides: [...r.guideSlugs] })),
+  "Home: rutas y guías en el mismo orden que /comunidad/",
+);
+for (const guide of HOME_COMMUNITY_ROUTES.flatMap((r) => r.guides)) {
+  const article = EDUCATION_ARTICLES.find((a) => a.slug === guide.slug);
+  assert.ok(article, `Home: guía inexistente ${guide.slug}`);
+  assert.equal(guide.title, article.title, `Home: título de ${guide.slug}`);
+}
+assert.equal(
+  HOME_COMMUNITY_ROUTES.flatMap((r) => r.guides).length,
+  EDUCATION_ARTICLES.length,
+  "Home: las guías propias de las rutas son todas las guías",
+);
+const verifiedForHome = COMMUNITY_RESOURCES.filter(
+  (r): r is VerifiedCommunityResource => r.status === "verified",
+);
+assert.deepEqual(
+  HOME_EXTERNAL_RESOURCES.map((r) => r.id).sort(),
+  verifiedForHome.map((r) => r.id).sort(),
+  "Home: exactamente los recursos verificados (ningún pendiente)",
+);
+for (const preview of HOME_EXTERNAL_RESOURCES) {
+  const resource = verifiedForHome.find((r) => r.id === preview.id)!;
+  assert.equal(preview.title, resource.title, `Home: título de ${preview.id}`);
+  assert.equal(preview.institution, COMMUNITY_INSTITUTIONS[resource.institutionId].name);
+  assert.equal(preview.routeId, resource.routeId, `Home: ruta de ${preview.id}`);
+  assert.equal(preview.duration, resource.duration, `Home: duración de ${preview.id}`);
+  assert.equal(preview.account, resource.free.account, `Home: cuenta de ${preview.id}`);
+  assert.ok(preview.account in HOME_ACCOUNT_LABELS);
+  assert.equal(HOME_RESOURCES_CHECKED_ON, formatCheckedOn(resource.verification.checkedOn));
 }
 const pages = [
   "/conocimiento/",
@@ -112,27 +147,47 @@ for (const r of COMMUNITY_RESOURCES.filter((r) => r.status === "pending")) {
   assert.ok(!community.includes(`data-community-resource="${r.id}"`), `Un pendiente no se muestra como recurso: ${r.id}`);
 }
 assert.ok(!/<a[\s>]/.test(pendingHtml), "Los recursos pendientes no llevan enlaces");
-// Descubrimiento: Comunidad se enlaza desde la home y desde el índice de Conocimiento,
-// sin añadir un sexto elemento al encabezado (en móvil apila sus enlaces).
+// Descubrimiento: Comunidad es visible en la home (hero, selector, sección propia y cierre)
+// y se enlaza desde el índice de Conocimiento.
 const knowledgeIndex = readFileSync("dist/conocimiento/index.html", "utf8");
-for (const [name, source] of [["home", html], ["conocimiento", knowledgeIndex]] as const)
-  assert.equal(
-    source.split(`href="${COMMUNITY_PAGE.path}"`).length - 1,
-    1,
-    `Un enlace a Comunidad en ${name}`,
-  );
+assert.equal(
+  knowledgeIndex.split(`href="${COMMUNITY_PAGE.path}"`).length - 1,
+  2,
+  "Conocimiento enlaza a Comunidad desde el encabezado y desde su cuerpo",
+);
+const homeLinks = html.split(`href="${COMMUNITY_PAGE.path}"`).length - 1;
+assert.ok(homeLinks >= 4, `La home enlaza a Comunidad desde varios bloques (${homeLinks})`);
 const learnSection = html.match(/<section[^>]*id="aprende"[\s\S]*?<\/section>/)?.[0] ?? "";
 assert.ok(
   learnSection.includes(`href="${COMMUNITY_PAGE.path}"`),
-  "El enlace de la home está en la sección de guías (#aprende)",
+  "La sección de Comunidad de la home (#aprende) enlaza a /comunidad/",
 );
+for (const slug of EDUCATION_ARTICLES.map((a) => a.slug))
+  assert.equal(
+    learnSection.split(`href="/conocimiento/${slug}/"`).length - 1,
+    1,
+    `Home: guía enlazada una vez en #aprende: ${slug}`,
+  );
+assert.ok(!/<script/.test(learnSection) && !/https?:\/\//.test(learnSection), "#aprende sin scripts ni enlaces externos");
+// Orden de la home: selector de necesidades y Comunidad antes que los servicios.
+const at = (needle: string) => html.indexOf(needle);
+assert.ok(
+  at('id="necesidades"') > at('id="inicio"') &&
+    at('id="aprende"') > at('id="necesidades"') &&
+    at('id="soluciones"') > at('id="aprende"'),
+  "Orden: hero, necesidades, Comunidad, servicios",
+);
+for (const href of ["/comunidad/", "/asesor-ia/", "/conocimiento/", "#servicios"]) {
+  const needs = html.match(/<section[^>]*id="necesidades"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.ok(needs.includes(`href="${href}"`), `Selector de necesidades enlaza a ${href}`);
+}
 for (const path of ["/", content.advisor.path, ...pages]) {
   const nav =
     readFileSync(`dist${path}index.html`, "utf8").match(
       /<nav aria-label="Principal">(.*?)<\/nav>/s,
     )?.[1] ?? "";
   assert.equal((nav.match(/<a /g) || []).length, 5, `Encabezado con 5 enlaces: ${path}`);
-  assert.ok(!nav.includes(COMMUNITY_PAGE.path), `Comunidad fuera del encabezado: ${path}`);
+  assert.ok(nav.includes(`href="${COMMUNITY_PAGE.path}"`), `Comunidad en el encabezado: ${path}`);
 }
 const testWindow = {
   cidiksAnalyticsBuffer: [] as Array<{

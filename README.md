@@ -28,7 +28,7 @@ npm run preview
 
 ## Editar el contenido
 
-El recorrido vive en `src/HomeHero.tsx` y `src/HomeJourney.tsx`; el contacto en `src/Contact.tsx`, los registros de casos en `src/CaseEvidence.tsx`, y las guías en `src/education.ts` y `src/KnowledgePage.tsx`. Los previews en `src/guide-previews.ts` se comprueban contra las guías completas. Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Los casos editoriales están en `src/ParaisoCaseStudy.tsx` y `src/AltitudCaseStudy.tsx`. Los metadatos del dominio se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
+El recorrido vive en `src/HomeHero.tsx` y `src/HomeJourney.tsx`; el contacto en `src/Contact.tsx`, los registros de casos en `src/CaseEvidence.tsx`, y las guías en `src/education.ts` y `src/KnowledgePage.tsx`. La vista previa de Comunidad en la home (`src/home-community.ts`) se comprueba en `check:evolution` contra las guías, rutas y recursos completos. Los datos generales están en `src/content.ts`: identidad, textos, precios, proyectos, estados, imágenes y enlaces. Los casos editoriales están en `src/ParaisoCaseStudy.tsx` y `src/AltitudCaseStudy.tsx`. Los metadatos del dominio se generan durante el build, para que los lean los buscadores y las vistas previas sin ejecutar JavaScript.
 
 - `owner`: nombre público y nombre corto.
 - `links`: correo, Messenger, WhatsApp opcional, dominio y redes. Usa URLs HTTPS completas. Los marcadores no generan enlaces rotos.
