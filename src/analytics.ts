@@ -149,7 +149,9 @@ export interface AnalyticsPayloads {
     classified_need: string;
     recommended_solution: string;
   };
-  hero_cta_click: { target: "contacto" | "casos" };
+  hero_cta_click: {
+    target: "contacto" | "casos" | "comunidad" | "asesor" | "servicios";
+  };
   demo_view: { demo_id: string; kind: "illustration" };
   demo_select: { demo_id: "oferta" | "seguimiento" };
   case_view: { case_id: string };

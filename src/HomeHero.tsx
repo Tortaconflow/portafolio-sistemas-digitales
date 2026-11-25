@@ -1,13 +1,8 @@
-import { content as c, type Project } from "./content.ts";
+import { content as c } from "./content.ts";
 import { track } from "./analytics.ts";
+import { chatAvailable, openChat } from "./ai-chat.ts";
 const Arrow = () => <span aria-hidden="true">↗</span>;
-export function HomeHero({
-  onInterest,
-  onSelectProject,
-}: {
-  onInterest: (text: string) => void;
-  onSelectProject: (project: Project, index: number) => void;
-}) {
+export function HomeHero() {
   return (
     <section id="inicio" className="hero container">
       <div className="hero-top">
@@ -27,31 +22,41 @@ export function HomeHero({
             {c.hero.headline} <br />
             <strong>{c.hero.headlineAccent}</strong>
           </h1>
-          <p className="hero-discipline">{c.hero.discipline}</p>
           <p className="hero-description">{c.hero.body}</p>
           <div className="hero-actions">
             <a
               className="button"
-              href="#contacto"
-              onClick={() => {
-                onInterest(c.hero.primary);
-                track("hero_cta_click", { target: "contacto" });
-              }}
+              href="/comunidad/"
+              onClick={() => track("hero_cta_click", { target: "comunidad" })}
             >
               {c.hero.primary}
               <Arrow />
             </a>
-            <a className="button button-light" href="/asesor-ia/">
-              Asesor gratis (3 preguntas)
-              <Arrow />
-            </a>
+            {chatAvailable() ? (
+              <button
+                type="button"
+                className="button button-light"
+                onClick={() => {
+                  track("hero_cta_click", { target: "asesor" });
+                  openChat();
+                }}
+              >
+                {c.hero.ai}
+                <Arrow />
+              </button>
+            ) : (
+              <a className="button button-light" href="/asesor-ia/">
+                Diagnóstico guiado (sin IA)
+                <Arrow />
+              </a>
+            )}
             <a
               className="inline-link"
-              href="#casos"
-              onClick={() => track("hero_cta_click", { target: "casos" })}
+              href="#servicios"
+              onClick={() => track("hero_cta_click", { target: "servicios" })}
             >
               {c.hero.secondary}
-              <span aria-hidden="true">↓</span>
+              <Arrow />
             </a>
           </div>
           <p className="hero-note">
@@ -75,6 +80,7 @@ export function HomeHero({
                   alt={item.alt}
                   width="900"
                   height="1125"
+                  loading="lazy"
                   fetchPriority={i === 1 ? "high" : "auto"}
                   decoding="async"
                 />
@@ -97,24 +103,6 @@ export function HomeHero({
           </a>
           <span className="stage-note">{c.hero.visualNote}</span>
         </aside>
-      </div>
-      <div className="hero-index surface-glass surface-glass--subtle">
-        <div>
-          <span className="eyebrow">{c.hero.indexLabel}</span>
-          <p>{c.hero.indexNote}</p>
-        </div>
-        <div className="index-cases">
-          {c.projects.slice(0, 3).map((p, i) => (
-            <button key={p.id} onClick={() => onSelectProject(p, i)}>
-              <span className="mono">0{i + 1}</span>
-              <span className="index-case-title">
-                <strong>{p.title}</strong>
-                {p.heroBrief && <small>{p.heroBrief}</small>}
-              </span>
-              <Arrow />
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   );

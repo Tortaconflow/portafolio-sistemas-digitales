@@ -166,7 +166,7 @@ test("el encabezado de las páginas estáticas conserva sus cinco enlaces", asyn
     await page.goto(path);
     const links = page.getByRole("navigation", { name: "Principal" }).getByRole("link");
     await expect(links, path).toHaveCount(5);
-    await expect(links.filter({ hasText: "Comunidad" }), path).toHaveCount(0);
+    await expect(links.filter({ hasText: "Comunidad" }), path).toHaveCount(1);
   }
 });
 

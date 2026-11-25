@@ -6,7 +6,13 @@ Actualizar al cerrar cada tarea importante. Sin secretos ni datos personales. Pl
 
 **Fase 1 (MVP `/comunidad/`) aceptada por el propietario hasta el commit local `cb09ae8`. Fase 1b, prepublicación y piloto, en curso.** Por ahora no se implementan funcionalidades ni se buscan más cursos. Prioridad: respaldo seguro del trabajo y piloto educativo. Nada publicado.
 
-## Última tarea completada
+## Última tarea completada: evolución de la home (rama `feat/cidiks-home-evolution`, solo local)
+
+La home pasó de portafolio comercial a puerta de entrada al ecosistema. Orden nuevo: hero ("Comprender antes de construir"; Aprender gratis, Consultar CÍDIKS IA, Explorar servicios) → selector "¿Qué necesitas hoy?" (Comunidad, CÍDIKS IA, Conocimiento: gratis; Servicios: con cotización) → sección Comunidad (`#aprende`: 3 rutas, 10 guías propias, 4 cursos externos con sus condiciones) → servicios por problema (`#soluciones`, mismos contenidos y rutas) → método → demo → proyectos (con leyenda trabajo documentado / proyecto conceptual y el índice de proyectos que estaba en el hero) → origen e identidad → cierre por intención (aprender / orientación / contratar). Encabezado: Comunidad primero (en la home: Comunidad, Conocimiento, Asesor IA, Servicios, Proyectos, CÍDIKS, Contacto; en las páginas estáticas Comunidad sustituye a Método, siguen siendo 5). Se retiró la franja decorativa de cinco palabras y `src/guide-previews.ts` (sustituido por `src/home-community.ts`, que `check:evolution` cruza con las guías, rutas y recursos verificados). Sin cambios en `worker/`, `shared/`, `public/`, SEO (título, descripción, canonical, JSON-LD) ni dependencias. Corregidos de paso dos avisos de contraste preexistentes (`.hero-note`, `.stage-note`) y el texto blanco sobre fondo claro del botón final. Pruebas: build, `check:*` y 100 de 100 en Playwright (móvil y escritorio, axe WCAG 2.1 A/AA). Pendiente de aprobación: revisión visual del propietario, merge y despliegue.
+
+**Refinamiento final (misma rama):** la home solo orienta (tres rutas con cantidades; guías y cursos se desarrollan en `/comunidad/`); título y descripción SEO nuevos (educación gratuita, orientación, servicios, Oaxaca); "CÍDIKS IA" abre el chat flotante existente (evento `cidiks:open-chat`, sin tocar el Worker) y `/asesor-ia/` se llama "Diagnóstico guiado (sin IA)"; en móvil el collage del hero no se carga; CSS huérfano retirado (`.capabilities`, `.hero-index`, `.hero-discipline`). Pendiente: la imagen Open Graph aún dice "Diseño web, automatización e IA aplicada".
+
+### Tarea anterior
 
 Prepublicación: estado de Git, análisis de despliegue automático, vía para conectar con permisos de escritura, lista de verificaciones antes de publicar y guía del piloto con cinco emprendedores (todo en `PLAN_CIDIKS.md`, secciones 7 y 8). Solo documentación; sin cambios de código. Sin push, merge ni despliegue.
 

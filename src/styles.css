@@ -459,22 +459,7 @@ section[id] {
 .system-bottom > span:last-child {
   margin-left: auto;
 }
-.hero-index {
-  display: flex;
-  gap: 45px;
-  align-items: center;
-  margin-top: 52px;
-  padding-top: 25px;
-  border-top: 1px solid var(--line);
-}
-.hero-index p {
-  font-size: 10px;
-  color: var(--muted);
-  margin: 7px 0 0;
-}
-.hero-index .eyebrow {
-  font-size: 9px;
-}
+
 .index-cases {
   display: flex;
   flex: 1;
@@ -504,27 +489,7 @@ section[id] {
   margin-left: auto;
   font-size: 18px;
 }
-.capabilities {
-  border-block: 1px solid var(--line);
-  margin-top: 20px;
-}
-.capabilities > .container {
-  display: flex;
-  justify-content: space-between;
-  padding-block: 20px;
-  gap: 16px;
-}
-.capabilities span {
-  font: 10px var(--mono);
-  letter-spacing: 0.12em;
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-.capabilities span span {
-  font-size: 16px;
-  color: #727e85;
-}
+
 .two-col {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
@@ -1365,9 +1330,7 @@ footer p {
   .system-card {
     padding: 23px 23px 0;
   }
-  .hero-index {
-    gap: 30px;
-  }
+
   .index-cases {
     gap: 18px;
   }
@@ -1380,10 +1343,7 @@ footer p {
   .two-col h2 {
     font-size: 35px;
   }
-  .capabilities span {
-    gap: 15px;
-    font-size: 9px;
-  }
+
   .service-grid {
     gap: 25px;
     grid-template-columns: 1fr 1fr;
@@ -1478,20 +1438,12 @@ footer p {
   .flow-arrow {
     display: none;
   }
-  .hero-index {
-    display: block;
-  }
+
   .index-cases {
     margin-top: 12px;
   }
-  .hero-index > div:first-child {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .hero-index p {
-    margin: 0;
-  }
+
+  
   .section {
     padding-block: 75px;
   }
@@ -1715,16 +1667,9 @@ footer p {
     padding: 15px 0;
     font-size: 9px;
   }
-  .hero-index {
-    margin-top: 30px;
-    padding-top: 20px;
-  }
-  .hero-index > div:first-child {
-    display: block;
-  }
-  .hero-index p {
-    margin-top: 6px;
-  }
+
+  
+
   .index-cases {
     gap: 0;
     display: flex;
@@ -1735,24 +1680,10 @@ footer p {
     padding: 13px 0;
     flex: none;
   }
-  .capabilities {
-    margin-top: 5px;
-  }
-  .capabilities > .container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 19px 13px;
-    padding-block: 20px;
-  }
-  .capabilities span {
-    font-size: 8px;
-    gap: 8px;
-    justify-content: space-between;
-    letter-spacing: 0.03em;
-  }
-  .capabilities span span {
-    font-size: 11px;
-  }
+
+  
+
+  
   .section {
     padding-block: 60px;
   }

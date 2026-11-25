@@ -633,8 +633,9 @@ export function App() {
         </div>
       </header>
       <main id="main">
+        {view === "inicio" && <HomeHero />}
         {view === "inicio" && (
-          <HomeHero
+          <HomeJourney
             onInterest={setInterest}
             onSelectProject={(p, i) => {
               if (i === 0) window.location.hash = "#paraiso-laguna";
@@ -646,17 +647,6 @@ export function App() {
             }}
           />
         )}
-        <div className="capabilities" hidden={view !== "inicio"}>
-          <div className="container">
-            {c.capabilities.map((x) => (
-              <span key={x}>
-                {x}
-                <span aria-hidden="true">✳</span>
-              </span>
-            ))}
-          </div>
-        </div>
-        {view === "inicio" && <HomeJourney onInterest={setInterest} />}
         {view === "diagnostico" && (
           <>
             <section

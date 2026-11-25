@@ -49,19 +49,6 @@
   max-width: 66ch;
   margin-top: 20px;
 }
-.friction-intro {
-  border-bottom: 1px solid var(--line);
-}
-.friction-intro h2 {
-  max-width: 25ch;
-}
-.friction-intro > div {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-top: 26px;
-}
-.friction-intro p,
 .journey-method p,
 .solution-rows p,
 .demo-reasoning p,
@@ -403,7 +390,7 @@
 }
 .final-invitation .button {
   background: var(--paper);
-  color: var(--action);
+  color: var(--action) !important;
   box-shadow: none;
   border-color: var(--paper);
 }
@@ -677,6 +664,112 @@
   display: inline-flex;
   align-items: center;
 }
+/* Home como puerta de entrada: necesidades, Comunidad y cierre por intención. */
+.hero .hero-note, .visual-stage .stage-note { color: var(--muted); opacity: 1; }
+.hero { padding-bottom: clamp(16px, 3vw, 32px); }
+.home-journey .needs { padding-top: clamp(8px, 2vw, 24px); }
+.needs h2 { margin: 0 0 24px; }
+.needs-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  gap: 14px;
+}
+.need {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 60px 22px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--action);
+  border-radius: var(--surface-radius);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 180ms, background-color 180ms;
+}
+.needs .need h3 { margin: 0; font-size: clamp(19px, 2vw, 22px); letter-spacing: -0.02em; }
+.need p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.need-tag { font: 600 11px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--action); }
+.need-arrow { position: absolute; top: 18px; right: 22px; color: var(--action); font-size: 22px; }
+.need:hover { border-color: var(--action); }
+.need:focus-visible, .need:has(:focus-visible) { outline: 2px solid var(--action); outline-offset: 3px; }
+.need-stretch { all: unset; cursor: pointer; }
+.need-stretch::after { content: ""; position: absolute; inset: 0; border-radius: var(--surface-radius); }
+.need:has(.need-stretch):hover { border-color: var(--action); }
+.needs-note { margin: 18px 0 0; font-size: 14px; color: var(--muted); }
+.needs .need--lead {
+  grid-row: 1 / span 3;
+  justify-content: flex-end;
+  min-height: 280px;
+  padding: 28px;
+  background: var(--action);
+  border-color: var(--action);
+  color: #fff;
+}
+.needs .need--lead h3 { color: #fff; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.08; }
+.needs .need--lead p { color: #dce5da; font-size: 16px; max-width: 34ch; }
+.need--lead .need-tag, .need--lead .need-arrow { color: #dce5da; }
+.need--lead:hover { background: var(--action-hover); }
+.need--lead:focus-visible { outline-color: var(--ink); }
+.needs .need--paid { background: var(--paper); border-left-color: var(--terracotta); }
+.need--paid .need-tag, .need--paid .need-arrow { color: var(--terracotta); }
+.need--paid:hover { border-color: var(--terracotta); }
+.community-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: end;
+}
+.community-head p { margin: 0; line-height: 1.7; color: var(--muted); max-width: 52ch; }
+.community-routes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin: 36px 0 0;
+  padding: 0;
+}
+.community-routes > li { padding-top: 18px; border-top: 2px solid var(--action); }
+.community-routes .mono { color: var(--terracotta); font-size: 11px; letter-spacing: 0.1em; }
+.home-journey .community-routes h3 { margin: 10px 0 8px; font-size: clamp(21px, 2.2vw, 25px); line-height: 1.2; }
+.community-routes h3 a { color: var(--ink); text-decoration: none; }
+.community-routes h3 a:hover { color: var(--action); text-decoration: underline; text-underline-offset: 4px; }
+.community-routes > li > p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.community-routes small { font-size: 13px; color: var(--muted); }
+.home-community > .button { margin-top: 36px; }
+.solution-links { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; }
+.evidence-legend { margin: 20px 0 0; max-width: 72ch; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.project-index {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-top: 24px;
+  padding: 16px 20px;
+}
+.final-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+.final-paths > div { padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.35); }
+.final-invitation .final-paths h3 { margin: 0; color: #fff; font-size: 21px; line-height: 1.25; }
+.final-invitation .final-paths p { margin: 10px 0 0; max-width: 34ch; }
+.final-paths .button { margin-top: 22px; }
+.final-invitation .final-paths .inline-link { margin-top: 16px; }
+/* En móvil la portada no carga el collage del hero (imágenes diferidas y ocultas): el caso sigue en Proyectos. */
+@media (max-width: 600px) {
+  .visual-stage { display: none; }
+}
+@media (max-width: 850px) {
+  .needs-grid { grid-template-columns: 1fr; grid-template-rows: none; }
+  .needs .need--lead { grid-row: auto; min-height: 200px; }
+  .community-head { grid-template-columns: 1fr; gap: 16px; }
+  .community-routes, .final-paths { grid-template-columns: 1fr; gap: 28px; }
+}
 @media (max-width: 1100px) {
   .site-header .nav-cta {
     display: none;
@@ -723,7 +816,6 @@
   .home-journey .section {
     padding-block: 48px;
   }
-  .friction-intro > div,
   .client-capacity,
   .origin-section,
   .home-case-grid,
@@ -732,9 +824,6 @@
   .home-guide-grid,
   .editorial-category .home-guide-grid {
     grid-template-columns: 1fr;
-  }
-  .friction-intro > div {
-    gap: 12px;
   }
   .demo-heading,
   .journey-section-heading {

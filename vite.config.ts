@@ -97,6 +97,7 @@ export default defineConfig({
                 "Diseño web responsive",
                 "Automatización de procesos",
                 "Inteligencia artificial para negocios",
+                "Educación digital para emprendedores",
                 "Integración de sistemas y APIs",
               ],
               areaServed: [

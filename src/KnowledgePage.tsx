@@ -8,8 +8,8 @@ export function StaticHome() {
     <>
       <SiteHeader />
       <main id="main">
-        <HomeHero onInterest={() => {}} onSelectProject={() => {}} />
-        <HomeJourney onInterest={() => {}} />
+        <HomeHero />
+        <HomeJourney onInterest={() => {}} onSelectProject={() => {}} />
       </main>
       <SiteFooter />
     </>
@@ -42,10 +42,10 @@ export function SiteHeader() {
             </span>
           </a>
           <nav aria-label="Principal">
-            <a href="/#casos">Proyectos</a>
-            <a href="/#proceso">Método</a>
+            <a href="/comunidad/">Comunidad</a>
             <a href="/conocimiento/">Conocimiento</a>
-            <a href="/asesor-ia/">Asesor IA</a>
+            <a href="/asesor-ia/">Diagnóstico</a>
+            <a href="/#casos">Proyectos</a>
             <a href="/#contacto">
               Quiero un diagnóstico <span aria-hidden="true">↗</span>
             </a>

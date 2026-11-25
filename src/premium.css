@@ -141,12 +141,7 @@ h2 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.hero-discipline {
-  margin: 24px 0 0;
-  font-size: 16px;
-  font-weight: 550;
-  letter-spacing: -0.025em;
-}
+
 .hero-description {
   font-size: 14px;
   line-height: 1.85;
@@ -167,14 +162,7 @@ h2 {
 .hero-note {
   margin-top: 12px;
 }
-.hero-index {
-  background: #ffffff55;
-  border: 1px solid white;
-  border-radius: 20px;
-  padding: 20px 25px;
-  margin-top: 26px;
-  box-shadow: 0 8px 30px #4b5b7310;
-}
+
 .index-cases button {
   border-bottom: 0;
   min-height: 48px;
@@ -308,17 +296,7 @@ h2 {
   font: 9px var(--mono);
   color: var(--muted);
 }
-.capabilities {
-  margin: 16px auto 0;
-  border: 0;
-  color: #546580;
-}
-.capabilities > .container {
-  padding-block: 18px;
-}
-.capabilities span span {
-  color: #7180a5;
-}
+
 .problem-section {
   padding-block: 65px;
 }
@@ -633,9 +611,7 @@ textarea {
   .art-title {
     font-size: 29px;
   }
-  .hero-index {
-    gap: 20px;
-  }
+
 }
 @media (max-width: 850px) {
   .container {
@@ -672,9 +648,7 @@ textarea {
   .hero-signature {
     font-size: 9px;
   }
-  .hero-discipline {
-    font-size: 13px;
-  }
+
   .hero-description {
     font-size: 13px;
   }
@@ -712,10 +686,7 @@ textarea {
     font-size: 9px;
     line-height: 1.2;
   }
-  .hero-index {
-    padding: 15px;
-    gap: 12px;
-  }
+
   .index-cases {
     gap: 10px;
   }
@@ -790,10 +761,7 @@ textarea {
     font-size: 76px;
     line-height: 0.99;
   }
-  .hero-discipline {
-    font-size: 13px;
-    margin-top: 22px;
-  }
+
   .hero-description {
     font-size: 13px;
     margin: 15px 0 20px;
@@ -843,10 +811,7 @@ textarea {
     font-size: 9px;
     line-height: 1.25;
   }
-  .hero-index {
-    margin-top: 24px;
-    padding: 18px;
-  }
+
   .index-cases {
     gap: 0;
   }
@@ -854,22 +819,10 @@ textarea {
     font-size: 12px;
     padding: 13px 0;
   }
-  .hero-index > div:first-child p {
-    display: none;
-  }
-  .capabilities > .container {
-    gap: 16px;
-    padding-block: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .capabilities span {
-    font-size: 8px;
-    gap: 15px;
-  }
-  .capabilities span span {
-    font-size: 12px;
-  }
+
+  
+
+  
   .section {
     padding-block: 54px;
   }
