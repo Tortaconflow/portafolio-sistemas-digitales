@@ -405,6 +405,12 @@ export function HomeJourney({
             </a>
           ))}
         </div>
+        <p className="section-description">
+          <a className="inline-link" href="/comunidad/">
+            ¿Prefieres seguir un orden? Conoce las rutas gratuitas de CÍDIKS
+            Comunidad <span aria-hidden="true">↗</span>
+          </a>
+        </p>
       </section>
       <OriginSection />
       <section

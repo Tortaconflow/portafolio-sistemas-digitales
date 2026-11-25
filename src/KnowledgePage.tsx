@@ -240,6 +240,12 @@ export function KnowledgePage({ article }: { article?: EducationArticle }) {
                 Guías para comprender tu presencia digital, ordenar procesos y
                 elegir el siguiente paso con criterio.
               </p>
+              <p>
+                <a className="inline-link" href="/comunidad/">
+                  ¿Prefieres seguir un orden? Conoce las rutas gratuitas de
+                  CÍDIKS Comunidad <span aria-hidden="true">↗</span>
+                </a>
+              </p>
             </header>
             <nav
               className="editorial-categories"
