@@ -694,7 +694,11 @@
 .need-tag { font: 600 11px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--action); }
 .need-arrow { position: absolute; top: 18px; right: 22px; color: var(--action); font-size: 22px; }
 .need:hover { border-color: var(--action); }
-.need:focus-visible { outline: 2px solid var(--action); outline-offset: 3px; }
+.need:focus-visible, .need:has(:focus-visible) { outline: 2px solid var(--action); outline-offset: 3px; }
+.need-stretch { all: unset; cursor: pointer; }
+.need-stretch::after { content: ""; position: absolute; inset: 0; border-radius: var(--surface-radius); }
+.need:has(.need-stretch):hover { border-color: var(--action); }
+.needs-note { margin: 18px 0 0; font-size: 14px; color: var(--muted); }
 .needs .need--lead {
   grid-row: 1 / span 3;
   justify-content: flex-end;
@@ -732,40 +736,9 @@
 .home-journey .community-routes h3 { margin: 10px 0 8px; font-size: clamp(21px, 2.2vw, 25px); line-height: 1.2; }
 .community-routes h3 a { color: var(--ink); text-decoration: none; }
 .community-routes h3 a:hover { color: var(--action); text-decoration: underline; text-underline-offset: 4px; }
-.community-routes > li > p { margin: 0 0 16px; font-size: 14px; line-height: 1.6; color: var(--muted); }
-.community-routes ul { list-style: none; margin: 0; padding: 0; }
-.community-routes ul li { border-top: 1px solid var(--line); }
-.community-routes ul a { display: block; padding: 11px 0; font-size: 14px; line-height: 1.45; color: var(--ink); text-decoration: none; }
-.community-routes ul a:hover { color: var(--action); text-decoration: underline; text-underline-offset: 3px; }
-.community-external {
-  display: grid;
-  grid-template-columns: 0.8fr 1.4fr;
-  gap: 28px;
-  margin: 40px 0 32px;
-  padding: 24px;
-  background: var(--glass-bg-subtle);
-  border: 1px solid var(--line);
-  border-radius: var(--surface-radius);
-}
-.home-journey .community-external h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.3; }
-.community-external p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
-.community-external ul { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 0; }
-.community-external ul a {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  height: 100%;
-  padding: 12px 14px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--ink);
-  text-decoration: none;
-}
-.community-external ul a:hover { border-color: var(--action); }
-.community-external strong { font-size: 14px; line-height: 1.35; }
-.community-external span { font: 11px var(--mono); letter-spacing: 0.04em; color: var(--muted); }
-.community-external small { font-size: 12px; line-height: 1.4; color: var(--muted); }
+.community-routes > li > p { margin: 0 0 12px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.community-routes small { font-size: 13px; color: var(--muted); }
+.home-community > .button { margin-top: 36px; }
 .solution-links { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; }
 .evidence-legend { margin: 20px 0 0; max-width: 72ch; font-size: 14px; line-height: 1.6; color: var(--muted); }
 .project-index {
@@ -787,15 +760,15 @@
 .final-invitation .final-paths p { margin: 10px 0 0; max-width: 34ch; }
 .final-paths .button { margin-top: 22px; }
 .final-invitation .final-paths .inline-link { margin-top: 16px; }
+/* En móvil la portada no carga el collage del hero (imágenes diferidas y ocultas): el caso sigue en Proyectos. */
+@media (max-width: 600px) {
+  .visual-stage { display: none; }
+}
 @media (max-width: 850px) {
   .needs-grid { grid-template-columns: 1fr; grid-template-rows: none; }
   .needs .need--lead { grid-row: auto; min-height: 200px; }
-  .community-head, .community-external { grid-template-columns: 1fr; gap: 16px; }
+  .community-head { grid-template-columns: 1fr; gap: 16px; }
   .community-routes, .final-paths { grid-template-columns: 1fr; gap: 28px; }
-}
-@media (max-width: 600px) {
-  .community-external { padding: 18px; }
-  .community-external ul { grid-template-columns: 1fr; }
 }
 @media (max-width: 1100px) {
   .site-header .nav-cta {

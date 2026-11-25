@@ -48,9 +48,9 @@ export const content = {
     github: "https://github.com/Tortaconflow",
   },
   seo: {
-    title: "CÍDIKS · Soluciones digitales con diagnóstico | Reily Castro",
+    title: "CÍDIKS · Educación gratuita y servicios digitales | Reily Castro, Oaxaca",
     description:
-      "Entendemos qué frena tu negocio antes de construir. Diseño web, identidad y automatización desde Oaxaca, con diagnóstico, evidencia y guías para usar tu solución.",
+      "Aprende gratis con rutas y guías, recibe orientación digital y contrata diseño web, identidad y automatización. CÍDIKS, de Reily Castro, desde Oaxaca, México.",
     image: "/brand/social/og-cidiks-1200x630.png",
     googleSiteVerification: "YwXexq6z7XtunddelCV-31rZvF8qUGq_QmAimSU4owY",
     // Dominio final confirmado por el propietario; habilitar sólo en el build de producción.
@@ -67,7 +67,7 @@ export const content = {
   nav: [
     { id: "comunidad", label: "Comunidad", href: "/comunidad/" },
     { id: "conocimiento", label: "Conocimiento", href: "/conocimiento/" },
-    { id: "asesor", label: "Asesor IA", href: "/asesor-ia/" },
+    { id: "asesor", label: "Diagnóstico", href: "/asesor-ia/" },
     { id: "servicios", label: "Servicios" },
     { id: "casos", label: "Proyectos" },
     { id: "sobre-mi", label: "CÍDIKS" },

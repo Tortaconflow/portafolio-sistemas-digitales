@@ -1,12 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { EDUCATION_ARTICLES } from "../src/education.ts";
-import {
-  HOME_ACCOUNT_LABELS,
-  HOME_COMMUNITY_ROUTES,
-  HOME_EXTERNAL_RESOURCES,
-  HOME_RESOURCES_CHECKED_ON,
-} from "../src/home-community.ts";
+import { HOME_COMMUNITY_ROUTES, HOME_RESOURCES_CHECKED_ON } from "../src/home-community.ts";
 import { content } from "../src/content.ts";
 import { COMMUNITY_PAGE, COMMUNITY_ROUTES } from "../src/comunidad.ts";
 import {
@@ -24,6 +19,13 @@ assert.ok(
   "Home should have readable HTML before JS",
 );
 assert.ok(html.includes("de construir."));
+assert.ok(
+  /<title>[^<]*Educación gratuita[^<]*Oaxaca<\/title>/.test(html) &&
+    /<meta name="description" content="[^"]*Aprende gratis[^"]*orientación[^"]*servicios|<meta name="description" content="[^"]*Aprende gratis[^"]*contrata[^"]*Oaxaca/.test(html),
+  "Home: título y descripción reflejan educación gratuita, orientación y servicios en Oaxaca",
+);
+assert.ok(content.seo.title.length <= 75 && content.seo.description.length <= 165, "SEO: longitudes razonables");
+assert.ok(!/Asesor IA/.test(html), "El diagnóstico basado en reglas no se presenta como IA");
 assert.ok(html.includes('name="google-site-verification"'));
 assert.ok(!html.includes("Ingeniero de Software"));
 assert.equal(
@@ -32,40 +34,32 @@ assert.equal(
   "Unique article slugs",
 );
 // La vista previa de Comunidad en la home no importa las fuentes (peso del JavaScript):
-// aquí se comprueba que coincide con las guías, las rutas y los recursos verificados.
-assert.deepEqual(
-  HOME_COMMUNITY_ROUTES.map((r) => ({ id: r.id, title: r.title, guides: r.guides.map((g) => g.slug) })),
-  COMMUNITY_ROUTES.map((r) => ({ id: r.id, title: r.title, guides: [...r.guideSlugs] })),
-  "Home: rutas y guías en el mismo orden que /comunidad/",
-);
-for (const guide of HOME_COMMUNITY_ROUTES.flatMap((r) => r.guides)) {
-  const article = EDUCATION_ARTICLES.find((a) => a.slug === guide.slug);
-  assert.ok(article, `Home: guía inexistente ${guide.slug}`);
-  assert.equal(guide.title, article.title, `Home: título de ${guide.slug}`);
-}
-assert.equal(
-  HOME_COMMUNITY_ROUTES.flatMap((r) => r.guides).length,
-  EDUCATION_ARTICLES.length,
-  "Home: las guías propias de las rutas son todas las guías",
-);
+// aquí se comprueba que sus rutas y cantidades coinciden con /comunidad/ y los recursos verificados.
 const verifiedForHome = COMMUNITY_RESOURCES.filter(
   (r): r is VerifiedCommunityResource => r.status === "verified",
 );
 assert.deepEqual(
-  HOME_EXTERNAL_RESOURCES.map((r) => r.id).sort(),
-  verifiedForHome.map((r) => r.id).sort(),
-  "Home: exactamente los recursos verificados (ningún pendiente)",
+  HOME_COMMUNITY_ROUTES.map((r) => ({
+    id: r.id,
+    title: r.title,
+    guides: r.guides,
+    courses: r.courses,
+  })),
+  COMMUNITY_ROUTES.map((r) => ({
+    id: r.id,
+    title: r.title,
+    guides: r.guideSlugs.length,
+    courses: verifiedForHome.filter((x) => x.routeId === r.id).length,
+  })),
+  "Home: rutas, guías y cursos externos coinciden con /comunidad/",
 );
-for (const preview of HOME_EXTERNAL_RESOURCES) {
-  const resource = verifiedForHome.find((r) => r.id === preview.id)!;
-  assert.equal(preview.title, resource.title, `Home: título de ${preview.id}`);
-  assert.equal(preview.institution, COMMUNITY_INSTITUTIONS[resource.institutionId].name);
-  assert.equal(preview.routeId, resource.routeId, `Home: ruta de ${preview.id}`);
-  assert.equal(preview.duration, resource.duration, `Home: duración de ${preview.id}`);
-  assert.equal(preview.account, resource.free.account, `Home: cuenta de ${preview.id}`);
-  assert.ok(preview.account in HOME_ACCOUNT_LABELS);
+assert.equal(
+  HOME_COMMUNITY_ROUTES.reduce((n, r) => n + r.guides, 0),
+  EDUCATION_ARTICLES.length,
+  "Home: las guías de las rutas son todas las guías propias",
+);
+for (const resource of verifiedForHome)
   assert.equal(HOME_RESOURCES_CHECKED_ON, formatCheckedOn(resource.verification.checkedOn));
-}
 const pages = [
   "/conocimiento/",
   ...EDUCATION_ARTICLES.map((a) => `/conocimiento/${a.slug}/`),
@@ -162,12 +156,10 @@ assert.ok(
   learnSection.includes(`href="${COMMUNITY_PAGE.path}"`),
   "La sección de Comunidad de la home (#aprende) enlaza a /comunidad/",
 );
-for (const slug of EDUCATION_ARTICLES.map((a) => a.slug))
-  assert.equal(
-    learnSection.split(`href="/conocimiento/${slug}/"`).length - 1,
-    1,
-    `Home: guía enlazada una vez en #aprende: ${slug}`,
-  );
+assert.ok(
+  !/href="\/conocimiento\/[a-z]/.test(learnSection),
+  "La home solo orienta: las guías se enlazan desde /comunidad/ y /conocimiento/",
+);
 assert.ok(!/<script/.test(learnSection) && !/https?:\/\//.test(learnSection), "#aprende sin scripts ni enlaces externos");
 // Orden de la home: selector de necesidades y Comunidad antes que los servicios.
 const at = (needle: string) => html.indexOf(needle);

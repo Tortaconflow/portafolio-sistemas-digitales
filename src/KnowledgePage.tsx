@@ -44,7 +44,7 @@ export function SiteHeader() {
           <nav aria-label="Principal">
             <a href="/comunidad/">Comunidad</a>
             <a href="/conocimiento/">Conocimiento</a>
-            <a href="/asesor-ia/">Asesor IA</a>
+            <a href="/asesor-ia/">Diagnóstico</a>
             <a href="/#casos">Proyectos</a>
             <a href="/#contacto">
               Quiero un diagnóstico <span aria-hidden="true">↗</span>

@@ -1,3 +1,4 @@
+import { OPEN_CHAT_EVENT } from "../ai-chat";
 import { useEffect, useRef, useState } from "react";
 import {
   CHAT_STARTERS,
@@ -41,6 +42,12 @@ export function FloatingAssistant({ whatsappUrl }: { whatsappUrl?: string }) {
     setOpen(false);
     triggerRef.current?.focus();
   }
+
+  useEffect(() => {
+    const show = () => setOpen(true);
+    window.addEventListener(OPEN_CHAT_EVENT, show);
+    return () => window.removeEventListener(OPEN_CHAT_EVENT, show);
+  }, []);
 
   // Al abrir el chat se descarga la verificación de Cloudflare, para que el primer mensaje no espere.
   useEffect(() => {

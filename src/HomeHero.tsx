@@ -1,5 +1,6 @@
 import { content as c } from "./content.ts";
 import { track } from "./analytics.ts";
+import { chatAvailable, openChat } from "./ai-chat.ts";
 const Arrow = () => <span aria-hidden="true">↗</span>;
 export function HomeHero() {
   return (
@@ -31,14 +32,24 @@ export function HomeHero() {
               {c.hero.primary}
               <Arrow />
             </a>
-            <a
-              className="button button-light"
-              href="/asesor-ia/"
-              onClick={() => track("hero_cta_click", { target: "asesor" })}
-            >
-              {c.hero.ai}
-              <Arrow />
-            </a>
+            {chatAvailable() ? (
+              <button
+                type="button"
+                className="button button-light"
+                onClick={() => {
+                  track("hero_cta_click", { target: "asesor" });
+                  openChat();
+                }}
+              >
+                {c.hero.ai}
+                <Arrow />
+              </button>
+            ) : (
+              <a className="button button-light" href="/asesor-ia/">
+                Diagnóstico guiado (sin IA)
+                <Arrow />
+              </a>
+            )}
             <a
               className="inline-link"
               href="#servicios"
@@ -69,6 +80,7 @@ export function HomeHero() {
                   alt={item.alt}
                   width="900"
                   height="1125"
+                  loading="lazy"
                   fetchPriority={i === 1 ? "high" : "auto"}
                   decoding="async"
                 />

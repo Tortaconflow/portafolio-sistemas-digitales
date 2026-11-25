@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { content as c, type Project } from "./content.ts";
+import { chatAvailable, openChat } from "./ai-chat.ts";
 import {
-  HOME_ACCOUNT_LABELS,
   HOME_COMMUNITY_ROUTES,
-  HOME_EXTERNAL_RESOURCES,
   HOME_RESOURCES_CHECKED_ON,
 } from "./home-community.ts";
 import { useSectionEvent } from "./section-events.ts";
@@ -237,34 +236,13 @@ export function DemoSection() {
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
-const NEEDS = [
-  {
-    href: "/comunidad/",
-    tag: "Gratis",
-    title: "CÍDIKS Comunidad",
-    text: "Rutas y cursos gratuitos para aprender paso a paso, a tu ritmo.",
-  },
-  {
-    href: "/asesor-ia/",
-    tag: "Gratis",
-    title: "CÍDIKS IA",
-    text: "Responde unas preguntas y recibe orientación sobre por dónde empezar.",
-  },
-  {
-    href: "/conocimiento/",
-    tag: "Gratis",
-    title: "Conocimiento",
-    text: "Guías prácticas y recursos educativos, sin registro.",
-  },
-  {
-    href: "#servicios",
-    tag: "Con cotización",
-    title: "Servicios profesionales",
-    text: "Sitios web, identidad, contenido y automatización cuando necesites apoyo.",
-  },
-] as const;
-
 function NeedsSelector() {
+  const chat = chatAvailable();
+  const arrow = (
+    <span className="need-arrow" aria-hidden="true">
+      ↗
+    </span>
+  );
   return (
     <section
       id="necesidades"
@@ -273,30 +251,62 @@ function NeedsSelector() {
     >
       <h2 id="needs-title">¿Qué necesitas hoy?</h2>
       <div className="needs-grid">
-        {NEEDS.map((need, i) => (
-          <a
-            key={need.href}
-            href={need.href}
-            className={`need ${i === 0 ? "need--lead" : ""} ${need.href.startsWith("#") ? "need--paid" : ""}`}
-          >
-            <span className="need-tag">{need.tag}</span>
-            <h3>{need.title}</h3>
-            <p>{need.text}</p>
-            <span className="need-arrow" aria-hidden="true">
-              ↗
-            </span>
+        <a href="/comunidad/" className="need need--lead">
+          <span className="need-tag">Gratis</span>
+          <h3>CÍDIKS Comunidad</h3>
+          <p>Rutas y cursos gratuitos para aprender paso a paso, a tu ritmo.</p>
+          {arrow}
+        </a>
+        {chat ? (
+          <div className="need">
+            <span className="need-tag">Gratis · con inteligencia artificial</span>
+            <h3>
+              <button type="button" className="need-stretch" onClick={openChat}>
+                CÍDIKS IA
+              </button>
+            </h3>
+            <p>Cuéntale tu situación y conversa sobre por dónde empezar.</p>
+            {arrow}
+          </div>
+        ) : (
+          <a href="/asesor-ia/" className="need">
+            <span className="need-tag">Gratis · sin IA</span>
+            <h3>Diagnóstico guiado</h3>
+            <p>Responde unas preguntas y prepara un brief para tu negocio.</p>
+            {arrow}
           </a>
-        ))}
+        )}
+        <a href="/conocimiento/" className="need">
+          <span className="need-tag">Gratis</span>
+          <h3>Conocimiento</h3>
+          <p>Guías prácticas y recursos educativos para consultar cuando los necesites.</p>
+          {arrow}
+        </a>
+        <a href="#servicios" className="need need--paid">
+          <span className="need-tag">Con cotización</span>
+          <h3>Servicios profesionales</h3>
+          <p>
+            Sitios web, identidad, contenido y automatización cuando necesites
+            apoyo.
+          </p>
+          {arrow}
+        </a>
       </div>
+      {chat && (
+        <p className="needs-note">
+          ¿Prefieres un recorrido sin IA?{" "}
+          <a className="inline-link" href="/asesor-ia/">
+            Usa el diagnóstico guiado <Arrow />
+          </a>
+        </p>
+      )}
     </section>
   );
 }
 
 function CommunityPreview() {
-  const guideCount = HOME_COMMUNITY_ROUTES.reduce(
-    (total, route) => total + route.guides.length,
-    0,
-  );
+  const guides = HOME_COMMUNITY_ROUTES.reduce((n, r) => n + r.guides, 0);
+  const courses = HOME_COMMUNITY_ROUTES.reduce((n, r) => n + r.courses, 0);
   return (
     <section
       id="aprende"
@@ -309,9 +319,10 @@ function CommunityPreview() {
           <h2 id="community-title">Aprende primero. Decide con criterio.</h2>
         </div>
         <p>
-          {HOME_COMMUNITY_ROUTES.length} rutas con {guideCount} guías propias,
-          una actividad práctica y una forma de comprobar lo aprendido. Se leen
-          sin registro ni datos personales.
+          Las rutas y {guides} guías propias se leen sin registro ni datos
+          personales. Además, {courses} cursos de otras instituciones, revisados
+          el {HOME_RESOURCES_CHECKED_ON}: son gratuitos según sus páginas
+          oficiales y algunos piden cuenta o iniciar sesión.
         </p>
       </div>
       <ol className="community-routes">
@@ -322,41 +333,13 @@ function CommunityPreview() {
               <a href={`/comunidad/#${route.id}`}>{route.title}</a>
             </h3>
             <p>{route.summary}</p>
-            <ul>
-              {route.guides.map((guide) => (
-                <li key={guide.slug}>
-                  <a href={`/conocimiento/${guide.slug}/`}>{guide.title}</a>
-                </li>
-              ))}
-            </ul>
+            <small>
+              {route.guides} guías · {route.courses}{" "}
+              {route.courses === 1 ? "curso externo" : "cursos externos"}
+            </small>
           </li>
         ))}
       </ol>
-      <div className="community-external">
-        <div>
-          <h3>Para profundizar: cursos de otras instituciones</h3>
-          <p>
-            Cuatro recursos revisados el {HOME_RESOURCES_CHECKED_ON}. Son
-            gratuitos según sus páginas oficiales; algunos piden cuenta o iniciar
-            sesión.
-          </p>
-        </div>
-        <ul>
-          {HOME_EXTERNAL_RESOURCES.map((r) => (
-            <li key={r.id}>
-              <a href={`/comunidad/#${r.routeId}-recursos`}>
-                <strong>{r.title}</strong>
-                <span>{r.institution}</span>
-                <small>
-                  {[r.duration, HOME_ACCOUNT_LABELS[r.account]]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </small>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
       <a className="button" href="/comunidad/">
         Ver las rutas gratuitas de CÍDIKS Comunidad <Arrow />
       </a>
@@ -583,7 +566,9 @@ export function HomeJourney({
             </div>
             <div>
               <h3>Necesito orientación</h3>
-              <p>Un recorrido breve para decidir por dónde empezar.</p>
+              <p>
+                Un recorrido guiado, sin IA, para decidir por dónde empezar.
+              </p>
               <a className="inline-link" href="/asesor-ia/">
                 Crear un brief con el Asesor CÍDIKS <Arrow />
               </a>
