@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { guidedChatReply, chatOrientation, GUIDED_CHAT_OPTIONS } from '../../shared/floating-chat-guidance.ts';
-import { CHAT_FEW_SHOTS, CHAT_SYSTEM_PROMPT, buildChatMessages, chatModelInput, chatReplyWasCut, extractChatText } from '../../shared/chat-prompt.ts';
+import { CHAT_FEW_SHOTS, CHAT_PROMPT_VERSION, CHAT_SYSTEM_PROMPT, buildChatMessages, chatModelInput, chatReplyWasCut, extractChatText } from '../../shared/chat-prompt.ts';
 import { formatModelReply, toPlainChatText, trimToLastSentence } from '../../shared/chat-format.ts';
 import { guardChatReply } from '../../shared/chat-guard.ts';
 import { OPEN_REQUEST, ledgerHealth, reconcileReservation, type Rows } from '../../worker/src/ledger-queries.ts';
@@ -45,6 +45,26 @@ test('el prompt nuevo no trae texto del formulario ni frases que el filtro trata
   assert.doesNotMatch(CHAT_SYSTEM_PROMPT, /tres respuestas|dato no confiable/i);
   assert.match(CHAT_SYSTEM_PROMPT, /de tú/);
   assert.match(CHAT_SYSTEM_PROMPT, /Sin listas/);
+});
+
+test('prompt v0.3: conserva lo aprobado y el tamaño evaluado', () => {
+  assert.equal(CHAT_PROMPT_VERSION, 'chat-2026-11-24');
+  // Declaración, verificable frente a verificado, suposición y corrección con fundamento.
+  assert.match(CHAT_SYSTEM_PROMPT, /declaración/);
+  assert.match(CHAT_SYSTEM_PROMPT, /Verificable no es verificado/);
+  assert.match(CHAT_SYSTEM_PROMPT, /corrígelo con respeto/);
+  assert.match(CHAT_SYSTEM_PROMPT, /no le des la razón por quedar bien/);
+  // Escuchar una sola vez, servicios reales, diagnóstico gratuito y sin suposiciones de género.
+  assert.match(CHAT_SYSTEM_PROMPT, /Pregunta así una sola vez/);
+  assert.match(CHAT_SYSTEM_PROMPT, /diagnóstico gratuito de 15 minutos/);
+  assert.match(CHAT_SYSTEM_PROMPT, /Refiérete a Reily por su nombre/);
+  assert.match(CHAT_SYSTEM_PROMPT, /quien te escribe puede estar en cualquier lugar/);
+  assert.ok(CHAT_FEW_SHOTS.some(example => /diagnóstico gratuito/.test(example.reply)));
+  const system = buildChatMessages([], 'hola')[0].content;
+  // El filtro de salida reconoce estas frases como fuga del prompt: deben seguir en él.
+  for (const phrase of [/Eres CÍDIKS IA/, /Formato obligatorio/, /Ejemplos del estilo esperado/]) assert.match(system, phrase);
+  // Evaluado con 5,578 caracteres (+8.6 % frente a chat-2026-11-23). Crecer más pide una evaluación nueva.
+  assert.ok(system.length <= 5600, `instrucciones fijas: ${system.length} caracteres`);
 });
 
 test('los ejemplos fijos pasan el filtro y ninguna regla los atrapa', () => {
